@@ -6,9 +6,9 @@ A web app for trading code for design and vice versa.
 
 1. Fork repository
 2. Clone forked repository
-3. Setup github upstream `git remote add upstream https://github.com/bkd705/codefordesign.git`
+3. Setup github upstream `git remote add upstream https://github.com/bkd705/designforcode.git`
 4. Match branches to upstream repository
-5. Change directory into `codefordesign`
+5. Change directory into `designforcode`
 6. Run `yarn` to install node_modules
 7. Run `yarn dev` to start dev server with both webpack hot reload server on `localhost:5000` and express API server on `localhost:3000`
 
