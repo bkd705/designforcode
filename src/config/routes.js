@@ -1,10 +1,12 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
-import store from './reduxStore'
+import configureStore from './reduxStore'
 
 import App from '../App'
 import Home from '../components/home'
+
+const store = configureStore()
 
 const routes = (
   <Provider store={store}>
