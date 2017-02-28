@@ -1,4 +1,4 @@
-# Code For Design
+# Design For Code
 
 A web app for trading code for design and vice versa.
 
