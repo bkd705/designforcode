@@ -1,4 +1,5 @@
 import Profile from '../models/Profile'
+import { validateProfile } from '../util/validations'
 
 export default class ProfileController {
   static getProfileByUserId(req, res) {

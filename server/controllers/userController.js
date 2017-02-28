@@ -1,4 +1,5 @@
 import User from '../models/User'
+import { validateUser } from '../util/validations'
 
 export default class UserController {
   static getUserById(req, res) {
@@ -18,6 +19,9 @@ export default class UserController {
     })
   }
 
+  /**
+  * This needs to be fixed. I rushed the code and forgot to hash the password so currently the password is being stored in plain text.
+  */
   static createUser(req, res) {
     const __user = req.body
     const isValid = validateUser(__user)
