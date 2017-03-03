@@ -1,7 +1,7 @@
 import Validator from 'validator'
 
-function validateUser({ username, email, password }) {
-  if(!username || !email || !password ) {
+export function validateUser({ username, email, password, role }) {
+  if(!username || !email || !password || !role) {
     return false
   }
   if(!Validator.isEmail(email)) {
@@ -11,18 +11,10 @@ function validateUser({ username, email, password }) {
   return true
 }
 
-function validateProfile({ userId, firstName, lastName, age, profession, skillLevel, description }) {
-  if(!userId || !firstName || !lastName || !age || !profession || !skillLevel || !description) {
-    return false
-  }
-  if(age > 100 || age < 10) {
+export function validateProfile({ first_name, last_name, profession, skill_level, description, user_id }) {
+  if( !first_name || !last_name || !profession || !skill_level || !description || !user_id ) {
     return false
   }
 
   return true
-}
-
-export default {
-  validateUser: validateUser,
-  validateProfile: validateProfile
 }

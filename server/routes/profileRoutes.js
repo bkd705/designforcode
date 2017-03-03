@@ -1,11 +1,10 @@
 import express from 'express'
-import ProfileController from '../controllers/profileController'
+import * as Profile from '../controllers/profileController'
 
 const app = express()
 
-app.post('/new', ProfileController.createProfile)
-app.patch('/update', ProfileController.updateProfile)
-app.get('/user/:id', ProfileController.getProfileByUserId)
-app.get('/:id', ProfileController.getProfileById)
+console.log(Profile)
+app.post('/create', Profile.createProfile)
+app.get('/:userId', Profile.findOneProfile)
 
 export default app

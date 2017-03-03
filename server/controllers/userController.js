@@ -1,64 +1,68 @@
-import User from '../models/User'
+import db from '../config/db'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import { validateUser } from '../util/validations'
 
-export default class UserController {
-  static getUserById(req, res) {
-    const id = req.params._id
+const users = db.users
 
-    User.findOne({"_id": id}, (err, user) => {
-      err ? console.log(err) : res.send(user)
+/**
+ * Method for creating a new user
+ * @param req the request paramater passed from express
+ * @param res the response parameter passed from express
+ */
+export function createUser(req, res) {
+  const user = req.body
+  const isValid = validateUser(user)
+
+  if(isValid) {
+    const hashed_password = bcrypt.hashSync(user.password, 10)
+    users.create({
+      username: user.username,
+      email: user.email,
+      password: hashed_password,
+      role: user.role
     })
-  }
-
-  static updateUser(req, res) {
-    const __user = req.body
-    const id = user._id
-
-    User.findByIdAndUpdate(id, __user, { new: true }, (err, user) => {
-      err ? console.log(err) : res.send(user)
-    })
-  }
-
-  /**
-  * This needs to be fixed. I rushed the code and forgot to hash the password so currently the password is being stored in plain text.
-  */
-  static createUser(req, res) {
-    const __user = req.body
-    const isValid = validateUser(__user)
-
-    if(isValid) {
-      const newUser = User(__user)
-      newUser.save(err => {
-        if(err) {
-          console.log(err)
-          if(err.name === 'MongoError' && err.code === 11000) {
-            return res.status(500).send({
-              message: 'User alreay exists!'
-            })
-          }
-          res.status(500).send(err)
-        } else {
-          res.send({
-            message: 'User created!'
-          })
-        }
+    .then(newUser => {
+      const userMin = {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email
+      }
+      const token = jwt.sign(userMin, process.env.JWT_SECRET)
+      res.send({
+        user: userMin,
+        token: token,
+        status: 'success',
+        message: 'New user created successfully!'
       })
-    } else {
-      res.status(400).json({
-        message: 'Invalid User'
+    })
+    .catch(err => {
+      res.status(500).json({
+        err: err,
+        message: 'An unexpected error occurred!'
       })
-    }
-  }
-
-  static getAllDevelopers(req, res) {
-    User.find({"profession": "developer"}, (err, users) => {
-      err ? res.status(500).json({ message: 'Unable to find any developers', err: err}) : res.send(users)
+    })
+  } else {
+    res.status(400).json({
+      err: 'Not a valid user',
+      message: 'The user submitted is not valid'
     })
   }
+}
 
-  static getAllDesigners(req, res) {
-    User.find({"profession": "designer"}, (err, users) => {
-      err ? res.status(500).json({ message: 'Unable to find any designers', err: err}) : res.send(users)
+export function findOneUser(req, res) {
+  const userId = req.params.id
+
+  users.findOne({
+    id: userId
+  })
+  .then(user => {
+    res.send({ user })
+  })
+  .catch(err => {
+    res.status(500).json({
+      err: err,
+      message: 'An unexpected error has occurred!'
     })
-  }
+  })
 }
