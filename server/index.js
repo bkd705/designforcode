@@ -25,6 +25,12 @@ app.use(bodyParser())
 app.use(router.routes())
 app.use(router.allowedMethods())
 
+// Koa Default Middleware
+app.use(function * (next) {
+  // Allow CORS
+  this.set('Access-Control-Allow-Origin', '*')
+})
+
 // Serve routes
 require('./routes/userRoutes')(router)
 require('./routes/profileRoutes')(router)
