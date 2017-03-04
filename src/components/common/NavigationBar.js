@@ -1,11 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { logout } from '../auth/actions'
 
 class NavigationBar extends React.Component {
 
-  logout = () => {
-    console.log('logout')
+  logout = (e) => {
+    e.preventDefault()
+    this.props.dispatch(logout())
   }
 
   render() {

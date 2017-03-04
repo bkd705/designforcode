@@ -28,7 +28,7 @@ export default class UserController {
       username: user.username,
       email: user.email,
       password: hashed_password,
-      role: user.role
+      role: 'user'
     })
     .then(newUser => {
       const userMin = {

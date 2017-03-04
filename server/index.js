@@ -29,6 +29,7 @@ app.use(router.allowedMethods())
 app.use(function * (next) {
   // Allow CORS
   this.set('Access-Control-Allow-Origin', '*')
+  this.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
 })
 
 // Serve routes

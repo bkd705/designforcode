@@ -7,7 +7,7 @@ const apiUrl = 'http://localhost:3000'
 function* asyncLogin({ user }) {
   try {
     const response = yield call(axios.post, `${apiUrl}/user/login`, user)
-    yield put({ type: types.AUTH_LOGIN_SUCCESS, user: response.data.user, token: response.data.token })
+    yield put({ type: types.AUTH_LOGIN_SUCCESS, user: response.data.data.user, token: response.data.data.token })
   } catch(err) {
     yield put({ type: types.AUTH_LOGIN_FAILURE, err: err })
   }
@@ -16,7 +16,8 @@ function* asyncLogin({ user }) {
 function* asyncSignup({ user }) {
   try {
     const response = yield call(axios.post, `${apiUrl}/user/create`, user)
-    yield put({ type: types.AUTH_SIGNUP_SUCCESS, user: response.data.user, token: response.data.token })
+    console.log(response)
+    yield put({ type: types.AUTH_SIGNUP_SUCCESS, user: response.data.data.user, token: response.data.data.token })
   } catch(err) {
     yield put({ type: types.AUTH_SIGNUP_FAILURE, err: err })
   }

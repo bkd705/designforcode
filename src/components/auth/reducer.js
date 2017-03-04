@@ -38,6 +38,11 @@ export default (state = initialState, action = {}) => {
         ...state,
         error: action.err
       }
+    case types.AUTH_LOGOUT:
+      localStorage.removeItem('user_token')
+      return {
+        ...initialState
+      }
     default: return state
   }
 }
