@@ -1,5 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { login } from '../actions'
 import InputField from '../../form/InputField'
 
 class LoginForm extends React.Component {
@@ -8,7 +10,6 @@ class LoginForm extends React.Component {
 
     this.state = {
       username: '',
-      email: '',
       password: '',
       errors: {}
     }
@@ -22,8 +23,7 @@ class LoginForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-
-    console.log(this.state)
+    this.props.dispatch(login(this.state))
   }
 
   render() {
@@ -37,15 +37,6 @@ class LoginForm extends React.Component {
           placholder="Username"
           onChange={this.onChange}
           error={errors.username}
-        />
-
-        <InputField 
-          label="E-Mail"
-          name="email"
-          value={email}
-          placholder="E-Mail"
-          onChange={this.onChange}
-          error={errors.email}
         />
 
         <InputField 
@@ -71,4 +62,4 @@ class LoginForm extends React.Component {
   }
 }
 
-export default LoginForm
+export default connect()(LoginForm)

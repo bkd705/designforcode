@@ -23,29 +23,51 @@ export default class UserController {
       }
     }
 
-    const hashed_password = bcrypt.hashSync(user.password, 10)
-    const result = yield users.create({
-      username: user.username,
-      email: user.email,
-      password: hashed_password,
-      role: 'user'
-    })
-    .then(newUser => {
-      const userMin = {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email
+    const result = yield users.find({
+      where: {
+        username: user.username
       }
+    })
+    .then(dbResult => {
+      if(!dbResult) {
+        const hashed_password = bcrypt.hashSync(user.password, 10)
+        return users.create({
+          username: user.username,
+          email: user.email,
+          password: hashed_password,
+          role: 'user'
+        })
+        .then(newUser => {
+          console.log('newUser')
+          const userMin = {
+            id: newUser.id,
+            username: newUser.username,
+            email: newUser.email
+          }
 
-      const token = jwt.sign(userMin, process.env.JWT_SECRET)
+          const token = jwt.sign(userMin, process.env.JWT_SECRET)
 
-      return {
-        success: true,
-        message: 'Successfully created new user!',
-        data: {
-          user: userMin,
-          token: token
+          return {
+            success: true,
+            message: 'Successfully created new user!',
+            data: {
+              user: userMin,
+              token: token
+            }
+          }
+        })
+        .catch(err => {
+          return {
+            success: false,
+            message: 'An unexpected error has occurred!',
+            error: err
+          }
+        })
         }
+      
+      return {
+        success: false,
+        error: 'There is already a user with that username!'
       }
     })
     .catch(err => {

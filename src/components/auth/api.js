@@ -26,7 +26,7 @@ const api = {
     .then(data => data)
   },
   login(data) {
-    return fetch('http://localhost:3000/user/login', {
+    return fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
