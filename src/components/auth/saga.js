@@ -1,13 +1,11 @@
-import axios from 'axios'
 import { takeLatest, call, put } from 'redux-saga/effects'
+import api from './api'
 import { types } from './actions'
-
-const apiUrl = 'http://localhost:3000'
 
 function* asyncLogin({ user }) {
   try {
-    const response = yield call(axios.post, `${apiUrl}/user/login`, user)
-    yield put({ type: types.AUTH_LOGIN_SUCCESS, user: response.data.data.user, token: response.data.data.token })
+    const response = yield call(api.login, user)
+    yield put({ type: types.AUTH_LOGIN_SUCCESS, user: response.data.user, token: response.data.token })
   } catch(err) {
     yield put({ type: types.AUTH_LOGIN_FAILURE, err: err })
   }
@@ -15,9 +13,9 @@ function* asyncLogin({ user }) {
 
 function* asyncSignup({ user }) {
   try {
-    const response = yield call(axios.post, `${apiUrl}/user/create`, user)
+    const response = yield call(api.signup, user)
     console.log(response)
-    yield put({ type: types.AUTH_SIGNUP_SUCCESS, user: response.data.data.user, token: response.data.data.token })
+    yield put({ type: types.AUTH_SIGNUP_SUCCESS, user: response.data.user, token: response.data.token })
   } catch(err) {
     yield put({ type: types.AUTH_SIGNUP_FAILURE, err: err })
   }
