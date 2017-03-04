@@ -1,32 +1,45 @@
 import dotenv from 'dotenv'
-import express from 'express'
-import bodyParser from 'body-parser'
+import path from 'path'
+
+import bodyParser from 'koa-bodyparser'
+import koa from 'koa'
+import koaRouter from 'koa-router'
+import serve from 'koa-static'
+import sendFile from 'koa-sendfile'
 
 import userRoutes from './routes/userRoutes'
 import authRoutes from './routes/authRoutes'
 import profileRoutes from './routes/profileRoutes'
 
 dotenv.config()
-const app = express()
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({
-  extended: false
-}))
-app.use(express.static(`${__dirname}/../public/`))
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-  next()
+// Instantiate koa and koa-router
+const app = koa()
+const router = koaRouter()
+
+// Serve static files
+app.use(serve(`${__dirname}/../public/`))
+
+// Enable bodyparser and router
+app.use(bodyParser())
+app.use(router.routes())
+app.use(router.allowedMethods())
+
+// Koa Default Middleware
+app.use(function * (next) {
+  // Allow CORS
+  this.set('Access-Control-Allow-Origin', '*')
 })
 
+// Serve routes
+require('./routes/userRoutes')(router)
+require('./routes/profileRoutes')(router)
+require('./routes/authRoutes')(router)
 
-app.use('/user', userRoutes)
-app.use('/profile', profileRoutes)
-// app.use('/auth', authRoutes)
-
-app.get('*', (req, res) => {
-  res.send(`index.html`)
+// Serve front-end route
+router.get('*', function * (next) {
+  yield sendFile(this, path.join(__dirname, '../public/index.html'))
+  yield next
 })
 
 const host = process.env.SERVER_HOST
