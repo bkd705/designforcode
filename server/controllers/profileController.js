@@ -27,7 +27,7 @@ export default class ProfileController {
           success: true,
           message: 'Successfully created new profile!',
           data: {
-            profile: newProfile
+            profile
           }
         }
       })
