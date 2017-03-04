@@ -5,6 +5,8 @@ import configureStore from './reduxStore'
 
 import App from '../App'
 import Home from '../components/home'
+import Login from '../components/auth/login'
+import Signup from '../components/auth/signup'
 
 const store = configureStore()
 
@@ -13,6 +15,8 @@ const routes = (
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Home} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
       </Route>
     </Router>
   </Provider>

@@ -1,9 +1,8 @@
-import express from 'express'
-import * as User from '../controllers/userController'
+'use strict'
 
-const app = express()
+import User from '../controllers/userController'
 
-app.post('/create', User.createUser)
-app.get('/:userid', User.findOneUser)
-
-export default app
+module.exports = (router) => {
+  router.post('/user/create', User.create)
+  router.get('/user/:id', User.findOne)
+}

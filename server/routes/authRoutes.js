@@ -1,8 +1,7 @@
-import express from 'express'
-import AuthController from '../controllers/authController'
+'use strict'
 
-const app = express()
+import Auth from '../controllers/authController'
 
+module.exports = (router) => {
 
-
-export default app
+}

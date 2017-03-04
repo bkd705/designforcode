@@ -11,8 +11,8 @@ export function validateUser({ username, email, password, role }) {
   return true
 }
 
-export function validateProfile({ first_name, last_name, profession, skill_level, description, user_id }) {
-  if( !first_name || !last_name || !profession || !skill_level || !description || !user_id ) {
+export function validateProfile({ first_name, last_name, profession, skill_level, description }) {
+  if( !first_name || !last_name || !profession || !skill_level || !description ) {
     return false
   }
 
