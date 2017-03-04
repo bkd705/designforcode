@@ -1,10 +1,8 @@
-import express from 'express'
-import * as Profile from '../controllers/profileController'
+'use strict'
 
-const app = express()
+import Profile from '../controllers/profileController'
 
-console.log(Profile)
-app.post('/create', Profile.createProfile)
-app.get('/:userId', Profile.findOneProfile)
-
-export default app
+module.exports = (router) => {
+  router.post('/profile/create', Profile.create)
+  router.get('/profile/:id', Profile.findOne)
+}

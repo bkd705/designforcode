@@ -5,22 +5,30 @@ import { validateUser } from '../util/validations'
 
 const users = db.users
 
-/**
- * Method for creating a new user
- * @param req the request paramater passed from express
- * @param res the response parameter passed from express
- */
-export function createUser(req, res) {
-  const user = req.body
-  const isValid = validateUser(user)
+export default class UserController {
 
-  if(isValid) {
+  /**
+   * Method for creating a new user
+   * @param next - The next state to transition to
+   */
+  static * create(next) {
+    const user = this.request.body
+    const isValid = validateUser(user)
+
+    if (!isValid) {
+      this.status = 400
+      return this.body = {
+        success: false,
+        error: 'The user submitted is not valid'
+      }
+    }
+
     const hashed_password = bcrypt.hashSync(user.password, 10)
-    users.create({
+    const result = yield users.create({
       username: user.username,
       email: user.email,
       password: hashed_password,
-      role: 'user'
+      role: user.role
     })
     .then(newUser => {
       const userMin = {
@@ -28,41 +36,63 @@ export function createUser(req, res) {
         username: newUser.username,
         email: newUser.email
       }
+
       const token = jwt.sign(userMin, process.env.JWT_SECRET)
-      res.send({
-        user: userMin,
-        token: token,
-        status: 'success',
-        message: 'New user created successfully!'
-      })
+
+      return {
+        success: true,
+        message: 'Successfully created new user!',
+        data: {
+          user: userMin,
+          token: token
+        }
+      }
     })
     .catch(err => {
-      res.status(500).json({
-        err: err,
-        message: 'An unexpected error occurred!'
-      })
+      return {
+        success: false,
+        message: 'An unexpected error has occurred!',
+        error: err
+      }
     })
-  } else {
-    res.status(400).json({
-      err: 'Not a valid user',
-      message: 'The user submitted is not valid'
-    })
+
+    if (!result.success) this.status = 400
+    this.body = result
   }
-}
 
-export function findOneUser(req, res) {
-  const userId = req.params.id
+  /**
+   * Method for finding a user by ID
+   * @param next - The next state to transition to
+   */
+  static * findOne(next) {
+    const userId = this.params.id
 
-  users.findOne({
-    id: userId
-  })
-  .then(user => {
-    res.send({ user })
-  })
-  .catch(err => {
-    res.status(500).json({
-      err: err,
-      message: 'An unexpected error has occurred!'
+    const result = yield users.findOne({
+      id: userId
     })
-  })
+    .then(user => {
+      if (user == null) {
+        return {
+          success: false,
+          error: 'Unable to find user with provided ID'
+        }
+      } else {
+        return {
+          success: true,
+          message: 'Successfully fetched user by ID',
+          data: user
+        }
+      }
+    })
+    .catch(err => {
+      return {
+        success: false,
+        message: 'An unexpected error has occurred!',
+        error: err
+      }
+    })
+
+    if (!result.success) this.status = 400
+    this.body = result
+  }
 }

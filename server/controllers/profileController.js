@@ -3,51 +3,80 @@ import { validateProfile } from '../util/validations'
 
 const profiles = db.profiles
 
-/**
- * Method for creating a new profile
- * @param req the request paramater passed from express
- * @param res the response parameter passed from express
- */
-export function createProfile(req, res) {
-  const profile = req.body
-  const isValid = validateProfile(profile)
+export default class ProfileController {
 
-  if(isValid) {
-    profiles.create(profile)
-    .then(newProfile => {
-      res.send({
-        profile,
-        status: 'success',
-        message: 'New profile created successfully!'
+  /**
+   * Method for creating a new profile
+   * @param next - The next state to transition to
+   */
+  static * create(next) {
+    const profile = this.request.body
+    const isValid = validateProfile(profile)
+
+    if (!isValid) {
+      this.status = 400
+      return this.body = {
+        success: false,
+        error: 'The profile submitted is not valid'
+      }
+    }
+
+    const result = yield profiles.create(profile)
+      .then(newProfile => {
+        return {
+          success: true,
+          message: 'Successfully created new profile!',
+          data: {
+            profile: newProfile
+          }
+        }
       })
+      .catch(err => {
+        return {
+          success: false,
+          message: 'An unexpected error has occurred!',
+          error: err
+        }
     })
-    .catch(err => {
-      res.status(500).json({
-        err: err,
-        message: 'An unexpected error occurred!'
-      })
-    })
-  } else {
-    res.status(400).json({
-      err: 'Not a valid profile',
-      message: 'The profile submitted is not valid'
-    })
+
+    if (!result.success) this.status = 400
+    this.body = result
   }
-}
 
-export function findOneProfile(req, res) {
-  const userId = req.params.id
+  /**
+   * Method for finding a profile by ID
+   * @param next - The next state to transition to
+   */
+   static * findOne(next) {
+     const userId = this.params.id
+     const result = yield profiles.findOne({
+       user_id: userId
+     })
+     .then(profile => {
+       if (profile == null) {
+         return {
+           success: false,
+           error: 'Unable to find profile by ID'
+         }
+       } else {
+         return {
+           success: true,
+           message: 'Successfully fetched profile!',
+           data: {
+             profile: profile
+           }
+         }
+       }
+     })
+     .catch(err => {
+       return {
+         success: false,
+         message: 'An unexpected error has occurred!',
+         error: err
+       }
+     })
 
-  profiles.findOne({
-    user_id: userId
-  })
-  .then(profile => {
-    res.send({ profile })
-  })
-  .catch(err => {
-    res.status(500).json({
-      err: err,
-      message: 'An unexpected error has occurred!'
-    })
-  })
+     if (!result.success) this.status = 400
+     this.body = result
+   }
 }
