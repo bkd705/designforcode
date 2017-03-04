@@ -10,7 +10,7 @@ A web app for trading code for design and vice versa.
 4. Match branches to upstream repository
 5. Change directory into `designforcode`
 6. Run `yarn` to install node_modules
-7. Create a `.env` file containing db and host information, sample is down below
+7. Create a `.env` file in root dir containing db and host information, sample is down below
 8. Run `yarn dev` to start dev server with both webpack hot reload server on `localhost:5000` and express API server on `localhost:3000`
 
 ```
