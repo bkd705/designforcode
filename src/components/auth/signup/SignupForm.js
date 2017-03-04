@@ -1,5 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { signup } from '../actions'
 import InputField from '../../form/InputField'
 
 class SignupForm extends React.Component {
@@ -24,7 +26,7 @@ class SignupForm extends React.Component {
   onSubmit = (e) => {
     e.preventDefault()
 
-    console.log(this.state)
+    this.props.dispatch(signup(this.state))
   }
 
   render() {
@@ -82,4 +84,4 @@ class SignupForm extends React.Component {
   }
 }
 
-export default SignupForm
+export default connect()(SignupForm)

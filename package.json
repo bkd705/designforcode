@@ -9,6 +9,7 @@
     "react-scripts": "0.9.2"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.16.1",
     "dotenv": "^4.0.0",

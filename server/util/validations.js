@@ -1,7 +1,7 @@
 import Validator from 'validator'
 
-export function validateUser({ username, email, password, role }) {
-  if(!username || !email || !password || !role) {
+export function validateUser({ username, email, password }) {
+  if(!username || !email || !password ) {
     return false
   }
   if(!Validator.isEmail(email)) {
