@@ -1,9 +1,18 @@
 export default (sequelize, DataTypes) => {
-  const Profile = sequelize.define('profile', {
+  const Profile = sequelize.define('profiles', {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
+    },
+    user_id: {
+      type: DataTypes.UUID,
+      onDelete: 'CASCADE',
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     first_name: {
       type: DataTypes.STRING,
@@ -36,7 +45,6 @@ export default (sequelize, DataTypes) => {
     paranoid: true,
     underscored: true
   })
-  
-  Profile.sync({ force: true })
+
   return Profile
 }

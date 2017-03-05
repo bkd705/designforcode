@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "xxxx",
+    "database": "designforcode",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "root",
+    "password": "xxxx",
+    "database": "designforcode",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "root",
+    "password": "xxxx",
+    "database": "designforcode",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres"
+  }
+}
