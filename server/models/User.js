@@ -7,11 +7,13 @@ export default (sequelize, DataTypes) => {
     },
     username: {
       type: DataTypes.STRING,
-      required: true
+      required: true,
+      unique: true
     },
     email: {
       type: DataTypes.STRING,
-      required: true
+      required: true,
+      unique: true
     },
     password: {
       type: DataTypes.STRING,
@@ -19,14 +21,14 @@ export default (sequelize, DataTypes) => {
     },
     role: {
       type: DataTypes.STRING,
-      required: true,
+      defaultValue: 'user',
       values: ['user', 'admin', 'disabled']
     }
   }, {
     paranoid: true,
     underscored: true
   })
-  
-  User.sync()
+
+  User.sync({ force: true })
   return User
 }

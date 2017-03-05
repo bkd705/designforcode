@@ -1,6 +1,9 @@
+import dotenv from 'dotenv'
 import Sequelize from 'sequelize'
 import users from '../models/User'
 import profiles from '../models/Profile'
+
+dotenv.config()
 
 /**
  * Setup Sequelize connection to postgres using dotenv variables
