@@ -1,5 +1,6 @@
 import db from '../config/db'
 import { validateProfile } from '../util/validations'
+import JRes from '../util/JResponse'
 
 const profiles = db.profiles
 
@@ -15,31 +16,26 @@ export default class ProfileController {
 
     if (!isValid) {
       this.status = 400
-      return this.body = {
-        success: false,
-        error: 'The profile submitted is not valid'
-      }
+      return this.body = JRes.failure('The profile submitted is not valid')
     }
 
     const result = yield profiles.create(profile)
       .then(newProfile => {
-        return {
-          success: true,
-          message: 'Successfully created new profile!',
-          data: {
-            profile
-          }
-        }
+        return JRes.success('Successfully created new profile!', { profile })
       })
       .catch(err => {
-        return {
-          success: false,
-          message: 'An unexpected error has occurred!',
-          error: err
-        }
+        return JRes.failure(err)
     })
 
-    if (!result.success) this.status = 400
+    if (!result.success) {
+      this.status = 400
+
+      // Handle/Parser sequelize error
+      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+        result.error = result.error.errors[0].message
+      }
+    }
+
     this.body = result
   }
 
@@ -54,29 +50,24 @@ export default class ProfileController {
      })
      .then(profile => {
        if (profile == null) {
-         return {
-           success: false,
-           error: 'Unable to find profile by ID'
-         }
+         return JRes.failure('Unable to find profile by ID')
        } else {
-         return {
-           success: true,
-           message: 'Successfully fetched profile!',
-           data: {
-             profile: profile
-           }
-         }
+         return JRes.success('Successfully fetched profile!', { profile })
        }
      })
      .catch(err => {
-       return {
-         success: false,
-         message: 'An unexpected error has occurred!',
-         error: err
-       }
+       return JRes.success(err)
      })
 
-     if (!result.success) this.status = 400
+     if (!result.success) {
+       this.status = 400
+
+       // Handle/Parser sequelize error
+       if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+         result.error = result.error.errors[0].message
+       }
+     }
+
      this.body = result
    }
 }
