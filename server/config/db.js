@@ -31,7 +31,7 @@ db.profiles = profiles(sequelize, Sequelize)
 /**
  * Relations
  */
-db.profiles.belongsTo(db.users)
 db.users.hasOne(db.profiles)
+db.profiles.belongsTo(db.users)
 
 export default db

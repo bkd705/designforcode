@@ -37,5 +37,6 @@ export default (sequelize, DataTypes) => {
     underscored: true
   })
   
+  Profile.sync({ force: true })
   return Profile
 }

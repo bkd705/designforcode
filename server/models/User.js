@@ -29,5 +29,6 @@ export default (sequelize, DataTypes) => {
     underscored: true
   })
 
+  User.sync({ force: true })
   return User
 }
