@@ -36,7 +36,6 @@ export default (sequelize, DataTypes) => {
     paranoid: true,
     underscored: true
   })
-
-  Profile.sync()
+  
   return Profile
 }

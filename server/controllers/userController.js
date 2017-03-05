@@ -15,7 +15,6 @@ export default class UserController {
   static * create(next) {
     const user = this.request.body
     const isValid = validateUser(user)
-    let token = null
 
     if (!isValid) {
       this.status = 400
@@ -36,10 +35,8 @@ export default class UserController {
         email: newUser.email
       }
 
-      token = jwt.sign(userMin, process.env.JWT_SECRET)
-
-      // TODO: SET TOKEN AS HTTPONLY
-      return JRes.success('Successfully created new user!', { user: userMin })
+      const token = jwt.sign(userMin, process.env.JWT_SECRET)
+      return JRes.success('Successfully created new user!', { user: userMin, token: token })
     })
     .catch(err => {
       return JRes.failure(err)

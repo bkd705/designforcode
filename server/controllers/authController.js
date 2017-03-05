@@ -1,6 +1,7 @@
 import db from '../config/db'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import JRes from '../util/JResponse'
 
 const users = db.users
 
@@ -16,16 +17,10 @@ export default class AuthController {
     })
     .then(foundUser => {
       if(!foundUser) {
-        return {
-          success: false,
-          message: 'No user with that username found!'
-        }
+        return JRes.failure('No user found with that username!')
       }
       if(!bcrypt.compareSync(user.password, foundUser.password)) {
-        return {
-          success: false,
-          message: 'Password is not correct'
-        }
+        return JRes.failure('Password is incorrect.')
       }
 
       const userMin = {
@@ -35,24 +30,21 @@ export default class AuthController {
       }
 
       const token = jwt.sign(userMin, process.env.JWT_SECRET)
-      return {
-        success: true,
-        message: 'Successfully created new user!',
-        data: {
-          user: userMin,
-          token: token
-        }
-      }
+      return JRes.success('Successfully created new user!', { user: userMin, token: token })
     })
     .catch(err => {
-      return {
-        success: false,
-        message: 'An unexpected error has occured!',
-        error: err
-      }
+      return JRes.failure(err)
     })
 
-    if (!result.success) this.status = 400
+    if (!result.success) {
+      this.status = 400
+
+      // Handle/Parser sequelize error
+      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+        result.error = result.error.errors[0].message
+      }
+    }
+
     this.body = result
   }
 }
