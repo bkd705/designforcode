@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import Sequelize from 'sequelize'
 import users from '../models/User'
 import profiles from '../models/Profile'
+import posts from '../models/Post'
 
 dotenv.config()
 
@@ -27,12 +28,15 @@ db.sequelize = sequelize
  */
 db.users = users(sequelize, Sequelize)
 db.profiles = profiles(sequelize, Sequelize)
+db.posts = posts(sequelize, Sequelize)
 
 /**
  * Relations
  */
-db.profiles.belongsTo(db.users)
 db.users.hasOne(db.profiles)
+db.users.hasMany(db.posts)
 
+db.profiles.belongsTo(db.users)
+db.posts.belongsTo(db.users)
 
 export default db

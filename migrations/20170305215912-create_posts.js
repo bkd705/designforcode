@@ -3,13 +3,13 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface
-      .createTable('profiles', {
+      .createTable('posts', {
         id: {
           type: Sequelize.UUID,
           primaryKey: true,
           defaultValue: Sequelize.UUIDV4
         },
-        user_id: {
+        creator_id: {
           type: Sequelize.UUID,
           allowNull: false,
           references: {
@@ -17,26 +17,26 @@ module.exports = {
             key: 'id'
           }
         },
-        first_name: {
-          type: Sequelize.STRING,
-          required: true
+        assigned_to: {
+          type: Sequelize.UUID,
+          allowNull: true,
+          references: {
+            model: 'users',
+            key: 'id'
+          }
         },
-        last_name: {
-          type: Sequelize.STRING,
-          required: true
-        },
-        profession: {
-          type: Sequelize.STRING,
-          required: true,
-          values: ['designer', 'developer']
-        },
-        skill_level: {
+        title: {
           type: Sequelize.STRING,
           required: true
         },
         description: {
-          type: Sequelize.TEXT,
+          type: Sequelize.STRING,
           required: true
+        },
+        type: {
+          type: Sequelize.STRING,
+          required: true,
+          values: ['code', 'design']
         },
         created_at: {
           type: Sequelize.DATE,
@@ -48,6 +48,6 @@ module.exports = {
   },
 
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('profiles')
+      return queryInterface.dropTable('posts')
   }
 }
