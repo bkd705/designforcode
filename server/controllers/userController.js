@@ -5,6 +5,7 @@ import { validateUser } from '../util/validations'
 import JRes from '../util/JResponse'
 
 const users = db.users
+const profiles = db.profiles
 
 export default class UserController {
 
@@ -36,6 +37,16 @@ export default class UserController {
       }
 
       const token = jwt.sign(userMin, process.env.JWT_SECRET)
+
+      profiles.create({
+        user_id: newUser.id,
+        first_name: '',
+        last_name: '',
+        profession: '',
+        skill_level: '',
+        description: ''
+      })
+
       return JRes.success('Successfully created new user!', { user: userMin, token: token })
     })
     .catch(err => {
@@ -68,7 +79,9 @@ export default class UserController {
       if (user == null) {
         return JRes.failure('Unable to find user with provided ID')
       } else {
-        return JRes.success('Successfully fetched user by ID', { user })
+        return JRes.success('Successfully fetched user by ID', {
+          user
+        })
       }
     })
     .catch(err => {
@@ -82,6 +95,19 @@ export default class UserController {
       if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
         result.error = result.error.errors[0].message
       }
+    } else {
+      // Fetch profile information
+      const profile = yield result.data.user.getProfile()
+        .then(userProfile => {
+          return userProfile.dataValues
+        })
+        .catch(err => {
+          return 'Failed to fetch profile information'
+      })
+
+      // Set profile and user information
+      result.data.user = result.data.user.dataValues
+      result.data.profile = profile
     }
 
     this.body = result
