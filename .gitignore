@@ -17,4 +17,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # sequelize config
-/config/config.json
+/server/config/config.json
