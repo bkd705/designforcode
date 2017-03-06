@@ -33,10 +33,10 @@ db.posts = posts(sequelize, Sequelize)
 /**
  * Relations
  */
-db.users.hasOne(db.profiles)
-db.users.hasMany(db.posts)
+db.users.hasOne(db.profiles, { as: 'Profile' })
+db.users.hasMany(db.posts, { as: 'Posts' })
 
-db.profiles.belongsTo(db.users)
-db.posts.belongsTo(db.users)
+db.profiles.belongsTo(db.users, { as: 'User', foreignKey: 'user_id' })
+db.posts.belongsTo(db.users, { as: 'Creator', foreignKey: 'creator_id' })
 
 export default db
