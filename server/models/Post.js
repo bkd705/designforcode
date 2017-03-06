@@ -26,7 +26,7 @@ export default (sequelize, DataTypes) => {
       required: true
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       required: true
     },
     type: {
