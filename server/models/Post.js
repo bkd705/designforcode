@@ -13,14 +13,6 @@ export default (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    assigned_to: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
-    },
     title: {
       type: DataTypes.STRING,
       required: true
