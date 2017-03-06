@@ -9,7 +9,6 @@ import sendFile from 'koa-sendfile'
 
 import userRoutes from './routes/userRoutes'
 import authRoutes from './routes/authRoutes'
-import profileRoutes from './routes/profileRoutes'
 
 dotenv.config()
 
@@ -34,7 +33,6 @@ app.use(function * (next) {
 
 // Serve routes
 require('./routes/userRoutes')(router)
-require('./routes/profileRoutes')(router)
 require('./routes/authRoutes')(router)
 
 // Serve front-end route

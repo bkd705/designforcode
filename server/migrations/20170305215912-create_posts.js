@@ -17,20 +17,12 @@ module.exports = {
             key: 'id'
           }
         },
-        assigned_to: {
-          type: Sequelize.UUID,
-          allowNull: true,
-          references: {
-            model: 'users',
-            key: 'id'
-          }
-        },
         title: {
           type: Sequelize.STRING,
           required: true
         },
         description: {
-          type: Sequelize.STRING,
+          type: Sequelize.TEXT,
           required: true
         },
         type: {
@@ -48,6 +40,6 @@ module.exports = {
   },
 
   down(queryInterface, Sequelize) {
-      return queryInterface.dropTable('posts')
+    return queryInterface.dropTable('posts')
   }
 }

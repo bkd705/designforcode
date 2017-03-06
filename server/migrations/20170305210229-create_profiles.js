@@ -28,7 +28,7 @@ module.exports = {
         profession: {
           type: Sequelize.STRING,
           required: true,
-          values: ['designer', 'developer']
+          values: ['designer', 'developer', '']
         },
         skill_level: {
           type: Sequelize.STRING,
