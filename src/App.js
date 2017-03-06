@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import NavigationBar from './components/common/NavigationBar'
+import NavigationBar from './components/partials/NavigationBar'
 
 class App extends Component {
   render() {

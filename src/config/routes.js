@@ -4,9 +4,9 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import configureStore from './reduxStore'
 
 import App from '../App'
-import Home from '../components/home'
-import Login from '../components/auth/login'
-import Signup from '../components/auth/signup'
+import Home from '../views/home'
+import Login from '../views/auth/login'
+import Signup from '../views/auth/signup'
 
 const store = configureStore()
 
