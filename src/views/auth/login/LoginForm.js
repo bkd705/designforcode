@@ -1,18 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { signup } from '../actions'
-import InputField from '../../form/InputField'
+import { Link } from 'react-router'
+import { login } from '../actions'
+import InputField from '../../../components/form/InputField'
 
-class SignupForm extends React.Component {
+class LoginForm extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
       username: '',
-      email: '',
       password: '',
-      password_confirm: '',
       errors: {}
     }
   }
@@ -25,12 +23,11 @@ class SignupForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-
-    this.props.dispatch(signup(this.state))
+    this.props.dispatch(login(this.state))
   }
 
   render() {
-    const { username, email, password, password_confirm, errors } = this.state
+    const { username, email, password, errors } = this.state
     return (
       <form onSubmit={this.onSubmit}>
         <InputField 
@@ -43,15 +40,6 @@ class SignupForm extends React.Component {
         />
 
         <InputField 
-          label="E-Mail"
-          name="email"
-          value={email}
-          placholder="E-Mail"
-          onChange={this.onChange}
-          error={errors.email}
-        />
-
-        <InputField 
           label="Password"
           name="password"
           value={password}
@@ -61,22 +49,12 @@ class SignupForm extends React.Component {
           error={errors.password}
         />
 
-        <InputField 
-          label="Confirm Password"
-          name="password_confirm"
-          value={password_confirm}
-          type="password"
-          placholder="Confirm Password"
-          onChange={this.onChange}
-          error={errors.password_confirm}
-        />
-
         <div className="control is-grouped">
           <p className="control">
-            <button className="button is-primary" type="submit">Sign Up</button>
+            <button className="button is-primary" type="submit">Login</button>
           </p>
           <p className="control">
-            <Link to="/"><button className="button is-link">Cancel</button></Link>
+            <Link to="/signup"><button className="button is-link">Need an account?</button></Link>
           </p>
         </div>
       </form>
@@ -84,4 +62,4 @@ class SignupForm extends React.Component {
   }
 }
 
-export default connect()(SignupForm)
+export default connect()(LoginForm)
