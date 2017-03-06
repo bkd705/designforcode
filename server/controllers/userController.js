@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { validateUser } from '../util/validations'
 import JRes from '../util/JResponse'
+import Helpers from '../util/Helpers'
 
 const users = db.users
 const profiles = db.profiles
@@ -30,24 +31,18 @@ export default class UserController {
       role: 'user'
     })
     .then(newUser => {
-      const userMin = {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email
-      }
-
       const token = jwt.sign(userMin, process.env.JWT_SECRET)
 
       profiles.create({
         user_id: newUser.id,
-        first_name: '',
-        last_name: '',
-        profession: '',
-        skill_level: '',
-        description: ''
+        first_name: '',  last_name: '',
+        profession: '', skill_level: '', description: ''
       })
 
-      return JRes.success('Successfully created new user!', { user: userMin, token: token })
+      return JRes.success('Successfully created new user!', {
+        user: Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email']),
+        token: token
+      })
     })
     .catch(err => {
       return JRes.failure(err)
@@ -105,9 +100,15 @@ export default class UserController {
           return 'Failed to fetch profile information'
       })
 
-      // Set profile and user information
-      result.data.user = result.data.user.dataValues
-      result.data.profile = profile
+      // Set and trasnform profile and user information
+      result.data.user = Helpers.transformObj(result.data.user.dataValues, [
+        'id', 'username', 'email', 'role', 'created_at'
+      ])
+
+      result.data.profile = Helpers.transformObj(profile, [
+        'user_id', 'first_name', 'last_name', 'profession',
+        'skill_level', 'description'
+      ])
     }
 
     this.body = result
