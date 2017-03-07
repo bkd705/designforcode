@@ -23,9 +23,10 @@ export default class AuthController {
         return JRes.failure('Password is incorrect.')
       }
 
+      const userMin = Helpers.transformObj(foundUser.dataValues, ['id', 'username', 'email'])
       const token = jwt.sign(userMin, process.env.JWT_SECRET)
-      return JRes.success('Successfully created new user!', {
-        user: Helpers.transformObj(user.dataValues, ['id', 'username', 'email']),
+      return JRes.success('Successfully logged in!', {
+        user: userMin,
         token: token
       })
     })

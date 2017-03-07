@@ -31,6 +31,8 @@ export default class UserController {
       role: 'user'
     })
     .then(newUser => {
+      console.log('newUser', newUser)
+      const userMin = Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email'])
       const token = jwt.sign(userMin, process.env.JWT_SECRET)
 
       profiles.create({
@@ -40,7 +42,7 @@ export default class UserController {
       })
 
       return JRes.success('Successfully created new user!', {
-        user: Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email']),
+        user: userMin,
         token: token
       })
     })
