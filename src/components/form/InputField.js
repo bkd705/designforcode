@@ -2,21 +2,21 @@ import React, { PropTypes as P } from 'react'
 
 const InputField = ({ label, name, value, type, placeholder, onChange, onBlur, error }) => {
   return (
-    <div className="input-field">
-      <label htmlFor={name} className="label">{label}</label>
-      <p className="control">
-        <input 
-          type={type} 
+    <div className='input-field'>
+      <label htmlFor={name} className='label'>{label}</label>
+      <p className='control'>
+        <input
+          type={type}
           name={name}
           value={value}
-          className="input" 
-          placeholder={placeholder} 
+          className='input'
+          placeholder={placeholder}
           onChange={onChange}
           onBlur={onBlur}
         />
       </p>
-      { error ? <span className="icon is-small"><i className="fa fa-warning"></i></span> : '' }
-      { error ? <span className="help is-danger">{error}</span> : '' }
+      { error ? <span className='icon is-small'><i className='fa fa-warning' /></span> : '' }
+      { error ? <span className='help is-danger'>{error}</span> : '' }
     </div>
   )
 }
