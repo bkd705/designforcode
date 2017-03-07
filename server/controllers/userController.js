@@ -66,7 +66,7 @@ export default class UserController {
    */
   static * findOne(next) {
     const userId = this.params.id
-
+    
     const result = yield users.findOne({
       id: userId
     })
