@@ -8,7 +8,7 @@ const statusHelper = (response) => {
 
 const api = {
   signup (data) {
-    return fetch('http://localhost:3000/user/create', {
+    return fetch('/user/create', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -22,7 +22,7 @@ const api = {
     .then(data => data)
   },
   login (data) {
-    return fetch('http://localhost:3000/auth/login', {
+    return fetch('/auth/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

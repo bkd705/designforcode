@@ -24,12 +24,12 @@ app.use(bodyParser())
 app.use(router.routes())
 app.use(router.allowedMethods())
 
-// Koa Default Middleware
-app.use(function * (next) {
-  // Allow CORS
-  this.set('Access-Control-Allow-Origin', '*')
-  this.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-})
+// // Koa Default Middleware
+// app.use(function * (next) {
+//   // Allow CORS
+//   this.set('Access-Control-Allow-Origin', '*')
+//   this.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+// })
 
 // Serve routes
 require('./routes/userRoutes')(router)
