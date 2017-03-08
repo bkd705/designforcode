@@ -7,9 +7,6 @@ import koaRouter from 'koa-router'
 import serve from 'koa-static'
 import sendFile from 'koa-sendfile'
 
-import userRoutes from './routes/userRoutes'
-import authRoutes from './routes/authRoutes'
-
 dotenv.config()
 
 // Instantiate koa and koa-router
@@ -23,13 +20,6 @@ app.use(serve(`${__dirname}/../public/`))
 app.use(bodyParser())
 app.use(router.routes())
 app.use(router.allowedMethods())
-
-// // Koa Default Middleware
-// app.use(function * (next) {
-//   // Allow CORS
-//   this.set('Access-Control-Allow-Origin', '*')
-//   this.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-// })
 
 // Serve routes
 require('./routes/userRoutes')(router)
