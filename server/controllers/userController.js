@@ -61,15 +61,120 @@ export default class UserController {
     this.body = result
   }
 
+  static * updateUser(next) {
+    const userId = this.params.id
+    const userInfo = this.request.body
+
+    // TODO: Check if userId matches authenticated user ID or authenticated user is an admin
+
+    // Get user
+    // TODO: Change this when user it bootstrapped to request
+    const result = yield users.update(userInfo, { where: { id: userId } })
+    .then(updated => {
+      if (updated.length > 0) {
+        return JRes.success('Successfully updated user!')
+      } else {
+        return JRes.failure('Failed to update user')
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) this.status = 400
+    this.body = result
+  }
+
+  static * updateProfile(next) {
+    const userId = this.params.id
+    const profileInfo = this.request.body
+
+    // TODO: Check if userId matches authenticated user ID or authenticated user is an admin
+
+    // Get user
+    // TODO: Change this when user it bootstrapped to request
+    const result = yield profiles.update(profileInfo, { where: { user_id: userId } })
+    .then(updated => {
+      if (updated.length > 0) {
+        return JRes.success('Successfully updated profile!')
+      } else {
+        return JRes.failure('Failed to update profile')
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) this.status = 400
+    this.body = result
+  }
+
+  static * updatePassword(next) {
+    const userId = this.params.id
+    const oldPassword = this.request.body.oldPassword
+    let newPassword = this.request.body.newPassword
+
+    if (!oldPassword || !newPassword) {
+      this.status = 400
+      return this.body = JRes.failure('Please provide your previous password and your new password')
+    }
+
+    // TODO: Check if userId matches authenticated user ID or authenticated user is an admin
+
+    // Get user
+    // TODO: Change this when user it bootstrapped to request
+    const user = yield users.findOne({
+      where: { id: userId }
+    })
+    .then(user => {
+      if (user == null) {
+        return JRes.failure('Unable to find user with provided ID')
+      } else {
+        return JRes.success('Successfully fetched user by ID', {
+          user
+        })
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!user.success) {
+      this.status = 400
+      return this.body = user
+    }
+
+    if (!bcrypt.compareSync(oldPassword, user.data.user.password)) {
+      this.status = 400
+      return this.body = JRes.failure('Password is incorrect.')
+    }
+
+    newPassword = bcrypt.hashSync(this.request.body.newPassword, 10)
+    const result = yield user.data.user.update({ password: newPassword })
+    .then(updated => {
+      if (updated.length !== null) {
+        return JRes.success('Successfully updated password!')
+      } else {
+        return JRes.failure('Failed to update password')
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) this.status = 400
+    this.body = result
+  }
+
   /**
    * Method for finding a user by ID
    * @param next - The next state to transition to
    */
   static * findOne(next) {
     const userId = this.params.id
-    
+
     const result = yield users.findOne({
-      id: userId
+      where: { id: userId }
     })
     .then(user => {
       if (user == null) {
@@ -115,7 +220,7 @@ export default class UserController {
     this.body = result
   }
 
-  static * checkExisiting(next) {
+  static * checkExisting(next) {
     const { field, value } = this.params
     const conditionalWhere = {}
     conditionalWhere[field] = value
