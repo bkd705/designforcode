@@ -2,6 +2,7 @@ import { types } from './actions'
 
 const initialState = {
   user: {
+    id: '',
     username: '',
     email: ''
   },

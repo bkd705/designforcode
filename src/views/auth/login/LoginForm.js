@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { login } from '../actions'
+import { validateLogin } from '../../../util/FormValidations'
 import InputField from '../../../components/form/InputField'
 
 class LoginForm extends React.Component {
@@ -21,13 +22,30 @@ class LoginForm extends React.Component {
     })
   }
 
+  isValid = () => {
+    const { isValid, errors } = validateLogin(this.state)
+
+    if(!isValid) {
+      this.setState({
+        errors: errors
+      })
+      return false
+    }
+
+    return true
+  }
+
   onSubmit = (e) => {
     e.preventDefault()
-    this.props.dispatch(login(this.state))
+
+    if(this.isValid()) {
+      this.props.dispatch(login(this.state))
+      this.context.router.push('/')
+    }
   }
 
   render() {
-    const { username, email, password, errors } = this.state
+    const { username, password, errors } = this.state
     return (
       <form onSubmit={this.onSubmit}>
         <InputField
@@ -60,6 +78,10 @@ class LoginForm extends React.Component {
       </form>
     )
   }
+}
+
+LoginForm.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }
 
 export default connect()(LoginForm)

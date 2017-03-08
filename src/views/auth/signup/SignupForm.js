@@ -1,8 +1,9 @@
 import React from 'react'
-import { isEmpty, omit } from 'lodash'
+import { omit } from 'lodash'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { signup } from '../actions'
+import { validateSignup } from '../../../util/FormValidations'
 import InputField from '../../../components/form/InputField'
 
 class SignupForm extends React.Component {
@@ -25,11 +26,25 @@ class SignupForm extends React.Component {
     })
   }
 
+  isValid = () => {
+    const { isValid, errors } = validateSignup(this.state)
+
+    if(!isValid) {
+      this.setState({
+        errors: errors
+      })
+      return false
+    }
+
+    return true
+  }
+
   onSubmit = (e) => {
     e.preventDefault()
 
-    if(isEmpty(this.state.errors)) {
+    if(this.isValid()) {
       this.props.dispatch(signup(this.state))
+      this.context.router.push('/')
     }
   }
 
@@ -134,7 +149,7 @@ class SignupForm extends React.Component {
 
         <div className="control is-grouped">
           <p className="control">
-            <button className="button is-primary" type="submit" disabled={!isEmpty(errors)}>Sign Up</button>
+            <button className="button is-primary" type="submit">Sign Up</button>
           </p>
           <p className="control">
             <Link to="/"><button className="button is-link">Cancel</button></Link>
@@ -143,6 +158,10 @@ class SignupForm extends React.Component {
       </form>
     )
   }
+}
+
+SignupForm.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }
 
 export default connect()(SignupForm)

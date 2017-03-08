@@ -8,7 +8,7 @@ import Home from '../views/home'
 import Login from '../views/auth/login'
 import Signup from '../views/auth/signup'
 
-const store = configureStore()
+export const store = configureStore()
 
 const routes = (
   <Provider store={store}>
