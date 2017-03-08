@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "bcrypt": "^1.0.2",
+    "classnames": "^2.2.5",
     "dotenv": "^4.0.0",
     "jsonwebtoken": "^7.3.0",
     "jwt-decode": "^2.1.0",
@@ -19,7 +20,6 @@
     "koa-router": "^5.4.0",
     "koa-sendfile": "^2.0.0",
     "koa-static": "^2.1.0",
-    "mongoose": "^4.8.5",
     "pg": "^6.1.2",
     "pg-hstore": "^2.3.2",
     "react": "^15.4.2",
@@ -30,7 +30,6 @@
     "redux-saga": "^0.14.3",
     "sequelize": "^3.30.2",
     "sequelize-cli": "^2.5.1",
-    "unfetch": "^2.1.2",
     "validator": "^7.0.0"
   },
   "scripts": {
@@ -40,5 +39,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "proxy": "http://localhost:3000"
 }

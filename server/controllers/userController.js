@@ -20,7 +20,8 @@ export default class UserController {
 
     if (!isValid) {
       this.status = 400
-      return this.body = JRes.failure('The user submitted is not valid')
+      this.body = JRes.failure('The user submitted is not valid')
+      return
     }
 
     const hashed_password = bcrypt.hashSync(user.password, 10)
@@ -31,6 +32,7 @@ export default class UserController {
       role: 'user'
     })
     .then(newUser => {
+      const userMin = Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email'])
       const token = jwt.sign(userMin, process.env.JWT_SECRET)
 
       profiles.create({
@@ -40,7 +42,7 @@ export default class UserController {
       })
 
       return JRes.success('Successfully created new user!', {
-        user: Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email']),
+        user: userMin,
         token: token
       })
     })
@@ -60,6 +62,108 @@ export default class UserController {
     this.body = result
   }
 
+  static * updateUser(next) {
+    const user = this.state.user
+    const userId = this.params.id
+    const userInfo = this.request.body
+
+    if (user.id !== userId && user.role !== 'admin') {
+      this.status = 400
+      this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
+
+    const result = yield user.update(userInfo)
+    .then(updated => {
+      if (updated) {
+        return JRes.success('Successfully updated user!')
+      } else {
+        return JRes.failure('Failed to update user')
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) this.status = 400
+    this.body = result
+  }
+
+  static * updateProfile(next) {
+    const user = this.state.user
+    const userId = this.params.id
+    const profileInfo = this.request.body
+
+    if (user.id !== userId && user.role !== 'admin') {
+      this.status = 400
+      this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
+
+    const profile = yield user.getProfile()
+    const result = yield profile.update(profileInfo)
+    .then(updated => {
+      if (updated) {
+        return JRes.success('Successfully updated profile!')
+      } else {
+        return JRes.failure('Failed to update profile')
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) this.status = 400
+    this.body = result
+  }
+
+  static * updatePassword(next) {
+    const user = this.state.user
+    const userId = this.params.id
+    const oldPassword = this.request.body.oldPassword
+    let newPassword = this.request.body.newPassword
+
+    // Check permissions
+    if (user.id !== userId && user.role !== 'admin') {
+      this.status = 400
+      this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
+
+    // Check if passwords are provided
+    if (!oldPassword || !newPassword) {
+      this.status = 400
+      this.body = JRes.failure('Please provide your previous password and your new password')
+      return
+    }
+
+    // Compare password to current password
+    if (!bcrypt.compareSync(oldPassword, user.password)) {
+      this.status = 400
+      this.body = JRes.failure('Previous password is incorrect')
+      return
+    }
+
+    // Hash new password
+    newPassword = bcrypt.hashSync(newPassword, 10)
+
+    // Set new password
+    const result = yield user.update({ password: newPassword })
+    .then(user => {
+      if (user) {
+        return JRes.success('Successfully updated password!')
+      } else {
+        return JRes.failure('Failed to update password')
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) this.status = 400
+    this.body = result
+  }
+
   /**
    * Method for finding a user by ID
    * @param next - The next state to transition to
@@ -68,7 +172,7 @@ export default class UserController {
     const userId = this.params.id
 
     const result = yield users.findOne({
-      id: userId
+      where: { id: userId }
     })
     .then(user => {
       if (user == null) {
@@ -109,6 +213,37 @@ export default class UserController {
         'user_id', 'first_name', 'last_name', 'profession',
         'skill_level', 'description'
       ])
+    }
+
+    this.body = result
+  }
+
+  static * checkExisting(next) {
+    const { field, value } = this.params
+    const conditionalWhere = {}
+    conditionalWhere[field] = value
+
+    const result = yield users.findOne({
+      where: conditionalWhere
+    })
+    .then(foundUser => {
+      if(!foundUser) {
+        return JRes.success('Available!')
+      }
+
+      return JRes.failure('Already taken!')
+    })
+    .catch(err => {
+      return JRes.failure('An unexpected error occured', err)
+    })
+
+    if (!result.success) {
+      this.status = 400
+
+      // Handle/Parser sequelize error
+      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+        result.error = result.error.errors[0].message
+      }
     }
 
     this.body = result

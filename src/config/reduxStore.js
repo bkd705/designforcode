@@ -4,7 +4,7 @@ import reducer from './rootReducer'
 import saga from './rootSaga'
 
 const configureStore = () => {
-  const sagaMiddleware = createSagaMiddleware(); 
+  const sagaMiddleware = createSagaMiddleware()
   return {
     ...createStore(reducer,
       compose(
@@ -13,7 +13,7 @@ const configureStore = () => {
       )
     ),
     runSaga: sagaMiddleware.run(saga)
-  };
-};
+  }
+}
 
 export default configureStore

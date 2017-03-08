@@ -1,7 +1,3 @@
-import unfetch from 'unfetch'
-
-if(!window.fetch) { const fetch = unfetch }
-
 const statusHelper = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return Promise.resolve(response)
@@ -11,8 +7,8 @@ const statusHelper = (response) => {
 }
 
 const api = {
-  signup(data) {
-    return fetch('http://localhost:3000/user/create', {
+  signup (data) {
+    return fetch('/user/create', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -25,8 +21,8 @@ const api = {
     .catch(err => err)
     .then(data => data)
   },
-  login(data) {
-    return fetch('http://localhost:3000/auth/login', {
+  login (data) {
+    return fetch('/auth/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

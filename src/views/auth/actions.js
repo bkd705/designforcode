@@ -8,6 +8,8 @@ const AUTH_SIGNUP_FAILURE = 'AUTH_SIGNUP_FAILURE'
 
 const AUTH_LOGOUT = 'AUTH_LOGOUT'
 
+const AUTH_SET_USER = 'AUTH_SET_USER'
+
 export const types = {
   AUTH_LOGIN,
   AUTH_LOGIN_SUCCESS,
@@ -15,7 +17,8 @@ export const types = {
   AUTH_SIGNUP,
   AUTH_SIGNUP_SUCCESS,
   AUTH_SIGNUP_FAILURE,
-  AUTH_LOGOUT
+  AUTH_LOGOUT,
+  AUTH_SET_USER
 }
 
 export const login = (user) => {
