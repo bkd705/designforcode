@@ -30,7 +30,7 @@ class LoginForm extends React.Component {
     const { username, email, password, errors } = this.state
     return (
       <form onSubmit={this.onSubmit}>
-        <InputField 
+        <InputField
           label="Username"
           name="username"
           value={username}
@@ -39,7 +39,7 @@ class LoginForm extends React.Component {
           error={errors.username}
         />
 
-        <InputField 
+        <InputField
           label="Password"
           name="password"
           value={password}

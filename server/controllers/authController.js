@@ -39,7 +39,7 @@ export default class AuthController {
 
       // Handle/Parser sequelize error
       if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = result.error.errors[0].message
+        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
       }
     }
 
