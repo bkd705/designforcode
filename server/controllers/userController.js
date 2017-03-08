@@ -20,7 +20,8 @@ export default class UserController {
 
     if (!isValid) {
       this.status = 400
-      return this.body = JRes.failure('The user submitted is not valid')
+      this.body = JRes.failure('The user submitted is not valid')
+      return
     }
 
     const hashed_password = bcrypt.hashSync(user.password, 10)
@@ -62,16 +63,19 @@ export default class UserController {
   }
 
   static * updateUser(next) {
+    const user = this.state.user
     const userId = this.params.id
     const userInfo = this.request.body
 
-    // TODO: Check if userId matches authenticated user ID or authenticated user is an admin
+    if (user.id !== userId && user.role !== 'admin') {
+      this.status = 400
+      this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
 
-    // Get user
-    // TODO: Change this when user it bootstrapped to request
-    const result = yield users.update(userInfo, { where: { id: userId } })
+    const result = yield user.update(userInfo)
     .then(updated => {
-      if (updated.length > 0) {
+      if (updated) {
         return JRes.success('Successfully updated user!')
       } else {
         return JRes.failure('Failed to update user')
@@ -86,16 +90,20 @@ export default class UserController {
   }
 
   static * updateProfile(next) {
+    const user = this.state.user
     const userId = this.params.id
     const profileInfo = this.request.body
 
-    // TODO: Check if userId matches authenticated user ID or authenticated user is an admin
+    if (user.id !== userId && user.role !== 'admin') {
+      this.status = 400
+      this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
 
-    // Get user
-    // TODO: Change this when user it bootstrapped to request
-    const result = yield profiles.update(profileInfo, { where: { user_id: userId } })
+    const profile = yield user.getProfile()
+    const result = yield profile.update(profileInfo)
     .then(updated => {
-      if (updated.length > 0) {
+      if (updated) {
         return JRes.success('Successfully updated profile!')
       } else {
         return JRes.failure('Failed to update profile')
@@ -110,49 +118,39 @@ export default class UserController {
   }
 
   static * updatePassword(next) {
+    const user = this.state.user
     const userId = this.params.id
     const oldPassword = this.request.body.oldPassword
     let newPassword = this.request.body.newPassword
 
+    // Check permissions
+    if (user.id !== userId && user.role !== 'admin') {
+      this.status = 400
+      this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
+
+    // Check if passwords are provided
     if (!oldPassword || !newPassword) {
       this.status = 400
-      return this.body = JRes.failure('Please provide your previous password and your new password')
+      this.body = JRes.failure('Please provide your previous password and your new password')
+      return
     }
 
-    // TODO: Check if userId matches authenticated user ID or authenticated user is an admin
+    // Compare password to current password
+    if (!bcrypt.compareSync(oldPassword, user.password)) {
+      this.status = 400
+      this.body = JRes.failure('Previous password is incorrect')
+      return
+    }
 
-    // Get user
-    // TODO: Change this when user it bootstrapped to request
-    const user = yield users.findOne({
-      where: { id: userId }
-    })
+    // Hash new password
+    newPassword = bcrypt.hashSync(newPassword, 10)
+
+    // Set new password
+    const result = yield user.update({ password: newPassword })
     .then(user => {
-      if (user == null) {
-        return JRes.failure('Unable to find user with provided ID')
-      } else {
-        return JRes.success('Successfully fetched user by ID', {
-          user
-        })
-      }
-    })
-    .catch(err => {
-      return JRes.failure(err)
-    })
-
-    if (!user.success) {
-      this.status = 400
-      return this.body = user
-    }
-
-    if (!bcrypt.compareSync(oldPassword, user.data.user.password)) {
-      this.status = 400
-      return this.body = JRes.failure('Password is incorrect.')
-    }
-
-    newPassword = bcrypt.hashSync(this.request.body.newPassword, 10)
-    const result = yield user.data.user.update({ password: newPassword })
-    .then(updated => {
-      if (updated.length !== null) {
+      if (user) {
         return JRes.success('Successfully updated password!')
       } else {
         return JRes.failure('Failed to update password')
