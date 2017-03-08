@@ -114,4 +114,35 @@ export default class UserController {
 
     this.body = result
   }
+
+  static * checkExisiting(next) {
+    const { field, value } = this.params
+    const conditionalWhere = {}
+    conditionalWhere[field] = value
+
+    const result = yield users.findOne({
+      where: conditionalWhere
+    })
+    .then(foundUser => {
+      if(!foundUser) {
+        return JRes.success('Available!')
+      }
+
+      return JRes.failure('Already taken!')
+    })
+    .catch(err => {
+      return JRes.failure('An unexpected error occured', err)
+    })
+
+    if (!result.success) {
+      this.status = 400
+
+      // Handle/Parser sequelize error
+      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+        result.error = result.error.errors[0].message
+      }
+    }
+
+    this.body = result
+  }
 }

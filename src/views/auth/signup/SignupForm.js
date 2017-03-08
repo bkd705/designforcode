@@ -1,4 +1,5 @@
 import React from 'react'
+import { isEmpty, omit } from 'lodash'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { signup } from '../actions'
@@ -13,7 +14,8 @@ class SignupForm extends React.Component {
       email: '',
       password: '',
       password_confirm: '',
-      errors: {}
+      errors: {},
+      helpers: {}
     }
   }
 
@@ -26,11 +28,65 @@ class SignupForm extends React.Component {
   onSubmit = (e) => {
     e.preventDefault()
 
-    this.props.dispatch(signup(this.state))
+    if(isEmpty(this.state.errors)) {
+      this.props.dispatch(signup(this.state))
+    }
+  }
+
+  checkPasswordMatch = () => {
+    if(this.state.password !== this.state.password_confirm) {
+      this.setState({
+        errors: {
+          ...this.state.errors,
+          password_confirm: 'Passwords do not match.'
+        }
+      })
+    } else {
+      const errorsCopy = omit(this.state.errors, 'password_confirm')
+      this.setState({
+        errors: errorsCopy
+      })
+    }
+  }
+
+  checkExisting = (e) => {
+    const field = e.target.name
+    const value = this.state[field]
+
+    if(value.length > 0) {
+      fetch(`/user/${field}/${value}`)
+      .then(res => res.json())
+      .then(res => {
+        if(!res.success) {
+          const newErrors = this.state.errors
+          newErrors[field] = res.error
+          this.setState({
+            errors: newErrors
+          })
+        } else {
+          const errorsCopy = omit(this.state.errors, field)
+          const newHelpers = this.state.helpers
+          newHelpers[field] = `${field} available!`
+          this.setState({
+            errors: errorsCopy,
+            helpers: newHelpers
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    } else if (value.length === 0) {
+      const errorsCopy = omit(this.state.errors, field)
+
+      this.setState({
+        errors: errorsCopy
+      })
+    }
   }
 
   render() {
-    const { username, email, password, password_confirm, errors } = this.state
+    const { username, email, password, password_confirm, errors, helpers } = this.state
     return (
       <form onSubmit={this.onSubmit}>
         <InputField 
@@ -40,6 +96,8 @@ class SignupForm extends React.Component {
           placholder="Username"
           onChange={this.onChange}
           error={errors.username}
+          helper={helpers.username}
+          onBlur={this.checkExisting}
         />
 
         <InputField 
@@ -49,6 +107,8 @@ class SignupForm extends React.Component {
           placholder="E-Mail"
           onChange={this.onChange}
           error={errors.email}
+          helper={helpers.email}
+          onBlur={this.checkExisting}
         />
 
         <InputField 
@@ -69,11 +129,12 @@ class SignupForm extends React.Component {
           placholder="Confirm Password"
           onChange={this.onChange}
           error={errors.password_confirm}
+          onBlur={this.checkPasswordMatch}
         />
 
         <div className="control is-grouped">
           <p className="control">
-            <button className="button is-primary" type="submit">Sign Up</button>
+            <button className="button is-primary" type="submit" disabled={!isEmpty(errors)}>Sign Up</button>
           </p>
           <p className="control">
             <Link to="/"><button className="button is-link">Cancel</button></Link>
