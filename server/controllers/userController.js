@@ -33,7 +33,7 @@ export default class UserController {
     })
     .then(newUser => {
       const userMin = Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email'])
-      const token = jwt.sign(userMin, process.env.JWT_SECRET)
+      const token = jwt.sign(userMin, process.env.JWT_SECRET, { expiresIn: '14 days' })
 
       profiles.create({
         user_id: newUser.id,
