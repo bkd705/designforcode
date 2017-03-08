@@ -89,7 +89,7 @@ class SignupForm extends React.Component {
     const { username, email, password, password_confirm, errors, helpers } = this.state
     return (
       <form onSubmit={this.onSubmit}>
-        <InputField 
+        <InputField
           label="Username"
           name="username"
           value={username}
@@ -100,7 +100,7 @@ class SignupForm extends React.Component {
           onBlur={this.checkExisting}
         />
 
-        <InputField 
+        <InputField
           label="E-Mail"
           name="email"
           value={email}
@@ -111,7 +111,7 @@ class SignupForm extends React.Component {
           onBlur={this.checkExisting}
         />
 
-        <InputField 
+        <InputField
           label="Password"
           name="password"
           value={password}
@@ -121,7 +121,7 @@ class SignupForm extends React.Component {
           error={errors.password}
         />
 
-        <InputField 
+        <InputField
           label="Confirm Password"
           name="password_confirm"
           value={password_confirm}
