@@ -15,15 +15,15 @@ export default (sequelize, DataTypes) => {
     },
     title: {
       type: DataTypes.STRING,
-      required: true
+      allowNull: false
     },
     description: {
       type: DataTypes.TEXT,
-      required: true
+      allowNull: false
     },
     type: {
       type: DataTypes.STRING,
-      required: true,
+      allowNull: false,
       values: ['code', 'design']
     },
     created_at: {

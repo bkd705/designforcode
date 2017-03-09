@@ -23,7 +23,7 @@ export default (sequelize, DataTypes) => {
     },
     body: {
       type: DataTypes.TEXT,
-      required: true
+      allowNull: false
     },
     created_at: {
       type: DataTypes.DATE,

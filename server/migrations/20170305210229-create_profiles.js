@@ -11,6 +11,7 @@ module.exports = {
         },
         user_id: {
           type: Sequelize.UUID,
+          onDelete: 'CASCADE',
           allowNull: false,
           references: {
             model: 'users',
@@ -19,24 +20,24 @@ module.exports = {
         },
         first_name: {
           type: Sequelize.STRING,
-          required: true
+          allowNull: false
         },
         last_name: {
           type: Sequelize.STRING,
-          required: true
+          allowNull: false
         },
         profession: {
           type: Sequelize.STRING,
-          required: true,
-          values: ['designer', 'developer', '']
+          allowNull: false,
+          values: ['designer', 'developer']
         },
         skill_level: {
           type: Sequelize.STRING,
-          required: true
+          allowNull: false
         },
         description: {
           type: Sequelize.TEXT,
-          required: true
+          allowNull: false
         },
         created_at: {
           type: Sequelize.DATE,

@@ -27,7 +27,7 @@ module.exports = {
         },
         body: {
           type: Sequelize.TEXT,
-          required: true
+          allowNull: false
         },
         created_at: {
           type: Sequelize.DATE,
