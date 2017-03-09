@@ -7,6 +7,7 @@ import Helpers from '../util/Helpers'
 
 const users = db.users
 const profiles = db.profiles
+const posts = db.posts
 
 export default class UserController {
 
@@ -33,7 +34,7 @@ export default class UserController {
     })
     .then(newUser => {
       const userMin = Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email'])
-      const token = jwt.sign(userMin, process.env.JWT_SECRET)
+      const token = jwt.sign(userMin, process.env.JWT_SECRET, { expiresIn: '14 days' })
 
       profiles.create({
         user_id: newUser.id,
@@ -55,7 +56,7 @@ export default class UserController {
 
       // Handle/Parser sequelize error
       if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = result.error.errors[0].message
+        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
       }
     }
 
@@ -192,7 +193,7 @@ export default class UserController {
 
       // Handle/Parser sequelize error
       if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = result.error.errors[0].message
+        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
       }
     } else {
       // Fetch profile information
@@ -213,6 +214,36 @@ export default class UserController {
         'user_id', 'first_name', 'last_name', 'profession',
         'skill_level', 'description'
       ])
+    }
+
+    this.body = result
+  }
+
+  static * findPosts(next) {
+    const userId = this.params.id
+    const result = yield posts.findAll({
+      where: { creator_id: userId }
+    })
+    .then(posts => {
+      if (!posts) {
+        return JRes.failure('Unable to find posts by user')
+      } else {
+        return JRes.success('Successfully fetched posts by user', {
+          posts
+        })
+      }
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) {
+      this.status = 400
+
+      // Handle/Parser sequelize error
+      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
+      }
     }
 
     this.body = result
@@ -242,7 +273,7 @@ export default class UserController {
 
       // Handle/Parser sequelize error
       if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = result.error.errors[0].message
+        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
       }
     }
 

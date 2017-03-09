@@ -1,28 +1,29 @@
 export default (sequelize, DataTypes) => {
-  const User = sequelize.define('users', {
+  const Comment = sequelize.define('comments', {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
     },
-    username: {
-      type: DataTypes.STRING,
+    post_id: {
+      type: DataTypes.UUID,
       allowNull: false,
-      unique: true
+      references: {
+        model: 'posts',
+        key: 'id'
+      }
     },
-    email: {
-      type: DataTypes.STRING,
+    user_id: {
+      type: DataTypes.UUID,
       allowNull: false,
-      unique: true
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
-    password: {
-      type: DataTypes.STRING,
+    body: {
+      type: DataTypes.TEXT,
       allowNull: false
-    },
-    role: {
-      type: DataTypes.STRING,
-      defaultValue: 'user',
-      values: ['user', 'admin', 'disabled']
     },
     created_at: {
       type: DataTypes.DATE,
@@ -35,5 +36,5 @@ export default (sequelize, DataTypes) => {
     underscored: true
   })
 
-  return User
+  return Comment
 }

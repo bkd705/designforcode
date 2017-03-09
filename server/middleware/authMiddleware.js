@@ -25,14 +25,14 @@ export default function * (next) {
   } catch (ex) {
     let error = 'An unhandled error has ocurred'
 
-    if (err.name === 'TokenExpiredError') {
+    if (ex.name === 'TokenExpiredError') {
       error = 'Token provided has expired'
-    } else if (e.name === 'JsonWebTokenError' && e.message === 'invalid signature') {
+    } else if (ex.name === 'JsonWebTokenError' && ex.message === 'invalid signature') {
       error = 'Invalid token'
     }
 
     this.status = 400
-    this.body = JRes.failure(error, err)
+    this.body = JRes.failure(error, ex)
     return
   }
 

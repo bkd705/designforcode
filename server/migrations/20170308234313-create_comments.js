@@ -3,13 +3,21 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface
-      .createTable('posts', {
+      .createTable('comments', {
         id: {
           type: Sequelize.UUID,
           primaryKey: true,
           defaultValue: Sequelize.UUIDV4
         },
-        creator_id: {
+        post_id: {
+          type: Sequelize.UUID,
+          allowNull: false,
+          references: {
+            model: 'posts',
+            key: 'id'
+          }
+        },
+        user_id: {
           type: Sequelize.UUID,
           allowNull: false,
           references: {
@@ -17,18 +25,9 @@ module.exports = {
             key: 'id'
           }
         },
-        title: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        description: {
+        body: {
           type: Sequelize.TEXT,
           allowNull: false
-        },
-        type: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          values: ['code', 'design']
         },
         created_at: {
           type: Sequelize.DATE,
@@ -40,6 +39,6 @@ module.exports = {
   },
 
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('posts')
+    return queryInterface.dropTable('comments')
   }
 }

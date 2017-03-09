@@ -10,7 +10,6 @@ export default class AuthController {
 
   static * login(next) {
     const user = this.request.body
-
     const result = yield users.findOne({
       where: { username: user.username }
     })
@@ -24,7 +23,7 @@ export default class AuthController {
       }
 
       const userMin = Helpers.transformObj(foundUser.dataValues, ['id', 'username', 'email'])
-      const token = jwt.sign(userMin, process.env.JWT_SECRET)
+      const token = jwt.sign(userMin, process.env.JWT_SECRET, { expiresIn: '14 days' })
       return JRes.success('Successfully logged in!', {
         user: userMin,
         token: token
