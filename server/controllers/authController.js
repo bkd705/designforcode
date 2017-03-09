@@ -10,7 +10,6 @@ export default class AuthController {
 
   static * login(next) {
     const user = this.request.body
-
     const result = yield users.findOne({
       where: { username: user.username }
     })

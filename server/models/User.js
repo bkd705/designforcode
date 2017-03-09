@@ -7,23 +7,29 @@ export default (sequelize, DataTypes) => {
     },
     username: {
       type: DataTypes.STRING,
-      required: true,
+      allowNull: false,
       unique: true
     },
     email: {
       type: DataTypes.STRING,
-      required: true,
+      allowNull: false,
       unique: true
     },
     password: {
       type: DataTypes.STRING,
-      required: true
+      allowNull: false
     },
     role: {
       type: DataTypes.STRING,
       defaultValue: 'user',
       values: ['user', 'admin', 'disabled']
-    }
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updated_at: DataTypes.DATE,
+    deleted_at: DataTypes.DATE
   }, {
     paranoid: true,
     underscored: true

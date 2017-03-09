@@ -16,24 +16,24 @@ export default (sequelize, DataTypes) => {
     },
     first_name: {
       type: DataTypes.STRING,
-      required: true
+      allowNull: false
     },
     last_name: {
       type: DataTypes.STRING,
-      required: true
+      allowNull: false
     },
     profession: {
       type: DataTypes.STRING,
-      required: true,
+      allowNull: false,
       values: ['designer', 'developer']
     },
     skill_level: {
       type: DataTypes.STRING,
-      required: true
+      allowNull: false
     },
     description: {
       type: DataTypes.TEXT,
-      required: true
+      allowNull: false
     },
     created_at: {
       type: DataTypes.DATE,

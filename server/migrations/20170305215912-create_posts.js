@@ -19,15 +19,15 @@ module.exports = {
         },
         title: {
           type: Sequelize.STRING,
-          required: true
+          allowNull: false
         },
         description: {
           type: Sequelize.TEXT,
-          required: true
+          allowNull: false
         },
         type: {
           type: Sequelize.STRING,
-          required: true,
+          allowNull: false,
           values: ['code', 'design']
         },
         created_at: {

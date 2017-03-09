@@ -24,6 +24,8 @@ app.use(router.allowedMethods())
 // Serve routes
 require('./routes/userRoutes')(router)
 require('./routes/authRoutes')(router)
+require('./routes/commentRoutes')(router)
+require('./routes/postRoutes')(router)
 
 // Serve front-end route
 router.get('*', function * (next) {

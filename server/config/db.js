@@ -38,18 +38,18 @@ db.comments = comments(sequelize, Sequelize)
 
 // User
 db.users.hasOne(db.profiles, { as: 'Profile' })
-db.users.hasMany(db.posts, { as: 'Posts' })
+db.users.hasMany(db.posts, { as: 'Posts', foreignKey: 'creator_id' })
 db.users.hasMany(db.comments, { as: 'Comments' })
 
 // Profile
-db.profiles.belongsTo(db.users, { as: 'User', foreignKey: 'user_id' })
+db.profiles.belongsTo(db.users, { as: 'User' })
 
 // Comment
-db.comments.hasOne(db.users, { as: 'Commenter', foreignKey: 'user_id' })
-db.comments.hasOne(db.posts, { as: 'Post', foreignKey: 'post_id' })
+db.comments.belongsTo(db.users, { as: 'Commenter', foreignKey: 'user_id' })
+db.comments.belongsTo(db.posts, { as: 'Post' })
 
 // Post
-db.posts.belongsTo(db.users, { as: 'Creator', foreignKey: 'creator_id' })
-db.posts.hasMany(db.comments, { as: 'Comments'})
+db.posts.belongsTo(db.users, { as: 'Creator' })
+db.posts.hasMany(db.comments, { as: 'Comments' })
 
 export default db
