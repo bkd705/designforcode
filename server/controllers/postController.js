@@ -18,7 +18,44 @@ export default class PostController {
 
     const result = yield posts.create(post)
     .then(newPost => {
-      return JRes.success('Successfully created post!')
+      return JRes.success('Successfully created post!', {
+        post: Helpers.transformObj(newPost.dataValues, [
+          'id', 'title', 'description', 'type', 'creator_id', 'created_at'
+        ])
+      })
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) {
+      this.status = 400
+
+      // Handle/Parser sequelize error
+      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
+      }
+    }
+
+    this.body = result
+  }
+
+  static * findOne(next) {
+    const postId = this.params.id
+
+    const result = yield posts.findOne({
+      where: { id: postId }
+    })
+    .then(post => {
+      if (!post) {
+        return JRes.failure('Unable to find post with provided ID')
+      } else {
+        return JRes.success('Successfully fetched post by ID', {
+          post: Helpers.transformObj(post.dataValues, [
+            'id', 'title', 'description', 'type', 'creator_id', 'created_at'
+          ])
+        })
+      }
     })
     .catch(err => {
       return JRes.failure(err)
@@ -42,10 +79,9 @@ export default class PostController {
     const postInfo = this.request.body
 
     const userPosts = yield user.getPosts()
-    console.log(userPosts)
 
     let post = null
-   for (p in userPosts) {
+    for (let p of userPosts) {
       if (p.id == postId) {
         post = p
         break;
@@ -100,10 +136,9 @@ export default class PostController {
     const postId = this.params.id
 
     const userPosts = yield user.getPosts()
-    console.log(userPosts)
 
     let post = null
-    for (p in userPosts) {
+    for (let p of userPosts) {
       if (p.id == postId) {
         post = p
         break;
@@ -116,7 +151,7 @@ export default class PostController {
       return
     }
 
-    const result = yield post.delete()
+    const result = yield post.destroy()
     .then(deleted => {
       if (deleted) {
         return JRes.success('Successfully deleted post!')

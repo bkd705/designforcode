@@ -18,7 +18,44 @@ export default class CommentController {
 
     const result = yield comments.create(comment)
     .then(newComment => {
-      return JRes.success('Successfully created comment!')
+      return JRes.success('Successfully created comment!', {
+        comment: Helpers.transformObj(newComment.dataValues, [
+          'post_id', 'user_id', 'body', 'created_at'
+        ])
+      })
+    })
+    .catch(err => {
+      return JRes.failure(err)
+    })
+
+    if (!result.success) {
+      this.status = 400
+
+      // Handle/Parser sequelize error
+      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
+        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
+      }
+    }
+
+    this.body = result
+  }
+
+  static * findOne(next) {
+    const commentId = this.params.id
+
+    const result = yield comments.findOne({
+      where: { id: commentId }
+    })
+    .then(comment => {
+      if (!comment) {
+        return JRes.failure('Unable to find comment with provided ID')
+      } else {
+        return JRes.success('Successfully fetched comment by ID', {
+          comment: Helpers.transformObj(comment.dataValues, [
+            'post_id', 'user_id', 'body', 'created_at'
+          ])
+        })
+      }
     })
     .catch(err => {
       return JRes.failure(err)
@@ -42,10 +79,9 @@ export default class CommentController {
     const commentInfo = this.request.body
 
     const userComments = yield user.getComments()
-    console.log(userComments)
 
     let comment = null
-    for (com in userComments) {
+    for (let com of userComments) {
       if (com.id == commentId) {
         comment = com
         break
@@ -79,10 +115,9 @@ export default class CommentController {
     const commentId = this.params.id
 
     const userComments = yield user.getComments()
-    console.log(userComments)
 
     let comment = null
-    for (com in userComments) {
+    for (let com of userComments) {
       if (com.id == commentId) {
         comment = com
         break;
@@ -95,7 +130,7 @@ export default class CommentController {
       return
     }
 
-    const result = yield comment.delete()
+    const result = yield comment.destroy()
     .then(deleted => {
       if (deleted) {
         return JRes.success('Successfully deleted comment!')
