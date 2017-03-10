@@ -52,7 +52,7 @@ export default class UserController {
       this.status = 400
     }
 
-    this.body = JRes.success(result)
+    this.body = result
   }
 
   /**

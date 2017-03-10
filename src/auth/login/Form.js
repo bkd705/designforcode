@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { login } from '../actions'
 import { validateLogin } from '../../util/FormValidations'
+import TransformObj from '../../util/TransformObj'
 import InputField from '../../form/InputField'
 
 class LoginForm extends React.Component {
@@ -39,7 +40,8 @@ class LoginForm extends React.Component {
     e.preventDefault()
 
     if(this.isValid()) {
-      this.props.dispatch(login(this.state))
+      const user = TransformObj(this.state, ['username', 'password'])
+      this.props.dispatch(login(user))
       this.context.router.push('/')
     }
   }

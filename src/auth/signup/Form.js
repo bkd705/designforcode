@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { signup } from '../actions'
 import { validateSignup } from '../../util/FormValidations'
+import TransformObj from '../../util/TransformObj'
 import InputField from '../../form/InputField'
 
 class SignupForm extends React.Component {
@@ -43,7 +44,8 @@ class SignupForm extends React.Component {
     e.preventDefault()
 
     if(this.isValid()) {
-      this.props.dispatch(signup(this.state))
+      const user = TransformObj(this.state, ['username', 'email', 'password'])
+      this.props.dispatch(signup(user))
       this.context.router.push('/')
     }
   }
