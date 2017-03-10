@@ -1,6 +1,6 @@
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
-import Model from '../config/db'
+import Model from '../config/Database'
 
 export default class PostController {
 
