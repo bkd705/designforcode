@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken'
-import db from '../config/db'
 import JRes from '../util/JResponse'
-
-const users = db.users
+import Model from '../config/db'
 
 export default function * (next) {
   // Verify the authorization is present
@@ -37,17 +35,17 @@ export default function * (next) {
   }
 
   // Find user model by ID
-  const result = yield users.findOne({
-    where: { id: payload.id }
-  })
+  const result = yield Model.User
+  .query({ where: { id: payload.id } })
+  .fetch()
   .then(user => {
     if (!user) {
       return JRes.failure('Failed to find user')
     } else {
-      return JRes.success('Successfully authenticated', user)
+      return JRes.success('Successfully authenticated', { user })
     }
   })
-  .catch(err => {
+  .catch(error => {
     return JRes.failure('Failed to find user', err)
   })
 
@@ -59,6 +57,6 @@ export default function * (next) {
   }
 
   // If no errors occured, set user and go to next state (route)
-  this.state.user = result.data
+  this.state.user = result.data.user
   yield next
 }

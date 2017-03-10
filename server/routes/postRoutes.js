@@ -6,7 +6,6 @@ import AuthMiddleware from '../middleware/authMiddleware'
 module.exports = (router) => {
   router.post('/post/create', AuthMiddleware, Post.create)
   router.get('/post/:id', Post.findOne)
-  router.get('/post/:id/comments', Post.findComments)
   router.put('/post/:id', AuthMiddleware, Post.update)
   router.delete('/post/:id', AuthMiddleware, Post.delete)
 }

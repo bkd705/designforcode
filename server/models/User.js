@@ -1,39 +1,17 @@
-export default (sequelize, DataTypes) => {
-  const User = sequelize.define('users', {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
+export default (bookshelf) => {
+  const User = bookshelf.Model.extend({
+    tableName: 'users',
+    uuid: true,
+    profile() {
+      return this.hasOne('Profile')
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
+    posts() {
+      return this.hasMany('Post')
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    role: {
-      type: DataTypes.STRING,
-      defaultValue: 'user',
-      values: ['user', 'admin', 'disabled']
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    updated_at: DataTypes.DATE,
-    deleted_at: DataTypes.DATE
-  }, {
-    paranoid: true,
-    underscored: true
+    comments() {
+      return this.hasMany('Comment')
+    }
   })
 
-  return User
+  return bookshelf.model('User', User)
 }
