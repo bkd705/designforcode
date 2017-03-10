@@ -4,6 +4,8 @@ import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
 import Model from '../config/Database'
 
+// comment to fix filename
+
 export default class AuthController {
 
   static * login(next) {
