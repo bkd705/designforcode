@@ -4,7 +4,7 @@ import Model from '../config/Database'
 
 /**
  * Authentication Middleware
- * Attaches user object when authenticated, else returns error 
+ * Attaches user object when authenticated, else returns error
  * @param next - The next state to transition to
  */
 export default function * (next) {
@@ -44,13 +44,13 @@ export default function * (next) {
   .query({ where: { id: payload.id } }).fetch()
   .then(user => {
     if (!user) {
-      return JRes.failure('Failed to find user')
+      return JRes.failure('Failed to authenticate user')
     } else {
       return JRes.success('Successfully authenticated', { user })
     }
   })
   .catch(error => {
-    return JRes.failure('Failed to find user', err)
+    return JRes.failure('Failed to authenticate user', err)
   })
 
   // Return an error if found
