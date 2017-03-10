@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import JRes from '../util/JResponse'
-import Model from '../config/db'
+import Model from '../config/Database'
 
 export default function * (next) {
   // Verify the authorization is present
