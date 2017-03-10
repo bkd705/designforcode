@@ -22,10 +22,10 @@ app.use(router.routes())
 app.use(router.allowedMethods())
 
 // Serve routes
-require('./routes/userRoutes')(router)
-require('./routes/authRoutes')(router)
-require('./routes/commentRoutes')(router)
-require('./routes/postRoutes')(router)
+require('./routes/UserRoutes')(router)
+require('./routes/AuthRoutes')(router)
+require('./routes/CommentRoutes')(router)
+require('./routes/PostRoutes')(router)
 
 // Serve front-end route
 router.get('*', function * (next) {
@@ -37,5 +37,5 @@ const host = process.env.SERVER_HOST
 const port = process.env.SERVER_PORT
 
 app.listen(port, host, () => {
-  console.log(`Available on http://${host}:${port}`)
+  console.log(`Available on http://${ host }:${ port }`)
 })

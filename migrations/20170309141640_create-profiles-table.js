@@ -10,7 +10,7 @@ exports.up = (knex, Promise) => {
     table.string('last_name').nullable()
     table.string('profession').nullable()
     table.string('skill_level').nullable()
-    table.string('description').nullable()
+    table.text('description').nullable()
   })
 }
 

@@ -1,7 +1,7 @@
 'use strict'
 
-import Comment from '../controllers/commentController.js'
-import AuthMiddleware from '../middleware/authMiddleware'
+import Comment from '../controllers/CommentController.js'
+import AuthMiddleware from '../middleware/AuthMiddleware'
 
 module.exports = (router) => {
   router.post('/comment/create', AuthMiddleware, Comment.create)

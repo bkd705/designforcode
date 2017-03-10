@@ -1,7 +1,7 @@
 'use strict'
 
-import Post from '../controllers/postController.js'
-import AuthMiddleware from '../middleware/authMiddleware'
+import Post from '../controllers/PostController.js'
+import AuthMiddleware from '../middleware/AuthMiddleware'
 
 module.exports = (router) => {
   router.post('/post/create', AuthMiddleware, Post.create)
