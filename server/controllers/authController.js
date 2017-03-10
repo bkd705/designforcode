@@ -9,8 +9,7 @@ export default class AuthController {
   static * login(next) {
     const user = this.request.body
     const result = yield Model.User
-    .query({ where: { username: user.username } })
-    .fetch()
+    .query({ where: { username: user.username } }).fetch()
     .then(model => {
       if (!model) {
         return JRes.failure('No user found with that username!')
