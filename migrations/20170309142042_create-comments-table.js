@@ -9,7 +9,7 @@ exports.up = (knex, Promise) => {
     table.uuid('post_id')
     table.foreign('post_id').references('id').inTable('posts')
 
-    table.string('body').notNullable()
+    table.text('body').notNullable()
     table.timestamps()
   })
 }

@@ -1,5 +1,8 @@
 'use strict'
 
+import indicative from 'indicative'
+import JRes from './JResponse'
+
 export default class Helpers {
   static transformObj(original, values) {
     if (typeof values !== 'object') return original
@@ -23,5 +26,18 @@ export default class Helpers {
     }
 
     return temp
+  }
+
+  static * validate(data, rules) {
+    const valid = indicative
+    .validateAll(data, rules)
+    .then(success => {
+      return JRes.success('All fields are valid')
+    })
+    .catch(errors => {
+      return JRes.failure('Some fields did not pass validation', { errors })
+    })
+
+    return valid
   }
 }

@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { validateUser } from '../util/validations'
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
-import Model from '../config/db'
+import Model from '../config/Database'
 
 export default class UserController {
   /**
@@ -12,12 +11,17 @@ export default class UserController {
    */
   static * create(next) {
     const userInfo = this.request.body
-    const isValid = validateUser(userInfo)
 
-    // Check if submitted user info is valid
-    if (!isValid) {
+    // Validate user info
+    const valid = yield Helpers.validate(
+      userInfo,
+      (new Model.User).getRules(true)
+    )
+
+    // Return if validation is not passed
+    if (!valid.success) {
       this.status = 400
-      this.body = JRes.failure('The user submitted is not valid')
+      this.body = valid
       return
     }
 
@@ -25,7 +29,7 @@ export default class UserController {
     userInfo.password = bcrypt.hashSync(userInfo.password, 10)
 
     // Create new user
-    const user = new Model.User(userInfo, { hasTimestamps: true })
+    const user = new Model.User(userInfo)
     const result = yield user.save()
     .then(user => {
       return JRes.success('Successfully created user!', {
@@ -51,6 +55,10 @@ export default class UserController {
     this.body = result
   }
 
+  /**
+   * Method for updating a user's immediate information
+   * @param next - The next state to transition to
+   */
   static * updateUser(next) {
     const user = this.state.user
     const userId = this.params.id
@@ -60,6 +68,19 @@ export default class UserController {
     if (user.id !== userId) {
       this.status = 400
       this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
+
+    // Validate user info
+    const valid = yield Helpers.validate(
+      userInfo,
+      (new Model.User).getRules()
+    )
+
+    // Return if validation is not passed
+    if (!valid.success) {
+      this.status = 400
+      this.body = valid
       return
     }
 
@@ -80,6 +101,10 @@ export default class UserController {
     this.body = result
   }
 
+  /**
+   * Method for updating a user's profile information
+   * @param next - The next state to transition to
+   */
   static * updateProfile(next) {
     const user = this.state.user
     const userId = this.params.id
@@ -89,6 +114,19 @@ export default class UserController {
     if (user.id !== userId) {
       this.status = 400
       this.body = JRes.failure('You are not authorized to do this')
+      return
+    }
+
+    // Validate user info
+    const valid = yield Helpers.validate(
+      profileInfo,
+      (new Model.Profile).getRules()
+    )
+
+    // Return if validation is not passed
+    if (!valid.success) {
+      this.status = 400
+      this.body = valid
       return
     }
 
@@ -110,6 +148,10 @@ export default class UserController {
     this.body = result
   }
 
+  /**
+   * Method for updating a user's password
+   * @param next - The next state to transition to
+   */
   static * updatePassword(next) {
     const user = this.state.user
     const userId = this.params.id
@@ -190,6 +232,10 @@ export default class UserController {
     this.body = result
   }
 
+  /**
+   * Method for finding a user's post
+   * @param next - The next state to transition to
+   */
   static * findPosts(next) {
     const userId = this.params.id
 
@@ -219,14 +265,17 @@ export default class UserController {
     this.body = result
   }
 
+  /**
+   * Method for checking if user info exists (front-end)
+   * @param next - The next state to transition to
+   */
   static * checkExisting(next) {
     const { field, value } = this.params
     const conditionalWhere = {}
     conditionalWhere[field] = value
 
     const result = yield Model.User
-    .query({ where: conditionalWhere })
-    .fetch()
+    .query({ where: conditionalWhere }).fetch()
     .then(res => {
       if(!res) {
         return JRes.success('Available!')

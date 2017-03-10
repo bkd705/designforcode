@@ -1,19 +1,34 @@
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
-import Model from '../config/db'
+import Model from '../config/Database'
 
 export default class PostController {
 
   /**
-   * Method for creating a new user
+   * Method for creating a new post
    * @param next - The next state to transition to
    */
   static * create(next) {
     const user = this.state.user
     const postInfo = this.request.body
+
+    // Validate post info
+    const valid = yield Helpers.validate(
+      postInfo,
+      (new Model.Post).getRules(true)
+    )
+
+    // Return if validation is not passed
+    if (!valid.success) {
+      this.status = 400
+      this.body = valid
+      return
+    }
+
+    // Set post's user
     postInfo.user_id = user.id
 
-    const post = new Model.Post(postInfo, { hasTimestamps: true })
+    const post = new Model.Post(postInfo)
     const result = yield post.save()
     .then(post => {
       return JRes.success('Successfully created post!', {
@@ -30,6 +45,10 @@ export default class PostController {
     this.body = result
   }
 
+  /**
+   * Method for finding a post by ID
+   * @param next - The next state to transition to
+   */
   static * findOne(next) {
     const postId = this.params.id
 
@@ -59,15 +78,31 @@ export default class PostController {
     this.body = result
   }
 
+  /**
+   * Method for updating a post
+   * @param next - The next state to transition to
+   */
   static * update(next) {
     const user = this.state.user
     const postId = this.params.id
     const postInfo = this.request.body
 
+    // Validate post info
+    const valid = yield Helpers.validate(
+      postInfo,
+      (new Model.Post).getRules()
+    )
+
+    // Return if validation is not passed
+    if (!valid.success) {
+      this.status = 400
+      this.body = valid
+      return
+    }
+
     // Get post
     const post = yield Model.Post
-    .query({ where: { id: postId } })
-    .fetch()
+    .query({ where: { id: postId } }).fetch()
     .then(post => {
       if (!post) {
         return JRes.failure('Unable to find post with provided ID')
@@ -110,14 +145,17 @@ export default class PostController {
     this.body = result
   }
 
+  /**
+   * Method for deleting a post
+   * @param next - The next state to transition to
+   */
   static * delete(next) {
     const user = this.state.user
     const postId = this.params.id
 
     // Get post
     const post = yield Model.Post
-    .query({ where: { id: postId } })
-    .fetch()
+    .query({ where: { id: postId } }).fetch()
     .then(post => {
       if (!post) {
         return JRes.failure('Unable to find post with provided ID')
