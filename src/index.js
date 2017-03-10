@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 import routes, { store } from './config/routes'
-import { types } from './views/auth/actions'
+import { types } from './auth/actions'
 import decode from 'jwt-decode'
 
 if (localStorage.getItem('user_token')) {

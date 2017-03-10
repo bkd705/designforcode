@@ -1,4 +1,4 @@
-import { default as authSaga } from '../views/auth/saga'
+import { default as authSaga } from '../auth/saga'
 
 export default function * rootSaga () {
   yield [

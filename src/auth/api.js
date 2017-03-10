@@ -1,13 +1,7 @@
-const statusHelper = (response) => {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response)
-  } else {
-    return Promise.reject(new Error(response.statusText))
-  }
-}
+import statusHelper from '../util/StatusHelper'
 
-const api = {
-  signup (data) {
+export default class Api {
+  static signup (data) {
     return fetch('/user/create', {
       method: 'POST',
       headers: {
@@ -20,8 +14,9 @@ const api = {
     .then(res => res.json())
     .catch(err => err)
     .then(data => data)
-  },
-  login (data) {
+  }
+
+  static login (data) {
     return fetch('/auth/login', {
       method: 'POST',
       headers: {
@@ -36,5 +31,3 @@ const api = {
     .then(data => data)
   }
 }
-
-export default api
