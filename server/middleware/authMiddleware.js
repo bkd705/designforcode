@@ -1,7 +1,12 @@
 import jwt from 'jsonwebtoken'
 import JRes from '../util/JResponse'
-import Model from '../config/db'
+import Model from '../config/Database'
 
+/**
+ * Authentication Middleware
+ * Attaches user object when authenticated, else returns error
+ * @param next - The next state to transition to
+ */
 export default function * (next) {
   // Verify the authorization is present
   if (!this.headers.authorization) {
@@ -36,17 +41,16 @@ export default function * (next) {
 
   // Find user model by ID
   const result = yield Model.User
-  .query({ where: { id: payload.id } })
-  .fetch()
+  .query({ where: { id: payload.id } }).fetch()
   .then(user => {
     if (!user) {
-      return JRes.failure('Failed to find user')
+      return JRes.failure('Failed to authenticate user')
     } else {
       return JRes.success('Successfully authenticated', { user })
     }
   })
   .catch(error => {
-    return JRes.failure('Failed to find user', err)
+    return JRes.failure('Failed to authenticate user', err)
   })
 
   // Return an error if found

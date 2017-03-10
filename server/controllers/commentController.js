@@ -1,19 +1,34 @@
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
-import Model from '../config/db'
+import Model from '../config/Database'
 
 export default class CommentController {
 
   /**
-   * Method for creating a new user
+   * Method for creating a comment
    * @param next - The next state to transition to
    */
   static * create(next) {
     const user = this.state.user
     const commentInfo = this.request.body
+
+    // Validate comment info
+    const valid = yield Helpers.validate(
+      commentInfo,
+      (new Model.Post).getRules(true)
+    )
+
+    // Return if validation is not passed
+    if (!valid.success) {
+      this.status = 400
+      this.body = valid
+      return
+    }
+
+    // Set comment's user
     commentInfo.user_id = user.id
 
-    const comment = new Model.Comment(commentInfo, { hasTimestamps: true })
+    const comment = new Model.Comment(commentInfo)
     const result = yield comment.save()
     .then(comment => {
       return JRes.success('Successfully created comment!', {
@@ -30,13 +45,16 @@ export default class CommentController {
     this.body = result
   }
 
+  /**
+   * Method for finding a comment by ID
+   * @param next - The next state to transition to
+   */
   static * findOne(next) {
     const commentId = this.params.id
 
     // Find comment by ID
     const result = yield Model.Comment
-    .query({ where: { id: commentId } })
-    .fetch()
+    .query({ where: { id: commentId } }).fetch()
     .then(comment => {
       if (!comment) {
         return JRes.failure('Unable to find comment with provided ID')
@@ -56,15 +74,31 @@ export default class CommentController {
     this.body = result
   }
 
+  /**
+   * Method for updating a comment
+   * @param next - The next state to transition to
+   */
   static * update(next) {
     const user = this.state.user
     const commentId = this.params.id
     const commentInfo = this.request.body
 
+    // Validate comment info
+    const valid = yield Helpers.validate(
+      commentInfo,
+      (new Model.Post).getRules()
+    )
+
+    // Return if validation is not passed
+    if (!valid.success) {
+      this.status = 400
+      this.body = valid
+      return
+    }
+
     // Get comment
     const comment = yield Model.Comment
-    .query({ where: { id: commentId } })
-    .fetch()
+    .query({ where: { id: commentId } }).fetch()
     .then(comment => {
       if (!comment) {
         return JRes.failure('Unable to find comment with provided ID')
@@ -107,14 +141,17 @@ export default class CommentController {
     this.body = result
   }
 
+  /**
+   * Method for deleting a comment
+   * @param next - The next state to transition to
+   */
   static * delete(next) {
     const user = this.state.user
     const commentId = this.params.id
 
     // Get comment
     const comment = yield Model.Comment
-    .query({ where: { id: commentId } })
-    .fetch()
+    .query({ where: { id: commentId } }).fetch()
     .then(comment => {
       if (!comment) {
         return JRes.failure('Unable to find comment with provided ID')
