@@ -1,55 +1,34 @@
+'use strict'
 import dotenv from 'dotenv'
-import Sequelize from 'sequelize'
-import users from '../models/User'
-import profiles from '../models/Profile'
-import posts from '../models/Post'
-import comments from '../models/Comment'
+
+import User from '../models/User'
+import Profile from '../models/Profile'
+import Post from '../models/Post'
+import Comment from '../models/Comment'
 
 dotenv.config()
 
-/**
- * Setup Sequelize connection to postgres using dotenv variables
- */
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  dialect: 'postgres'
+const knex = require('knex')({
+  client: 'pg',
+  connection: {
+    host     : process.env.DB_HOST,
+    port     : process.env.DB_PORT,
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASS,
+    database : process.env.DB_NAME,
+    charset  : 'utf8'
+  }
 })
 
-/**
- * Setup DB object so everything is accesible from one spot
- */
-const db = {}
+const bookshelf = require('bookshelf')(knex);
 
-db.Sequelize = Sequelize
-db.sequelize = sequelize
+// Plugins
+bookshelf.plugin(require('bookshelf-uuid'))
+bookshelf.plugin('registry')
 
-/**
- * Models / Tables
- */
-db.users = users(sequelize, Sequelize)
-db.profiles = profiles(sequelize, Sequelize)
-db.posts = posts(sequelize, Sequelize)
-db.comments = comments(sequelize, Sequelize)
-
-/**
- * Relations
- */
-
-// User
-db.users.hasOne(db.profiles, { as: 'Profile' })
-db.users.hasMany(db.posts, { as: 'Posts', foreignKey: 'creator_id' })
-db.users.hasMany(db.comments, { as: 'Comments' })
-
-// Profile
-db.profiles.belongsTo(db.users, { as: 'User' })
-
-// Comment
-db.comments.belongsTo(db.users, { as: 'Commenter', foreignKey: 'user_id' })
-db.comments.belongsTo(db.posts, { as: 'Post' })
-
-// Post
-db.posts.belongsTo(db.users, { as: 'Creator' })
-db.posts.hasMany(db.comments, { as: 'Comments' })
-
-export default db
+export default {
+  User: User(bookshelf),
+  Profile: Profile(bookshelf),
+  Post: Post(bookshelf),
+  Comment: Comment(bookshelf)
+}

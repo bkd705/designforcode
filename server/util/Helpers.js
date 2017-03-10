@@ -13,4 +13,15 @@ export default class Helpers {
 
     return temp
   }
+
+  static transformArray(original, values) {
+    if (typeof values !== 'object') return original
+
+    let temp = []
+    for (let i = 0; i < original.length; i++) {
+      temp.push(this.transformObj(original[i], values))
+    }
+
+    return temp
+  }
 }

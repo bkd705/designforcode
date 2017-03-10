@@ -1,66 +1,54 @@
-import db from '../config/db'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { validateUser } from '../util/validations'
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
-
-const users = db.users
-const profiles = db.profiles
-const posts = db.posts
+import Model from '../config/db'
 
 export default class UserController {
-
   /**
    * Method for creating a new user
    * @param next - The next state to transition to
    */
   static * create(next) {
-    const user = this.request.body
-    const isValid = validateUser(user)
+    const userInfo = this.request.body
+    const isValid = validateUser(userInfo)
 
+    // Check if submitted user info is valid
     if (!isValid) {
       this.status = 400
       this.body = JRes.failure('The user submitted is not valid')
       return
     }
 
-    const hashed_password = bcrypt.hashSync(user.password, 10)
-    const result = yield users.create({
-      username: user.username,
-      email: user.email,
-      password: hashed_password,
-      role: 'user'
-    })
-    .then(newUser => {
-      const userMin = Helpers.transformObj(newUser.dataValues, ['id', 'username', 'email'])
-      const token = jwt.sign(userMin, process.env.JWT_SECRET, { expiresIn: '14 days' })
+    // Hash password
+    userInfo.password = bcrypt.hashSync(userInfo.password, 10)
 
-      profiles.create({
-        user_id: newUser.id,
-        first_name: '',  last_name: '',
-        profession: '', skill_level: '', description: ''
-      })
-
-      return JRes.success('Successfully created new user!', {
-        user: userMin,
-        token: token
+    // Create new user
+    const user = new Model.User(userInfo, { hasTimestamps: true })
+    const result = yield user.save()
+    .then(user => {
+      return JRes.success('Successfully created user!', {
+        user: Helpers.transformObj(user.attributes, [
+          'id', 'username', 'email', 'created_at'
+        ])
       })
     })
-    .catch(err => {
-      return JRes.failure(err)
+    .catch(error => {
+      return JRes.failure('Failed to create user!', error.message)
     })
 
-    if (!result.success) {
+    if (result.success) {
+      // Create user profile
+      Model.Profile.forge({ user_id: result.data.user.id }).save()
+
+      // Create JWT token
+      result.data.token = jwt.sign(result.data.user, process.env.JWT_SECRET, { expiresIn: '14 days' })
+    } else {
       this.status = 400
-
-      // Handle/Parser sequelize error
-      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
-      }
     }
 
-    this.body = result
+    this.body = JRes.success(result)
   }
 
   static * updateUser(next) {
@@ -68,15 +56,17 @@ export default class UserController {
     const userId = this.params.id
     const userInfo = this.request.body
 
-    if (user.id !== userId && user.role !== 'admin') {
+    // Check permissions
+    if (user.id !== userId) {
       this.status = 400
       this.body = JRes.failure('You are not authorized to do this')
       return
     }
 
-    const result = yield user.update(userInfo)
-    .then(updated => {
-      if (updated) {
+    // Save new user information
+    const result = yield user.save(userInfo)
+    .then(model => {
+      if (model) {
         return JRes.success('Successfully updated user!')
       } else {
         return JRes.failure('Failed to update user')
@@ -95,14 +85,16 @@ export default class UserController {
     const userId = this.params.id
     const profileInfo = this.request.body
 
-    if (user.id !== userId && user.role !== 'admin') {
+    // Check permissions
+    if (user.id !== userId) {
       this.status = 400
       this.body = JRes.failure('You are not authorized to do this')
       return
     }
 
-    const profile = yield user.getProfile()
-    const result = yield profile.update(profileInfo)
+    // Fetch profile, and save new profile info
+    const profile = yield user.profile().fetch()
+    const result = yield profile.save(profileInfo)
     .then(updated => {
       if (updated) {
         return JRes.success('Successfully updated profile!')
@@ -125,7 +117,7 @@ export default class UserController {
     let newPassword = this.request.body.newPassword
 
     // Check permissions
-    if (user.id !== userId && user.role !== 'admin') {
+    if (user.id !== userId) {
       this.status = 400
       this.body = JRes.failure('You are not authorized to do this')
       return
@@ -139,7 +131,7 @@ export default class UserController {
     }
 
     // Compare password to current password
-    if (!bcrypt.compareSync(oldPassword, user.password)) {
+    if (!bcrypt.compareSync(oldPassword, user.attributes.password)) {
       this.status = 400
       this.body = JRes.failure('Previous password is incorrect')
       return
@@ -149,12 +141,12 @@ export default class UserController {
     newPassword = bcrypt.hashSync(newPassword, 10)
 
     // Set new password
-    const result = yield user.update({ password: newPassword })
-    .then(user => {
-      if (user) {
-        return JRes.success('Successfully updated password!')
+    const result = yield user.save({ password: newPassword })
+    .then(model => {
+      if (model) {
+        return JRes.success('Successfully updated user password!')
       } else {
-        return JRes.failure('Failed to update password')
+        return JRes.failure('Failed to update user password')
       }
     })
     .catch(err => {
@@ -172,15 +164,21 @@ export default class UserController {
   static * findOne(next) {
     const userId = this.params.id
 
-    const result = yield users.findOne({
-      where: { id: userId }
-    })
+    // Find user model with profile attributes
+    const result = yield Model.User
+    .query({ where: { id: userId } })
+    .fetch({ withRelated: ['profile'] })
     .then(user => {
       if (user == null) {
         return JRes.failure('Unable to find user with provided ID')
       } else {
         return JRes.success('Successfully fetched user by ID', {
-          user
+          user: Helpers.transformObj(user.attributes, [
+            'id', 'username', 'email', 'role', 'created_at'
+          ]),
+          profile: Helpers.transformObj(user.relations.profile.attributes, [
+            'firt_name', 'last_name', 'profession', 'skill_level', 'description'
+          ])
         })
       }
     })
@@ -188,48 +186,28 @@ export default class UserController {
       return JRes.failure(err)
     })
 
-    if (!result.success) {
-      this.status = 400
-
-      // Handle/Parser sequelize error
-      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
-      }
-    } else {
-      // Fetch profile information
-      const profile = yield result.data.user.getProfile()
-        .then(userProfile => {
-          return userProfile.dataValues
-        })
-        .catch(err => {
-          return 'Failed to fetch profile information'
-      })
-
-      // Set and trasnform profile and user information
-      result.data.user = Helpers.transformObj(result.data.user.dataValues, [
-        'id', 'username', 'email', 'role', 'created_at'
-      ])
-
-      result.data.profile = Helpers.transformObj(profile, [
-        'user_id', 'first_name', 'last_name', 'profession',
-        'skill_level', 'description'
-      ])
-    }
-
+    if (!result.success) this.status = 400
     this.body = result
   }
 
   static * findPosts(next) {
     const userId = this.params.id
-    const result = yield posts.findAll({
-      where: { creator_id: userId }
-    })
-    .then(posts => {
-      if (!posts) {
-        return JRes.failure('Unable to find posts by user')
+
+    // Get user and their posts
+    const result = yield Model.User
+    .query({ where: { id: userId } })
+    .fetch({ withRelated: ['posts'] })
+    .then(user => {
+      if (user == null) {
+        return JRes.failure(`Unable to find user's posts with provided ID`)
       } else {
-        return JRes.success('Successfully fetched posts by user', {
-          posts
+        return JRes.success(`Successfully fetched user's posts by ID`, {
+          user: Helpers.transformObj(user.attributes, [
+            'id', 'username', 'email', 'role', 'created_at'
+          ]),
+          posts: Helpers.transformArray(user.relations.posts.serialize(), [
+            'id', 'title', 'description', 'type', 'created_at'
+          ])
         })
       }
     })
@@ -237,15 +215,7 @@ export default class UserController {
       return JRes.failure(err)
     })
 
-    if (!result.success) {
-      this.status = 400
-
-      // Handle/Parser sequelize error
-      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
-      }
-    }
-
+    if (!result.success) this.status = 400
     this.body = result
   }
 
@@ -254,29 +224,21 @@ export default class UserController {
     const conditionalWhere = {}
     conditionalWhere[field] = value
 
-    const result = yield users.findOne({
-      where: conditionalWhere
-    })
-    .then(foundUser => {
-      if(!foundUser) {
+    const result = yield Model.User
+    .query({ where: conditionalWhere })
+    .fetch()
+    .then(res => {
+      if(!res) {
         return JRes.success('Available!')
       }
 
       return JRes.failure('Already taken!')
     })
     .catch(err => {
-      return JRes.failure('An unexpected error occured', err)
+      return JRes.failure(err)
     })
 
-    if (!result.success) {
-      this.status = 400
-
-      // Handle/Parser sequelize error
-      if (result.error.name && result.error.name.indexOf('Sequelize') > -1) {
-        result.error = (result.error.errors) ? result.error.errors[0] : result.error.message
-      }
-    }
-
+    if (!result.success) this.status = 400
     this.body = result
   }
 }
