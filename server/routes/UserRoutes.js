@@ -1,5 +1,3 @@
-'use strict'
-
 import User from '../controllers/UserController'
 import AuthMiddleware from '../middleware/AuthMiddleware'
 

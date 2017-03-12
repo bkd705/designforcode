@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { validateLogin } from '../util/FormValidations'
+import { validateProfile } from '../util/FormValidations'
 import InputField from '../form/InputField'
+import TextArea from '../form/TextArea'
+import SelectInput from '../form/SelectInput'
 
 class ProfileForm extends React.Component {
   constructor(props) {
@@ -27,8 +29,7 @@ class ProfileForm extends React.Component {
   }
 
   isValid = () => {
-    const { isValid, errors } = validateLogin(this.state)
-
+    const { isValid, errors } = validateProfile(this.state)
     if(!isValid) {
       this.setState({
         errors: errors
@@ -41,9 +42,10 @@ class ProfileForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-
+    this.setState({
+      errors: {}
+    })
     if(this.isValid()) {
-      console.log(this.state)
       this.context.router.push('/')
     }
   }
@@ -60,28 +62,60 @@ class ProfileForm extends React.Component {
         <div className="columns">    
           <div className="column is-half is-offset-one-quarter">
             <div className="heading">
-              <h3 className="title">Login</h3>
+              <h3 className="title">Profile</h3>
               { this.props.isNew ? isNewSubHeading : isUpdateSubHeading}
             </div>
             <form onSubmit={this.onSubmit}>
-              <InputField
-                label="First Name"
-                name="first_name"
-                value={first_name}
-                placholder="Username"
-                onChange={this.onChange}
-                error={errors.username}
-              />
+              <div className="control is-grouped">
+                  <InputField
+                    name="first_name"
+                    label="First Name"
+                    value={first_name}
+                    placholder="First Name"
+                    onChange={this.onChange}
+                    error={errors.first_name}
+                  />
 
-              <InputField
-                label="Last Name"
-                name="last_name"
-                value={last_name}
-                placholder="Password"
-                onChange={this.onChange}
-                error={errors.last_name}
-              />
+                  <InputField
+                    name="last_name"
+                    label="Last Name"
+                    value={last_name}
+                    placholder="Last Name"
+                    onChange={this.onChange}
+                    error={errors.last_name}
+                  />
+              </div>
 
+              <div className="control is-grouped">
+                <SelectInput
+                  label="Profession"
+                  name="profession"
+                  value={profession}
+                  placeholder="Profession"
+                  onChange={this.onChange}
+                  error={errors.profession}
+                  options={['Designer', 'Developer']}
+                />
+                
+                <SelectInput
+                  label="Skill Level"
+                  name="skill_level"
+                  value={skill_level}
+                  placeholder="Skill Level"
+                  onChange={this.onChange}
+                  error={errors.skill_level}
+                  options={['Beginner', 'Intermediate', 'Advanced']}
+                />
+              </div>
+
+              <TextArea
+                label="Description"
+                name="description"
+                value={description}
+                placholder="Talk about you a little!"
+                onChange={this.onChange}
+                error={errors.description}
+              />
 
               <div className="control is-grouped">
                 <p className="control">

@@ -1,20 +1,20 @@
 import React, { PropTypes as P } from 'react'
 import classnames from 'classnames'
 
-const InputField = ({ label, name, value, type, placeholder, onChange, onBlur, error, helper }) => {
+const TextArea = ({ label, name, value, type, placeholder, onChange, onBlur, error, helper }) => {
   return (
-    <div className='control is-expanded'>
-      { label ? <label htmlFor={name} className='label'>{label}</label> : '' }
+    <div className='input-field'>
+      <label htmlFor={name} className='label'>{label}</label>
       <p className={classnames('control', { 'has-icon has-icon-right': error || helper })}>
-        <input
+        <textarea
           type={type}
           name={name}
           value={value}
-          className={classnames('input', { 'is-danger': error, 'is-success': helper })}
+          className={classnames('textarea', { 'is-danger': error, 'is-success': helper })}
           placeholder={placeholder}
           onChange={onChange}
           onBlur={onBlur}
-        />
+        ></textarea>
         { error ? <span className='icon is-small'><i className='fa fa-warning' /></span> : '' }
         { error ? <span className='help is-danger'>{error}</span> : '' }
 
@@ -25,8 +25,8 @@ const InputField = ({ label, name, value, type, placeholder, onChange, onBlur, e
   )
 }
 
-InputField.propTypes = {
-  label: P.string,
+TextArea.propTypes = {
+  label: P.string.isRequired,
   name: P.string.isRequired,
   value: P.string.isRequired,
   type: P.string.isRequired,
@@ -36,8 +36,8 @@ InputField.propTypes = {
   error: P.string
 }
 
-InputField.defaultProps = {
+TextArea.defaultProps = {
   type: 'text'
 }
 
-export default InputField
+export default TextArea
