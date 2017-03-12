@@ -14,6 +14,8 @@ const User = Bookshelf.Model.extend({
   comments() {
     return this.hasMany('Comment')
   }
+}, {
+  dependents: ['profiles', 'posts', 'comments']
 })
 
 /**
