@@ -12,7 +12,13 @@ module.exports = (app) => {
       await next()
     } catch (err) {
       console.log(err)
-      SendError(ctx, 400, 'There was an error with your request', err)
+
+      let data = null
+      if (err.detail) {
+        data = err.detail
+      }
+
+      SendError(ctx, 400, 'There was an error with your request', data)
     }
   })
 }
