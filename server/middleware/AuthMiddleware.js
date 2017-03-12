@@ -1,24 +1,30 @@
+// Import node modules
 import jwt from 'jsonwebtoken'
-import JRes from '../util/JResponse'
-import Model from '../config/Database'
+
+// Import utilities
+import SendError from '../util/SendError'
+
+// Import models
+import User from '../models/User'
 
 /**
  * Authentication Middleware
  * Attaches user object when authenticated, else returns error
+ * @param ctx - The current request context
  * @param next - The next state to transition to
  */
-export default function * (next) {
+export default async function (ctx, next) {
+  const authorization = ctx.headers.authorization
+
   // Verify the authorization is present
-  if (!this.headers.authorization) {
-    this.body = JRes.failure('No authorization header provided')
-    return
+  if (!authorization) {
+    return SendError(ctx, 400, 'No authorization header provided')
   }
 
   // Verify the authorization is in the correct format
-  const token = this.headers.authorization.split(' ')[1]
+  const token = authorization.split(' ')[1]
   if (!token || token.length == 0) {
-    this.body = JRes.failure('No token in authorization header provided')
-    return
+    return SendError(ctx, 400, 'Invalid token provided')
   }
 
   // Verify and decode the token
@@ -34,33 +40,16 @@ export default function * (next) {
       error = 'Invalid token'
     }
 
-    this.status = 400
-    this.body = JRes.failure(error, ex)
-    return
+    return SendError(ctx, 400, error, ex)
   }
 
   // Find user model by ID
-  const result = yield Model.User
-  .query({ where: { id: payload.id } }).fetch()
-  .then(user => {
-    if (!user) {
-      return JRes.failure('Failed to authenticate user')
-    } else {
-      return JRes.success('Successfully authenticated', { user })
-    }
-  })
-  .catch(error => {
-    return JRes.failure('Failed to authenticate user', err)
-  })
-
-  // Return an error if found
-  if (!result.success) {
-    this.status = 400
-    this.body = result
-    return
+  const user = await User.find(payload.id)
+  if (!user) {
+    return SendError(ctx, 403, 'Failed to authenticate user!', user)
   }
 
   // If no errors occured, set user and go to next state (route)
-  this.state.user = result.data.user
-  yield next
+  ctx.state.user = user
+  await next()
 }

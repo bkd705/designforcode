@@ -1,5 +1,3 @@
-'use strict'
-
 import Comment from '../controllers/CommentController.js'
 import AuthMiddleware from '../middleware/AuthMiddleware'
 
