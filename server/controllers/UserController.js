@@ -60,7 +60,7 @@ export default class UserController {
 
     // Check permissions
     if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 400, JRes.failure('You are not authorized to do this'))
+      return SendError(ctx, 400, 'You are not authorized to do this')
     }
 
     // Validate user info
