@@ -9,6 +9,10 @@ const Profile = Bookshelf.Model.extend({
   }
 })
 
+/**
+ * Returns the rules for validation
+ * @param required - If the fields should be required
+ */
 Profile.getRules = (required = false) => {
   let rules = {
     first_name: 'alpha|min:2|max:20',
@@ -27,18 +31,36 @@ Profile.getRules = (required = false) => {
   return rules
 }
 
+/**
+ * Create a profile
+ * @param info - Information to create a profile
+ */
 Profile.create = async (info) => {
   return await (new Profile(info)).save()
 }
 
+/**
+ * Find a profile by user ID
+ * @param userId - User identifier
+ * @param opts - Options for the fetch
+ */
 Profile.find = async (userId, opts = {}) => {
   return await Profile.where('user_id', userId).fetch(opts)
 }
 
+/**
+ * Update a profile
+ * @param profile - Profile model to update
+ * @param info - Information to update with
+ */
 Profile.update = async (profile, info) => {
   return await profile.save(info)
 }
 
+/**
+ * Delete a profile
+ * @param profile - Profile to delete
+ */
 Profile.delete = async (profile) => {
   return await profile.destroy()
 }

@@ -12,6 +12,10 @@ const Comment = Bookshelf.Model.extend({
   }
 })
 
+/**
+ * Returns the rules for validation
+ * @param required - If the fields should be required
+ */
 Comment.getRules = (required = false) => {
   let rules = {
     post_id: 'min:5|max:50',
@@ -27,18 +31,36 @@ Comment.getRules = (required = false) => {
   return rules
 }
 
+/**
+ * Create a comment
+ * @param info - Information to create a comment
+ */
 Comment.create = async (info) => {
   return await (new Comment(info)).save()
 }
 
+/**
+ * Find a comment by ID
+ * @param id - Comment identifier
+ * @param opts - Options for the fetch
+ */
 Comment.find = async (id, opts = {}) => {
   return await Comment.where('id', id).fetch(opts)
 }
 
+/**
+ * Update a comment
+ * @param comment - Comment model to update
+ * @param info - Information to update with
+ */
 Comment.update = async (comment, info) => {
   return await comment.save(info)
 }
 
+/**
+ * Delete a comment
+ * @param comment - Comment to delete
+ */
 Comment.delete = async (comment) => {
   return await comment.destroy()
 }

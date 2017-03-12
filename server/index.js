@@ -38,9 +38,11 @@ router.get('*', function * (next) {
   yield next
 })
 
+// Hook socket.io onto current HTTP server
 const server = http.Server(app.callback())
 const io = new SocketIO(server)
 
+// Serve socket.io sockets
 require('./routes/SocketRoutes')(io)
 
 const host = process.env.SERVER_HOST

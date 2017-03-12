@@ -14,6 +14,7 @@ export default class AuthController {
 
   /**
    * Method for handling login requests
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
   static async login(ctx, next) {
