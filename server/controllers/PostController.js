@@ -61,7 +61,7 @@ export default class PostController {
         'id', 'title', 'description', 'type', 'user_id', 'created_at'
       ]),
       comments: Helpers.transformArray(post.relations.comments.serialize(), [
-        'post_id', 'user_id', 'body', 'created_at'
+        'id', 'post_id', 'user_id', 'body', 'created_at'
       ])
     })
   }
@@ -125,7 +125,7 @@ export default class PostController {
     }
 
     // Delete post
-    const deleted = await Post.delete(post.data.post)
+    const deleted = await Post.delete(post)
     if (!deleted) {
       return SendError(ctx, 400, 'Failed to delete post!', deleted)
     }
