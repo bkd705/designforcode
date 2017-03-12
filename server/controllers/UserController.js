@@ -1,295 +1,246 @@
+// Import node modules
 import jwt from 'jsonwebtoken'
+import indicative from 'indicative'
 import bcrypt from 'bcrypt'
+
+// Import utilities
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
-import Model from '../config/Database'
+import SendError from '../util/SendError'
 
-// comment to fix filename
+// Import models
+import User from '../models/User'
+import Profile from '../models/Profile'
 
 export default class UserController {
   /**
    * Method for creating a new user
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
-  static * create(next) {
-    const userInfo = this.request.body
+  static async create(ctx, next) {
+    const userInfo = ctx.request.body
 
     // Validate user info
-    const valid = yield Helpers.validate(
-      userInfo,
-      (new Model.User).getRules(true)
+    await indicative.validateAll(userInfo, User.getRules(true))
+
+    // Create user
+    const user = await User.create(userInfo)
+    if (!user) {
+      return SendError(ctx, 400, 'Failed to create user!', user)
+    }
+
+    // Sanitize user info
+    const outputUser = Helpers.transformObj(
+      user.attributes, ['id', 'username', 'email']
     )
 
-    // Return if validation is not passed
-    if (!valid.success) {
-      this.status = 400
-      this.body = valid
-      return
-    }
+    // Create user profile
+    Profile.create({ user_id: user.id })
 
-    // Hash password
-    userInfo.password = bcrypt.hashSync(userInfo.password, 10)
+    // Create/Sign JWT
+    const token = jwt.sign(outputUser, process.env.JWT_SECRET, { expiresIn: '14 days' })
 
-    // Create new user
-    const user = new Model.User(userInfo)
-    const result = yield user.save()
-    .then(user => {
-      return JRes.success('Successfully created user!', {
-        user: Helpers.transformObj(user.attributes, [
-          'id', 'username', 'email', 'created_at'
-        ])
-      })
+    // Send response
+    ctx.body = JRes.success('Successfully created user!', {
+      user: outputUser,
+      token
     })
-    .catch(error => {
-      return JRes.failure('Failed to create user!', error.message)
-    })
-
-    if (result.success) {
-      // Create user profile
-      Model.Profile.forge({ user_id: result.data.user.id }).save()
-
-      // Create JWT token
-      result.data.token = jwt.sign(result.data.user, process.env.JWT_SECRET, { expiresIn: '14 days' })
-    } else {
-      this.status = 400
-    }
-
-    this.body = result
   }
 
   /**
    * Method for updating a user's immediate information
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
-  static * updateUser(next) {
-    const user = this.state.user
-    const userId = this.params.id
-    const userInfo = this.request.body
+  static async updateUser(ctx, next) {
+    const currUser = ctx.state.user
+    const userId = ctx.params.id
+    const userInfo = ctx.request.body
 
     // Check permissions
-    if (user.id !== userId) {
-      this.status = 400
-      this.body = JRes.failure('You are not authorized to do this')
-      return
+    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+      return SendError(ctx, 400, JRes.failure('You are not authorized to do this'))
     }
 
     // Validate user info
-    const valid = yield Helpers.validate(
-      userInfo,
-      (new Model.User).getRules()
-    )
+    await indicative.validateAll(userInfo, User.getRules())
 
-    // Return if validation is not passed
-    if (!valid.success) {
-      this.status = 400
-      this.body = valid
-      return
+    // Find user by ID
+    const user = await User.find(userId)
+    if (!user) {
+      return SendError(ctx, 400, 'Failed to update user!', user)
     }
 
-    // Save new user information
-    const result = yield user.save(userInfo)
-    .then(model => {
-      if (model) {
-        return JRes.success('Successfully updated user!')
-      } else {
-        return JRes.failure('Failed to update user')
-      }
-    })
-    .catch(err => {
-      return JRes.failure(err)
-    })
+    // Update user
+    const result = await User.update(user, userInfo)
+    if (!result) {
+      return SendError(ctx, 400, user)
+    }
 
-    if (!result.success) this.status = 400
-    this.body = result
+    // Sanitize user info
+    const outputUser = Helpers.transformObj(
+      user.attributes, ['id', 'username', 'email']
+    )
+
+    // Send response
+    ctx.body = JRes.success('Successfully updated user!', { user: outputUser })
   }
 
   /**
    * Method for updating a user's profile information
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
-  static * updateProfile(next) {
-    const user = this.state.user
-    const userId = this.params.id
-    const profileInfo = this.request.body
+  static async updateProfile(ctx, next) {
+    const currUser = ctx.state.user
+    const userId = ctx.params.id
+    const profileInfo = ctx.request.body
 
     // Check permissions
-    if (user.id !== userId) {
-      this.status = 400
-      this.body = JRes.failure('You are not authorized to do this')
-      return
+    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+      return SendError(ctx, 403, 'You are not authorized to do this')
     }
 
     // Validate user info
-    const valid = yield Helpers.validate(
-      profileInfo,
-      (new Model.Profile).getRules()
-    )
+    await indicative.validateAll(profileInfo, Profile.getRules())
 
-    // Return if validation is not passed
-    if (!valid.success) {
-      this.status = 400
-      this.body = valid
-      return
+    // Find user by ID
+    const user = await User.find(userId)
+    if (!user) {
+      return SendError(ctx, 400, user)
     }
 
     // Fetch profile, and save new profile info
-    const profile = yield user.profile().fetch()
-    const result = yield profile.save(profileInfo)
-    .then(updated => {
-      if (updated) {
-        return JRes.success('Successfully updated profile!')
-      } else {
-        return JRes.failure('Failed to update profile')
-      }
-    })
-    .catch(err => {
-      return JRes.failure(err)
-    })
+    const profile = await user.profile().fetch()
+    const result = await Profile.update(profile, profileInfo)
+    if (!result) {
+      return SendError(ctx, 400, result)
+    }
 
-    if (!result.success) this.status = 400
-    this.body = result
+    // Send response
+    ctx.body = JRes.success('Successfully updated user profile', {
+      user: Helpers.transformObj(user.attributes, [
+        'id', 'username', 'email'
+      ]),
+      profile: Helpers.transformObj(result.attributes, [
+        'first_name', 'last_name', 'profession', 'skill_level', 'description'
+      ])
+    })
   }
 
   /**
    * Method for updating a user's password
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
-  static * updatePassword(next) {
-    const user = this.state.user
-    const userId = this.params.id
-    const oldPassword = this.request.body.oldPassword
-    let newPassword = this.request.body.newPassword
-
-    // Check permissions
-    if (user.id !== userId) {
-      this.status = 400
-      this.body = JRes.failure('You are not authorized to do this')
-      return
-    }
+  static async updatePassword(ctx, next) {
+    const currUser = ctx.state.user
+    const userId = ctx.params.id
+    const oldPassword = ctx.request.body.oldPassword
+    let newPassword = ctx.request.body.newPassword
 
     // Check if passwords are provided
     if (!oldPassword || !newPassword) {
-      this.status = 400
-      this.body = JRes.failure('Please provide your previous password and your new password')
-      return
+      return SendError(ctx, 400, 'Required information not provided')
+    }
+
+    // Check permissions
+    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+      return SendError(ctx, 403, 'You are not authorized to do this')
+    }
+
+    // Find user by ID
+    const user = await User.find(userId)
+    if (!user) {
+      return SendError(ctx, 400, user)
     }
 
     // Compare password to current password
     if (!bcrypt.compareSync(oldPassword, user.attributes.password)) {
-      this.status = 400
-      this.body = JRes.failure('Previous password is incorrect')
-      return
+      return SendError(ctx, 400, 'Old password in incorrect')
     }
 
     // Hash new password
     newPassword = bcrypt.hashSync(newPassword, 10)
 
     // Set new password
-    const result = yield user.save({ password: newPassword })
-    .then(model => {
-      if (model) {
-        return JRes.success('Successfully updated user password!')
-      } else {
-        return JRes.failure('Failed to update user password')
-      }
-    })
-    .catch(err => {
-      return JRes.failure(err)
-    })
+    const result = await User.update(user, { password: newPassword })
+    if (!result) {
+      return SendError(ctx, 400, user)
+    }
 
-    if (!result.success) this.status = 400
-    this.body = result
+    // Send response
+    ctx.body = JRes.success('Successfully updated password!')
   }
 
   /**
    * Method for finding a user by ID
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
-  static * findOne(next) {
-    const userId = this.params.id
+  static async findOne(ctx, next) {
+    const userId = ctx.params.id
 
-    // Find user model with profile attributes
-    const result = yield Model.User
-    .query({ where: { id: userId } })
-    .fetch({ withRelated: ['profile'] })
-    .then(user => {
-      if (user == null) {
-        return JRes.failure('Unable to find user with provided ID')
-      } else {
-        return JRes.success('Successfully fetched user by ID', {
-          user: Helpers.transformObj(user.attributes, [
-            'id', 'username', 'email', 'role', 'created_at'
-          ]),
-          profile: Helpers.transformObj(user.relations.profile.attributes, [
-            'firt_name', 'last_name', 'profession', 'skill_level', 'description'
-          ])
-        })
-      }
-    })
-    .catch(err => {
-      return JRes.failure(err)
-    })
+    // Find user model with profile
+    const opts = { withRelated: ['profile'] }
+    const user = await User.find(userId, opts)
+    if (!user) {
+      return SendError(ctx, 400, 'Failed to find user!', user)
+    }
 
-    if (!result.success) this.status = 400
-    this.body = result
+    // Send response
+    ctx.body = JRes.success('Successfully fetched user!', {
+      user: Helpers.transformObj(user.attributes, [
+        'id', 'username', 'email', 'role', 'created_at'
+      ]),
+      profile: Helpers.transformObj(user.relations.profile.attributes, [
+        'firt_name', 'last_name', 'profession', 'skill_level', 'description'
+      ])
+    })
   }
 
   /**
    * Method for finding a user's post
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
-  static * findPosts(next) {
-    const userId = this.params.id
+  static async findPosts(ctx, next) {
+    const userId = ctx.params.id
 
     // Get user and their posts
-    const result = yield Model.User
-    .query({ where: { id: userId } })
-    .fetch({ withRelated: ['posts'] })
-    .then(user => {
-      if (user == null) {
-        return JRes.failure(`Unable to find user's posts with provided ID`)
-      } else {
-        return JRes.success(`Successfully fetched user's posts by ID`, {
-          user: Helpers.transformObj(user.attributes, [
-            'id', 'username', 'email', 'role', 'created_at'
-          ]),
-          posts: Helpers.transformArray(user.relations.posts.serialize(), [
-            'id', 'title', 'description', 'type', 'created_at'
-          ])
-        })
-      }
-    })
-    .catch(err => {
-      return JRes.failure(err)
-    })
+    const opts = { withRelated: ['posts'] }
+    const user = await User.find(userId, opts)
+    if (!user) {
+      return SendError(ctx, 400, 'Failed to find user!', user)
+    }
 
-    if (!result.success) this.status = 400
-    this.body = result
+    // Send response
+    ctx.body = JRes.success(`Successfully fetched user's posts!`, {
+      user: Helpers.transformObj(user.attributes, [
+        'id', 'username', 'email', 'role', 'created_at'
+      ]),
+      posts: Helpers.transformArray(user.relations.posts.serialize(), [
+        'id', 'title', 'description', 'type', 'created_at'
+      ])
+    })
   }
 
   /**
    * Method for checking if user info exists (front-end)
+   * @param ctx - The current request context
    * @param next - The next state to transition to
    */
-  static * checkExisting(next) {
-    const { field, value } = this.params
+  static async checkExisting(ctx, next) {
+    const { field, value } = ctx.params
     const conditionalWhere = {}
     conditionalWhere[field] = value
 
-    const result = yield Model.User
-    .query({ where: conditionalWhere }).fetch()
-    .then(res => {
-      if(!res) {
-        return JRes.success('Available!')
-      }
+    const user = await User.query({ where: conditionalWhere }).fetch()
+    if (!user) {
+      ctx.body = JRes.success('Available!')
+    }
 
-      return JRes.failure('Already taken!')
-    })
-    .catch(err => {
-      return JRes.failure(err)
-    })
-
-    if (!result.success) this.status = 400
-    this.body = result
+    SendError(ctx, 400, 'Unavailable!')
   }
 }

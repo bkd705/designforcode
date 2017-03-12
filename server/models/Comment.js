@@ -1,29 +1,46 @@
-export default (bookshelf) => {
-  const Comment = bookshelf.Model.extend({
-    tableName: 'comments',
-    uuid: true,
-    hasTimestamps: true,
-    post() {
-      return this.belongsTo('Post', 'post_id', 'id')
-    },
-    user() {
-      return this.belongsTo('User', 'user_id', 'id')
-    },
-    getRules(required = false) {
-      let rules = {
-        post_id: 'min:5|max:50',
-        body: 'string|min:10'
-      }
+import Bookshelf from '../config/Bookshelf'
 
-      if (required) {
-        for (let key of Object.keys(rules)) {
-          rules[key] = 'required|' + rules[key]
-        }
-      }
+const Comment = Bookshelf.Model.extend({
+  tableName: 'comments',
+  uuid: true,
+  hasTimestamps: true,
+  post() {
+    return this.belongsTo('Post', 'post_id', 'id')
+  },
+  user() {
+    return this.belongsTo('User', 'user_id', 'id')
+  }
+})
 
-      return rules
+Comment.getRules = (required = false) => {
+  let rules = {
+    post_id: 'min:5|max:50',
+    body: 'string|min:10'
+  }
+
+  if (required) {
+    for (let key of Object.keys(rules)) {
+      rules[key] = 'required|' + rules[key]
     }
-  })
+  }
 
-  return bookshelf.model('Comment', Comment)
+  return rules
 }
+
+Comment.create = async (info) => {
+  return await (new Comment(info)).save()
+}
+
+Comment.find = async (id, opts = {}) => {
+  return await Comment.where('id', id).fetch(opts)
+}
+
+Comment.update = async (comment, info) => {
+  return await comment.save(info)
+}
+
+Comment.delete = async (comment) => {
+  return await comment.destroy()
+}
+
+export default Bookshelf.model('Comment', Comment)

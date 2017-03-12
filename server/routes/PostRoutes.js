@@ -1,5 +1,3 @@
-'use strict'
-
 import Post from '../controllers/PostController.js'
 import AuthMiddleware from '../middleware/AuthMiddleware'
 

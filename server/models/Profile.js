@@ -1,29 +1,46 @@
-export default (bookshelf) => {
-  const Profile = bookshelf.Model.extend({
-    tableName: 'profiles',
-    uuid: true,
-    hasTimestamps: false,
-    user() {
-      return this.belongsTo('User', 'user_id', 'id')
-    },
-    getRules(required = false) {
-      let rules = {
-        first_name: 'alpha|min:2|max:20',
-        last_name: 'alpha|min:2|max:20',
-        profession: 'in:developer,designer',
-        skill_level: 'in:beginner,intermediate,advanced',
-        description: 'string'
-      }
+import Bookshelf from '../config/Bookshelf'
 
-      if (required) {
-        for (let key of Object.keys(rules)) {
-          rules[key] = 'required|' + rules[key]
-        }
-      }
+const Profile = Bookshelf.Model.extend({
+  tableName: 'profiles',
+  uuid: true,
+  hasTimestamps: false,
+  user() {
+    return this.belongsTo('User', 'user_id', 'id')
+  }
+})
 
-      return rules
+Profile.getRules = (required = false) => {
+  let rules = {
+    first_name: 'alpha|min:2|max:20',
+    last_name: 'alpha|min:2|max:20',
+    profession: 'in:developer,designer',
+    skill_level: 'in:beginner,intermediate,advanced',
+    description: 'string'
+  }
+
+  if (required) {
+    for (let key of Object.keys(rules)) {
+      rules[key] = 'required|' + rules[key]
     }
-  })
+  }
 
-  return bookshelf.model('Profile', Profile)
+  return rules
 }
+
+Profile.create = async (info) => {
+  return await (new Profile(info)).save()
+}
+
+Profile.find = async (userId, opts = {}) => {
+  return await Profile.where('user_id', userId).fetch(opts)
+}
+
+Profile.update = async (profile, info) => {
+  return await profile.save(info)
+}
+
+Profile.delete = async (profile) => {
+  return await profile.destroy()
+}
+
+export default Bookshelf.model('Profile', Profile)

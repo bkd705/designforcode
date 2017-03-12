@@ -1,42 +1,45 @@
+// Import node modules
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+
+// Import utilities
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
-import Model from '../config/Database'
+import SendError from '../util/SendError'
 
-// comment to fix filename
+// Import models
+import User from '../models/User'
 
 export default class AuthController {
 
-  static * login(next) {
-    const user = this.request.body
-    const result = yield Model.User
-    .query({ where: { username: user.username } }).fetch()
-    .then(model => {
-      if (!model) {
-        return JRes.failure('No user found with that username!')
-      }
+  /**
+   * Method for handling login requests
+   * @param next - The next state to transition to
+   */
+  static async login(ctx, next) {
+    const userInfo = ctx.request.body
 
-      if (!bcrypt.compareSync(user.password, model.attributes.password)) {
-        this.status = 400
-        return JRes.failure('Incorrect password')
-      }
+    // Find user by username
+    const user = await User.findByUsername(userInfo.username)
+    if (!user) {
+      return SendError(ctx, 400, 'Failed to find user!')
+    }
 
-      const userMin = Helpers.transformObj(model.attributes, [
-        'id', 'username', 'email', 'created_at'
-      ])
+    // Compare password with database hash
+    if (!bcrypt.compareSync(userInfo.password, user.attributes.password)) {
+      return SendError(ctx, 400, 'Incorrect password!')
+    }
 
-      const token = jwt.sign(userMin, process.env.JWT_SECRET, { expiresIn: '14 days' })
-      return JRes.success('Successfully logged in!', {
-        user: userMin,
-        token: token
-      })
+    // Sanitize user
+    const outputUser = Helpers.transformObj(user.attributes, ['id', 'username', 'email'])
+
+    // Create/Sign JWT
+    const token = jwt.sign(outputUser, process.env.JWT_SECRET, { expiresIn: '14 days' })
+
+    // Send response
+    ctx.body = JRes.success('Successfully logged in!', {
+      user: outputUser,
+      token: token
     })
-    .catch(err => {
-      return JRes.failure(err)
-    })
-
-    if (!result.success) this.status = 400
-    this.body = result
   }
 }
