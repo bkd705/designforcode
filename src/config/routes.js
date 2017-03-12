@@ -2,6 +2,7 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import configureStore from './reduxStore'
+import RequireAuth from '../util/RequireAuth'
 
 import App from '../App'
 import Home from '../home/Home'
@@ -18,7 +19,8 @@ const routes = (
         <IndexRoute component={Home} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
-        <Route path="/profile/create" component={() => <ProfileForm isNew />} />
+        
+        <Route path="/profile/create" component={() => <ProfileForm isNew />} onEnter={RequireAuth} />
       </Route>
     </Router>
   </Provider>
