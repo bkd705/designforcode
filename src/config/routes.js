@@ -27,3 +27,5 @@ const routes = (
     </Router>
   </Provider>
 )
+
+export default routes
