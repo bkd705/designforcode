@@ -7,15 +7,29 @@ class ChatForm extends React.Component {
     super(props)
 
     this.state = {
-      response: ''
+      response: '',
+      socket: null
     }
+  }
 
+  componentDidMount() {
     const socket = io('http://localhost:3000')
+    this.setState({
+      socket: socket
+    })
 
     socket.on('connect', () => {
       socket.emit('join', {
-        recipient_id: 'd6073e8d-542e-439d-8b33-91308a93ed10',
+        recipient_id: this.props.params.id,
         token: "Bearer " + localStorage.getItem('user_token')
+      })
+    })
+
+    socket.on('private-message', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.message
       })
     })
 
@@ -49,10 +63,14 @@ class ChatForm extends React.Component {
       this.setState({
         response: data.message
       })
+    })
+  }
 
-      socket.emit('private-message', {
-        msg: 'hey'
-      })
+  sendMessage = (e) => {
+    this.state.socket.emit('send-message', {
+      recipient_id: this.props.params.id,
+      token: "Bearer " + localStorage.getItem('user_token'),
+      message: 'hey there'
     })
   }
 
@@ -60,6 +78,7 @@ class ChatForm extends React.Component {
     return (
     <section className="section">
       <h1>{ this.state.response }</h1>
+      <button onClick={ this.sendMessage }>Send Msg </button>
     </section>
     )
   }

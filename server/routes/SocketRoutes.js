@@ -30,7 +30,10 @@ module.exports = (io) => {
         socket.emit('send-message-error', auth)
       }
 
-      socket.to(auth.data.room).emit('private-message', data.message)
+      socket.to(auth.data.room).emit('private-message',
+        JRes.success('Received private message', { message: data.message })
+      )
+
       socket.emit(
         'send-message-success',
         JRes.success('Successfully sent private message!')
@@ -44,7 +47,10 @@ module.exports = (io) => {
       }
 
       socket.join(auth.data.room)
-      socket.emit('join-success', { recipient: auth.data.recipient })
+      socket.emit(
+        'join-success',
+        JRes.success('Successfully joined private chat!', { recipient: auth.data.recipient })
+      )
     })
   })
 }
