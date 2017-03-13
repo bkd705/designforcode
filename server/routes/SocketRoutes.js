@@ -2,20 +2,32 @@
 
 import jwt from 'jsonwebtoken'
 import JRes from '../util/JResponse'
-import co from 'co'
 import User from '../models/User'
 import Helpers from '../util/Helpers'
 
 module.exports = (io) => {
-  io.on('connection', co.wrap(function * (socket) {
+  io.use(async (socket, next) => {
+    try {
+      console.log("HERE")
+      await next()
+      console.log("THERE")
+    } catch (err) {
+      socket.emit(
+        'server-error',
+        JRes.failure('Unexpected error occured', err)
+      )
+    }
+  })
+
+  io.on('connection', async (socket) => {
     console.log("connection received")
     console.log(socket.id)
 
-    socket.on('private-message', co.wrap(function * (data) {
+    socket.on('private-message', async (data) => {
       console.log(socket.rooms)
-    }))
+    })
 
-    socket.on('join', co.wrap(function * (data) {
+    socket.on('join', async (data) => {
       if (!data || !data.recipient_id || !data.token) {
         socket.emit('join-error', JRes.failure('Please provide the required data'))
         return
@@ -49,16 +61,8 @@ module.exports = (io) => {
       }
 
       // Get other user's information
-      const otherUser = yield User.find(data.recipient_id)
-      .then(user => {
-        if (!user) return JRes.failure('Failed to find other user')
-        return JRes.success('Successfully found other user', { user })
-      })
-      .catch(error => {
-        return JRes.failure('Failed to find other user', err)
-      })
-
-      if (!otherUser.success) {
+      const otherUser = await User.find(data.recipient_id)
+      if (!otherUser) {
         socket.emit('join-error', otherUser)
         return
       }
@@ -75,6 +79,6 @@ module.exports = (io) => {
           'id', 'username', 'email'
         ])
       }))
-    }))
-  }))
+    })
+  })
 }
