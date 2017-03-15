@@ -7,34 +7,70 @@ class ChatForm extends React.Component {
     super(props)
 
     this.state = {
-      response: ''
+      response: '',
+      socket: null
     }
+  }
 
+  componentDidMount() {
     const socket = io('http://localhost:3000')
+    this.setState({
+      socket: socket
+    })
 
     socket.on('connect', () => {
       socket.emit('join', {
-        recipient_id: 'c32b7e4b-2f27-4380-81ac-970bd0c1c16c',
+        recipient_id: this.props.params.id,
         token: "Bearer " + localStorage.getItem('user_token')
       })
     })
 
+    socket.on('private-message', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.message
+      })
+    })
+
+    socket.on('server-error', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.error
+      })
+    })
+
+    socket.on('send-message-error', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.error
+      })
+    })
+
     socket.on('join-error', data => {
-      console.log("ERROR")
+      console.log(data)
+
       this.setState({
         response: data.error
       })
     })
 
     socket.on('join-success', data => {
-      console.log("SUCCESS")
+      console.log(data)
+
       this.setState({
         response: data.message
       })
+    })
+  }
 
-      socket.emit('private-message', {
-        msg: 'hey'
-      })
+  sendMessage = (e) => {
+    this.state.socket.emit('send-message', {
+      recipient_id: this.props.params.id,
+      token: "Bearer " + localStorage.getItem('user_token'),
+      message: 'hey there'
     })
   }
 
@@ -42,6 +78,7 @@ class ChatForm extends React.Component {
     return (
     <section className="section">
       <h1>{ this.state.response }</h1>
+      <button onClick={ this.sendMessage }>Send Msg </button>
     </section>
     )
   }
