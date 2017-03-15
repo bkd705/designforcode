@@ -51,3 +51,5 @@ const port = process.env.SERVER_PORT
 server.listen(port, host, () => {
   console.log(`Available on http://${ host }:${ port }`)
 })
+
+module.exports = server
