@@ -13,6 +13,10 @@ const should = chai.should()
 
 chai.use(chaiHttp)
 
+// Save request
+let request = chai.request(server)
+
+// Global variables
 let token = null
 let userId = null
 let postId = null
@@ -44,7 +48,7 @@ describe('User', () => {
   }
 
   it('Create user', (done) => {
-    chai.request(server)
+    request
       .post('/user/create')
       .send(user)
       .end((err, res) => {
@@ -63,7 +67,7 @@ describe('User', () => {
   })
 
   it('Find user', (done) => {
-    chai.request(server)
+    request
       .get('/user/' + userId)
       .end((err, res) => {
         res.should.have.status(200)
@@ -77,7 +81,7 @@ describe('User', () => {
   })
 
   it('Update user', (done) => {
-    chai.request(server)
+    request
       .put('/user/' + userId)
       .set('Authorization', 'Bearer ' + token)
       .send(updateUser)
@@ -93,7 +97,7 @@ describe('User', () => {
   })
 
   it('Update user profile', (done) => {
-    chai.request(server)
+    request
       .put('/user/' + userId + '/profile')
       .set('Authorization', 'Bearer ' + token)
       .send(updateProfile)
@@ -115,7 +119,7 @@ describe('User', () => {
   })
 
   it('Update user password', (done) => {
-    chai.request(server)
+    request
       .put('/user/' + userId + '/password')
       .set('Authorization', 'Bearer ' + token)
       .send(updatePassword)
@@ -134,7 +138,7 @@ describe('User', () => {
       password: updatePassword.newPassword
     }
 
-    chai.request(server)
+    request
       .post('/auth/login')
       .send(fields)
       .end((err, res) => {
@@ -161,7 +165,7 @@ describe('Post', () => {
   }
 
   it('Create post', (done) => {
-    chai.request(server)
+    request
       .post('/post/create')
       .set('Authorization', 'Bearer ' + token)
       .send(post)
@@ -178,7 +182,7 @@ describe('Post', () => {
   })
 
   it('Update post', (done) => {
-    chai.request(server)
+    request
       .put('/post/' + postId)
       .set('Authorization', 'Bearer ' + token)
       .send(updatePost)
@@ -194,7 +198,7 @@ describe('Post', () => {
   })
 
   it('Find post', (done) => {
-    chai.request(server)
+    request
       .get('/post/' + postId)
       .end((err, res) => {
         res.should.have.status(200)
@@ -221,7 +225,7 @@ describe('Comment', () => {
     // Will be null otherwise
     comment.post_id = postId
 
-    chai.request(server)
+    request
       .post('/comment/create')
       .set('Authorization', 'Bearer ' + token)
       .send(comment)
@@ -238,7 +242,7 @@ describe('Comment', () => {
   })
 
   it('Create comment #2', (done) => {
-    chai.request(server)
+    request
       .post('/comment/create')
       .set('Authorization', 'Bearer ' + token)
       .send(comment)
@@ -255,7 +259,7 @@ describe('Comment', () => {
   })
 
   it('Update comment #1', (done) => {
-    chai.request(server)
+    request
       .put('/comment/' + commentId)
       .set('Authorization', 'Bearer ' + token)
       .send(updateComment)
@@ -271,7 +275,7 @@ describe('Comment', () => {
   })
 
   it('Find comment #1', (done) => {
-    chai.request(server)
+    request
       .get('/comment/' + commentId)
       .end((err, res) => {
         res.should.have.status(200)
@@ -286,7 +290,7 @@ describe('Comment', () => {
 
 describe('Deletions', () => {
   it('Delete comment #2', (done) => {
-    chai.request(server)
+    request
       .delete('/comment/' + commentId2)
       .set('Authorization', 'Bearer ' + token)
       .end((err, res) => {
@@ -299,7 +303,7 @@ describe('Deletions', () => {
   })
 
   it('Delete post', (done) => {
-    chai.request(server)
+    request
       .delete('/post/' + postId)
       .set('Authorization', 'Bearer ' + token)
       .end((err, res) => {
@@ -312,7 +316,7 @@ describe('Deletions', () => {
   })
 
   it("Find comment from deleted post (shouldn't be there)", (done) => {
-    chai.request(server)
+    request
       .get('/comment/' + commentId)
       .end((err, res) => {
         res.should.have.status(400)
