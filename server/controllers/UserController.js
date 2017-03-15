@@ -119,7 +119,7 @@ export default class UserController {
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully updated user profile', {
+    ctx.body = JRes.success('Successfully updated user profile!', {
       user: Helpers.transformObj(user.attributes, [
         'id', 'username', 'email'
       ]),
@@ -171,7 +171,7 @@ export default class UserController {
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully updated password!')
+    ctx.body = JRes.success('Successfully updated user password!')
   }
 
   /**
