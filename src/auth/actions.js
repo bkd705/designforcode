@@ -23,23 +23,16 @@ const setUser = (data) => {
   }
 }
 
-const userError = (error) => {
-  return {
-    type: AUTH_USER_ERROR,
-    error
-  }
-}
-
 export const login = (user) => {
   return dispatch => {
    return api.login(user)
       .then(res => {
+        if(!res.success) {
+          return Promise.reject(res.error)
+        }
+
         dispatch(setUser(res.data))
         return res
-      })
-      .catch(err => {
-        dispatch(userError(err))
-        return err
       })
   }
 }
@@ -48,12 +41,12 @@ export const signup = (user) => {
   return dispatch => {
    return api.signup(user)
       .then(res => {
+        if(!res.success) {
+          return Promise.reject(res.error)
+        }
+
         dispatch(setUser(res.data))
         return res
-      })
-      .catch(err => {
-        dispatch(userError(err))
-        return err
       })
   }
 }

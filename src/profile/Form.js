@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { addFlashMessage } from '../flashmessage/actions'
 import { validateProfile } from '../util/FormValidations'
 import TransformObj from '../util/TransformObj'
 import InputField from '../form/InputField'
@@ -50,11 +51,15 @@ class ProfileForm extends React.Component {
     if(this.isValid()) {
       Api.update(TransformObj(this.state, ['user_id', 'first_name', 'last_name', 'profession', 'skill_level', 'description']))
         .then(res => {
-          this.context.router.push('/')
-          console.log(res)
+          if(res.success) {
+            this.props.dispatch(addFlashMessage({ type: 'success', text: 'Profile updated successfully!!' }))
+            this.context.router.push('/')
+          } else {
+            this.props.dispatch(addFlashMessage({ type: 'error', text: res.message }))
+          }
         })
         .catch(err => {
-          console.log(err)
+          this.props.dispatch(addFlashMessage({ type: 'error', text: err }))
         })
     }
   }
@@ -76,7 +81,7 @@ class ProfileForm extends React.Component {
               { this.props.isNew ? isNewSubHeading : isUpdateSubHeading}
             </div>
             <form onSubmit={this.onSubmit}>
-              <div className="control is-grouped">
+              <div className="field is-grouped">
                   <InputField
                     name="first_name"
                     label="First Name"
@@ -96,7 +101,7 @@ class ProfileForm extends React.Component {
                   />
               </div>
 
-              <div className="control is-grouped">
+              <div className="field is-grouped">
                 <SelectInput
                   label="Profession"
                   name="profession"
@@ -118,16 +123,18 @@ class ProfileForm extends React.Component {
                 />
               </div>
 
-              <TextArea
-                label="Description"
-                name="description"
-                value={description}
-                placholder="Talk about you a little!"
-                onChange={this.onChange}
-                error={errors.description}
-              />
+              <div className="field">
+                <TextArea
+                  label="Description"
+                  name="description"
+                  value={description}
+                  placholder="Talk about you a little!"
+                  onChange={this.onChange}
+                  error={errors.description}
+                />
+              </div>
 
-              <div className="control is-grouped">
+              <div className="field">
                 <p className="control">
                   <button className="button is-primary" type="submit">Save Profile</button>
                 </p>

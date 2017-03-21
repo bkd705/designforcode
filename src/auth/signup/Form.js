@@ -3,6 +3,7 @@ import { omit } from 'lodash'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { signup } from '../actions'
+import { addFlashMessage } from '../../flashmessage/actions'
 import { validateSignup } from '../../util/FormValidations'
 import TransformObj from '../../util/TransformObj'
 import InputField from '../../form/InputField'
@@ -42,15 +43,20 @@ class SignupForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-
+    console.log('submit')
     if(this.isValid()) {
       const user = TransformObj(this.state, ['username', 'email', 'password'])
       this.props.dispatch(signup(user))
         .then(res => {
-          this.context.router.push('/profile/create')
+          if(res.success) {
+            this.props.dispatch(addFlashMessage({ type: 'success', text: 'Signed up successfully!' }))
+            this.context.router.push('/profile/create')
+          } else {
+            this.props.dispatch(addFlashMessage({ type: 'error', text: res.message }))
+          }
         })
         .catch(err => {
-          console.log(err)
+          this.props.dispatch(addFlashMessage({ type: 'error', text: err }))
         })
     }
   }
@@ -119,50 +125,58 @@ class SignupForm extends React.Component {
                 <h4 className="subtitle">Sign up for an account today, and get immediate access to the app!</h4>
               </div>
               <form onSubmit={this.onSubmit}>
-                <InputField
-                  label="Username"
-                  name="username"
-                  value={username}
-                  placholder="Username"
-                  onChange={this.onChange}
-                  error={errors.username}
-                  helper={helpers.username}
-                  onBlur={this.checkExisting}
-                />
+                <div className="field">
+                  <InputField
+                    label="Username"
+                    name="username"
+                    value={username}
+                    placholder="Username"
+                    onChange={this.onChange}
+                    error={errors.username}
+                    helper={helpers.username}
+                    onBlur={this.checkExisting}
+                  />
+                </div>
 
-                <InputField
-                  label="E-Mail"
-                  name="email"
-                  value={email}
-                  placholder="E-Mail"
-                  onChange={this.onChange}
-                  error={errors.email}
-                  helper={helpers.email}
-                  onBlur={this.checkExisting}
-                />
+                <div className="field">
+                  <InputField
+                    label="E-Mail"
+                    name="email"
+                    value={email}
+                    placholder="E-Mail"
+                    onChange={this.onChange}
+                    error={errors.email}
+                    helper={helpers.email}
+                    onBlur={this.checkExisting}
+                  />
+                </div>
 
-                <InputField
-                  label="Password"
-                  name="password"
-                  value={password}
-                  type="password"
-                  placholder="Password"
-                  onChange={this.onChange}
-                  error={errors.password}
-                />
+                <div className="field">
+                  <InputField
+                    label="Password"
+                    name="password"
+                    value={password}
+                    type="password"
+                    placholder="Password"
+                    onChange={this.onChange}
+                    error={errors.password}
+                  />
+                </div>
 
-                <InputField
-                  label="Confirm Password"
-                  name="password_confirm"
-                  value={password_confirm}
-                  type="password"
-                  placholder="Confirm Password"
-                  onChange={this.onChange}
-                  error={errors.password_confirm}
-                  onBlur={this.checkPasswordMatch}
-                />
+                <div className="field">
+                  <InputField
+                    label="Confirm Password"
+                    name="password_confirm"
+                    value={password_confirm}
+                    type="password"
+                    placholder="Confirm Password"
+                    onChange={this.onChange}
+                    error={errors.password_confirm}
+                    onBlur={this.checkPasswordMatch}
+                  />
+                </div>
 
-                <div className="control is-grouped">
+                <div className="field is-grouped">
                   <p className="control">
                     <button className="button is-primary" type="submit">Sign Up</button>
                   </p>

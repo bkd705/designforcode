@@ -10,10 +10,8 @@ export default class Api {
       },
       body: JSON.stringify(data)
     })
-    .then(statusHelper)
     .then(res => res.json())
     .catch(err => err)
-    .then(data => data)
   }
 
   static login (data) {
@@ -25,9 +23,7 @@ export default class Api {
       },
       body: JSON.stringify(data)
     })
-    .then(statusHelper)
     .then(res => res.json())
     .catch(err => err)
-    .then(data => data)
   }
 }

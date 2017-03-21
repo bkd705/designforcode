@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { login } from '../actions'
+import { addFlashMessage } from '../../flashmessage/actions'
 import { validateLogin } from '../../util/FormValidations'
 import TransformObj from '../../util/TransformObj'
 import InputField from '../../form/InputField'
@@ -43,10 +44,15 @@ class LoginForm extends React.Component {
       const user = TransformObj(this.state, ['username', 'password'])
       this.props.dispatch(login(user))
         .then(res => {
-          this.context.router.push('/')
+          if(res.success) {
+            this.props.dispatch(addFlashMessage({ type: 'success', text: 'Welcome back!' }))
+            this.context.router.push('/')
+          } else {
+            this.props.dispatch(addFlashMessage({ type: 'error', text: res.message }))
+          }
         })
         .catch(err => {
-          console.log(err)
+          this.props.dispatch(addFlashMessage({ type: 'error', text: err }))
         })
     }
   }
@@ -63,26 +69,30 @@ class LoginForm extends React.Component {
               <h4 className="subtitle">Log into your account now to access the app!</h4>
             </div>
             <form onSubmit={this.onSubmit}>
-              <InputField
-                label="Username"
-                name="username"
-                value={username}
-                placholder="Username"
-                onChange={this.onChange}
-                error={errors.username}
-              />
+              <div className="field">
+                <InputField
+                  label="Username"
+                  name="username"
+                  value={username}
+                  placholder="Username"
+                  onChange={this.onChange}
+                  error={errors.username}
+                />
+              </div>
 
-              <InputField
-                label="Password"
-                name="password"
-                value={password}
-                type="password"
-                placholder="Password"
-                onChange={this.onChange}
-                error={errors.password}
-              />
+              <div className="field">
+                <InputField
+                  label="Password"
+                  name="password"
+                  value={password}
+                  type="password"
+                  placholder="Password"
+                  onChange={this.onChange}
+                  error={errors.password}
+                />
+              </div>
 
-              <div className="control is-grouped">
+              <div className="field is-grouped">
                 <p className="control">
                   <button className="button is-primary" type="submit">Login</button>
                 </p>
