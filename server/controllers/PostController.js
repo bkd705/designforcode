@@ -66,6 +66,19 @@ export default class PostController {
     })
   }
 
+  static async fetchPosts(ctx, next) {
+    const opts = { withRelated: ['comments'] }
+    const posts = await Post.fetchAll(opts)
+
+    if (!posts) {
+      return SendError(ctx, 400, 'No posts at this time!', posts)
+    }
+
+    ctx.body = JRes.success('Posts found', {
+      posts: posts
+    })
+  }
+
   /**
    * Method for updating a post
    * @param ctx - The current request context
