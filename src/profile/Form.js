@@ -2,9 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { validateProfile } from '../util/FormValidations'
+import TransformObj from '../util/TransformObj'
 import InputField from '../form/InputField'
 import TextArea from '../form/TextArea'
 import SelectInput from '../form/SelectInput'
+import Api from './api'
 
 class ProfileForm extends React.Component {
   constructor(props) {
@@ -46,7 +48,14 @@ class ProfileForm extends React.Component {
       errors: {}
     })
     if(this.isValid()) {
-      this.context.router.push('/')
+      Api.update(TransformObj(this.state, ['user_id', 'first_name', 'last_name', 'profession', 'skill_level', 'description']))
+        .then(res => {
+          this.context.router.push('/')
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 
@@ -56,6 +65,7 @@ class ProfileForm extends React.Component {
     const isNewSubHeading = ( <h4 className="subtitle">Create your profile now to help other understand who you are and what you do!</h4> )
     const isUpdateSubHeading = ( <h4 className="subtitle">Update your profile!</h4> )
 
+    console.log(this.state)
     return (
       <section className="section">
       <div className="container">

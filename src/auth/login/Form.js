@@ -42,7 +42,12 @@ class LoginForm extends React.Component {
     if(this.isValid()) {
       const user = TransformObj(this.state, ['username', 'password'])
       this.props.dispatch(login(user))
-      this.context.router.push('/')
+        .then(res => {
+          this.context.router.push('/')
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 

@@ -46,7 +46,12 @@ class SignupForm extends React.Component {
     if(this.isValid()) {
       const user = TransformObj(this.state, ['username', 'email', 'password'])
       this.props.dispatch(signup(user))
-      this.context.router.push('/')
+        .then(res => {
+          this.context.router.push('/profile/create')
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 
