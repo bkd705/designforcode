@@ -1,43 +1,99 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import md5 from 'blueimp-md5'
 import AgoDate from './AgoDate'
-import Comment from './Comment'
 import CommentForm from './CommentForm'
+import CommentList from './CommentList'
+import Api from '../Api'
 
-const Post = ( { post: { id, created_at, updated_at, user, title, description, comments } } ) => {
-  return (
-    <div className="post">
-      <div className="box">
-        <article className="media">
-          <div className="media-left">
-            <figure className="image is-64x64">
-              <img src={`https://www.gravatar.com/avatar/${md5(user.email)}?s=128x128`} alt={`${user.username}'s avatar`}/>
-            </figure>
-          </div>
-          <div className="media-content">
-            <div className="content">
-              <p>
-                <strong>{title}</strong> <a href={`/profile/${user.username}`}><small>{user.username}</small></a> <AgoDate date={created_at}/>
-                <br />
+class Post extends React.Component {
+  constructor(props) {
+    super(props)
 
-                {description}
-              </p>
+    this.state = {
+      showComment: false,
+      comments: []
+    }
+  }
+
+  toggleCommentForm = (e) => {
+    e.preventDefault()
+
+    this.setState(prevState => ({
+      showComment: !prevState.showComment
+    }))
+  }
+
+  addComment = (comment) => {
+    const newComment = {
+      body: comment,
+      user_id: this.props.user.id,
+      post_id: this.props.post.id
+    }
+
+    Api.storeComment(newComment)
+      .then(res => {
+        if(res.success) {
+          const commentWithUser = {
+            ...res.data.comment,
+            user: {
+              id: this.props.user.id,
+              username: this.props.user.username,
+              email: this.props.user.email
+            }
+          }
+          this.setState(prevState => ({
+            comments: [
+              ...prevState.comments,
+              commentWithUser
+            ]
+          }))
+        }
+      })
+  }
+
+  render() {
+    const { post: { id, created_at, updated_at, user, title, description } } = this.props
+    const { showComment } = this.state
+
+    const comments = [ ...this.props.post.comments, ...this.state.comments ]
+
+    return (
+      <div className="post">
+        <div className="box">
+          <article className="media">
+            <div className="media-left">
+              <figure className="image is-64x64">
+                <img src={`https://www.gravatar.com/avatar/${md5(user.email)}?s=128x128`} alt={`${user.username}'s avatar`}/>
+              </figure>
             </div>
-          </div>
-        </article>
-      </div>
+            <div className="media-content">
+              <div className="content">
+                <p>
+                  <strong>{title}</strong> <a href={`/profile/${user.username}`}><small>{user.username}</small></a> <AgoDate date={created_at}/>
+                  <br />
 
-      <div className="box comments">
-            {comments.map(comment => {
-              return <Comment comment={comment} key={comment.id}/>
-            })}
-      </div>
+                  {description}
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
 
-      <div className="box add-comment">
-        <CommentForm />
+        { comments.length > 0 ? <CommentList comments={comments} /> : '' }
+
+        <div className="box add-comment">
+          { showComment ? <CommentForm addComment={this.addComment} /> : <a onClick={this.toggleCommentForm}>Add a comment</a> }
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
-export default Post
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps)(Post)

@@ -15,7 +15,7 @@ const Comment = ({ comment }) => {
         <div className="media-content">
             <div className="content">
               <p>
-                <a href={`/profile/${comment.user.username}`}><small>{comment.user.username}</small></a> <AgoDate date={comment.created_at}/>
+                <a href={`/profile/${comment.user.username}`}>{comment.user.username}</a> <small><AgoDate date={comment.created_at}/></small>
                 <br />
 
                 {comment.body}

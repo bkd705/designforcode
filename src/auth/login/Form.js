@@ -70,23 +70,24 @@ class LoginForm extends React.Component {
             </div>
             <form onSubmit={this.onSubmit}>
               <div className="field">
+                <label className="label">Username</label>
                 <InputField
-                  label="Username"
                   name="username"
                   value={username}
-                  placholder="Username"
+                  placeholder="Username"
                   onChange={this.onChange}
                   error={errors.username}
                 />
               </div>
 
               <div className="field">
+                <label className="label">Password</label>
                 <InputField
                   label="Password"
                   name="password"
                   value={password}
                   type="password"
-                  placholder="Password"
+                  placeholder="Password"
                   onChange={this.onChange}
                   error={errors.password}
                 />

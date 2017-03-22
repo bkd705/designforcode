@@ -7,6 +7,14 @@
   margin: 50px auto 0 auto;
 }
 
+.feed .post {
+  margin-bottom: 50px;
+}
+
+.feed .post:last-of-type {
+  margin-bottom: 0;
+}
+
 .feed .post .box {
   box-shadow: 0 0 0 1px rgba(10,10,10,.1);
   border-radius: 5px 5px 0 0;
@@ -20,7 +28,16 @@
   border-radius: 0;
 }
 
+.comments a {
+  font-size: 12px;
+}
+
+.comments small.small--right {
+  float: right;
+}
+
 .comment {
+  margin-bottom: 30px;
   margin-left: 25px;
 }
 
@@ -28,11 +45,12 @@
   border-radius: 0 0 5px 5px;
 }
 
-.comment-form textarea {
-  min-height: 24px;
+.comment-form .control:first-of-type {
+  flex-grow: 1;
 }
 
 .comment-form .label {
   font-size: 12px;
   font-weight: 500;
+  line-height: 1;
 }

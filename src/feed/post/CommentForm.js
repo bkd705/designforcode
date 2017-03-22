@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import md5 from 'blueimp-md5'
-import InputField from '../../form/InputField'
+import TextArea from '../../form/TextArea'
 
 class CommentForm extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class CommentForm extends React.Component {
   onSubmit = (e) => {
     e.preventDefault()
 
-    console.log(this.state)
+    this.props.addComment(this.state.comment)
   }
 
   render() {
@@ -38,8 +38,9 @@ class CommentForm extends React.Component {
 
         <div className="media-content">
           <form onSubmit={this.onSubmit} className="comment-form">
-            <div className="field">
-              <InputField
+            <label className="label">Your comment</label>
+            <div className="field is-grouped">
+              <TextArea
                 name="comment"
                 value={comment}
                 placeholder="Add a comment"
@@ -47,7 +48,11 @@ class CommentForm extends React.Component {
                 error={errors.comment}
               />
 
-              <button type="submit" style={{ display: 'none' }}></button>
+              <p className="control">
+                <button className="button is-info">
+                  Add
+                </button>
+              </p>
             </div>
           </form>
         </div>
