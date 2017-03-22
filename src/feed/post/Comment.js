@@ -8,7 +8,7 @@ const Comment = ({ comment }) => {
       <article className="media">
         <div className="media-left">
           <figure className="image is-48x48">
-            <img src={`https://www.gravatar.com/avatar/${md5(comment.user.email)}?s=128x128`} alt={`${comment.user.username}'s avatar`}/>
+            <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(comment.user.email)}?s=128x128`} alt={`${comment.user.username}'s avatar`}/>
           </figure>
         </div>
 

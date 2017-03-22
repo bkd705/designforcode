@@ -30,8 +30,10 @@ class CommentList extends React.Component {
             return <Comment comment={comment} key={comment.id} />
           })}
 
-          <a onClick={this.toggleExpanded}>Show all comments</a>
-          <small className="small--right">{`${slicedComments.length} of ${comments.length} comments`}</small>
+          <div className="comments-meta">
+            <a onClick={this.toggleExpanded}>Show all comments</a>
+            <small className="small--right">{`${slicedComments.length} of ${comments.length} comments`}</small>
+          </div>
         </div>
       )
     } else {
@@ -41,7 +43,7 @@ class CommentList extends React.Component {
             return <Comment comment={comment} key={comment.id} />
           })}
 
-          { comments.length > 3 ? <a onClick={this.toggleExpanded}>Hide comments</a> : '' }
+          { comments.length > 3 ? <div className="comments-meta"><a onClick={this.toggleExpanded}>Hide comments</a></div> : '' }
         </div>
       )
     }

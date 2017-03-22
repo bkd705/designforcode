@@ -17,7 +17,7 @@
 
 .feed .post .box {
   box-shadow: 0 0 0 1px rgba(10,10,10,.1);
-  border-radius: 5px 5px 0 0;
+  border-radius: 3px 3px 0 0;
   margin-bottom: 0;
 }
 
@@ -41,8 +41,17 @@
   margin-left: 25px;
 }
 
+.comment:last-of-type {
+  margin-bottom: 0;
+}
+
 .feed .post .box.add-comment {
-  border-radius: 0 0 5px 5px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 3px 3px;
+}
+
+.add-comment textarea {
+  min-height: 75px;
 }
 
 .comment-form .control:first-of-type {
@@ -53,4 +62,8 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 1;
+}
+
+.image--avatar {
+  border-radius: 5px;
 }

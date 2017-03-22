@@ -64,7 +64,7 @@ class Post extends React.Component {
           <article className="media">
             <div className="media-left">
               <figure className="image is-64x64">
-                <img src={`https://www.gravatar.com/avatar/${md5(user.email)}?s=128x128`} alt={`${user.username}'s avatar`}/>
+                <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(user.email)}?s=128x128`} alt={`${user.username}'s avatar`}/>
               </figure>
             </div>
             <div className="media-content">
@@ -83,7 +83,7 @@ class Post extends React.Component {
         { comments.length > 0 ? <CommentList comments={comments} /> : '' }
 
         <div className="box add-comment">
-          { showComment ? <CommentForm addComment={this.addComment} /> : <a onClick={this.toggleCommentForm}>Add a comment</a> }
+          { showComment ? <CommentForm addComment={this.addComment} /> : <small><a onClick={this.toggleCommentForm}>Add a comment</a></small> }
         </div>
       </div>
     )
