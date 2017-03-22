@@ -15,7 +15,8 @@ class Feed extends React.Component {
   }
 
   componentDidMount() {
-    Api.fetchPosts()
+    if(this.state.posts.length <= 0) {
+       Api.fetchPosts()
       .then(res => {
         this.setState({
           posts: res.data.posts,
@@ -25,6 +26,7 @@ class Feed extends React.Component {
       .catch(err => {
         console.log(err)
       })
+    }
   }
 
   changeFilter = (e, filter) => {
