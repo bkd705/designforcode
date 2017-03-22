@@ -2,17 +2,16 @@ import statusHelper from '../util/StatusHelper'
 
 export default class Api {
   static update (data) {
-    return fetch(`/user/${data.id}/profile`, {
+    return fetch(`/user/${data.user_id}/profile`, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
       },
       body: JSON.stringify(data)
     })
-    .then(statusHelper)
     .then(res => res.json())
     .catch(err => err)
-    .then(data => data)
   }
 }

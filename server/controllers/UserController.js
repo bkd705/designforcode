@@ -239,6 +239,7 @@ export default class UserController {
     const user = await User.query({ where: conditionalWhere }).fetch()
     if (!user) {
       ctx.body = JRes.success('Available!')
+      return
     }
 
     SendError(ctx, 400, 'Unavailable!')

@@ -13,7 +13,8 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch(action.type) {
-    case types.AUTH_LOGIN_SUCCESS:
+    case types.AUTH_SET_USER:
+      console.log(action)
       localStorage.setItem('user_token', action.token)
       return {
         ...state,
@@ -21,20 +22,7 @@ export default (state = initialState, action = {}) => {
         token: action.token,
         isAuthenticated: true,
       }
-    case types.AUTH_LOGIN_FAILURE:
-      return {
-        ...state,
-        error: action.err
-      }
-    case types.AUTH_SIGNUP_SUCCESS:
-      localStorage.setItem('user_token', action.token)
-      return {
-        ...state,
-        user: action.user,
-        token: action.token,
-        isAuthenticated: true,
-      }
-    case types.AUTH_SIGNUP_FAILURE:
+    case types.AUTH_USER_ERROR:
       return {
         ...state,
         error: action.err

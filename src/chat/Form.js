@@ -76,10 +76,10 @@ class ChatForm extends React.Component {
 
   render() {
     return (
-    <section className="section">
-      <h1>{ this.state.response }</h1>
-      <button onClick={ this.sendMessage }>Send Msg </button>
-    </section>
+      <section className="section">
+        <h1>{ this.state.response }</h1>
+        <button onClick={ this.sendMessage }>Send Msg </button>
+      </section>
     )
   }
 }

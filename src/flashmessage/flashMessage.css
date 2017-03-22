@@ -1,0 +1,30 @@
+.flashmessage-container {
+  min-width: 200px;
+  max-width: 25%;
+  position: absolute;
+  right: 7em;
+  z-index: 999;
+  display: flex;
+  flex-direction: column-reverse;
+  transition: height 250ms ease-in-out;
+}
+
+.flashmessage-container .notification {
+  z-index: 999;
+  margin-bottom: 10px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  animation: flashmessage 750ms ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes flashmessage {
+  0% {
+    opacity: 0;
+    top: -175px;
+  }
+
+  100% {
+    opacity: 1;
+    top: 0;
+  }
+}

@@ -4,7 +4,13 @@ export default class Helpers {
 
     let temp = {}
     values.forEach(value => {
-      if (original[value] !== undefined) {
+      if (typeof value === 'object') {
+        if (Array.isArray(original[value.attribute])) {
+          temp[value.attribute] = this.transformArray(original[value.attribute], value.fields)
+        } else {
+          temp[value.attribute] = this.transformObj(original[value.attribute], value.fields)
+        }
+      } else if (original[value] !== undefined) {
         temp[value] = original[value]
       }
     })

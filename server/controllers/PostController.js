@@ -8,6 +8,7 @@ import SendError from '../util/SendError'
 
 // Import models
 import Post from '../models/Post'
+import User from '../models/User'
 
 export default class PostController {
 
@@ -62,6 +63,59 @@ export default class PostController {
       ]),
       comments: Helpers.transformArray(post.relations.comments.serialize(), [
         'id', 'post_id', 'user_id', 'body', 'created_at'
+      ])
+    })
+  }
+
+  static async fetchPosts(ctx, next) {
+    const opts = { withRelated: ['comments', 'user'] }
+
+    // Limit/offset
+    let start = 0
+    let count = 10
+
+    // Validate and set start offset
+    if (ctx.request.query.start && ctx.request.query.start >= 0) {
+      start = ctx.request.query.start
+    }
+
+    // Validate and set end offset
+    if (ctx.request.query.count && ctx.request.query.count > 0) {
+      count = ctx.request.query.count
+    }
+
+    // Get all posts
+    let posts = await Post.query(qb => {
+      qb.orderBy('created_at', 'desc')
+      qb.limit(count).offset(start)
+    }).fetchAll(opts)
+
+    // If none, return
+    if (!posts) {
+      return SendError(ctx, 400, 'No posts at this time!', posts)
+    }
+
+    // Serialize so we can iterate through results
+    const serialized = posts.serialize()
+
+    // Iterate over comments, and fetch users associated with comments
+    // TODO (FUTURE): Use a raw query to fetch this shit so no need for these loops
+    for (let i = 0; i < serialized.length; i++) {
+      for (let c = 0; c < serialized[i].comments.length; c++) {
+        const user = await User.find(serialized[i].comments[c].user_id)
+        serialized[i].comments[c]['user'] = Helpers.transformObj(user.attributes, [
+          'id', 'username', 'email'
+        ])
+        delete serialized[i].comments[c]['user_id']
+      }
+    }
+
+    ctx.body = JRes.success('Posts found', {
+      posts: Helpers.transformArray(serialized, [
+        'id',
+        { attribute: 'user', fields: ['id', 'username', 'email'] },
+        'title', 'description', 'type', 'created_at',
+        { attribute: 'comments', fields: ['id', 'user', 'body', 'created_at'] }
       ])
     })
   }

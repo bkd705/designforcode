@@ -1,10 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { addFlashMessage } from '../flashmessage/actions'
 import { validateProfile } from '../util/FormValidations'
+import TransformObj from '../util/TransformObj'
 import InputField from '../form/InputField'
 import TextArea from '../form/TextArea'
 import SelectInput from '../form/SelectInput'
+import Api from './api'
 
 class ProfileForm extends React.Component {
   constructor(props) {
@@ -46,7 +49,18 @@ class ProfileForm extends React.Component {
       errors: {}
     })
     if(this.isValid()) {
-      this.context.router.push('/')
+      Api.update(TransformObj(this.state, ['user_id', 'first_name', 'last_name', 'profession', 'skill_level', 'description']))
+        .then(res => {
+          if(res.success) {
+            this.props.dispatch(addFlashMessage({ type: 'success', text: 'Profile updated successfully!!' }))
+            this.context.router.push('/')
+          } else {
+            this.props.dispatch(addFlashMessage({ type: 'error', text: res.message }))
+          }
+        })
+        .catch(err => {
+          this.props.dispatch(addFlashMessage({ type: 'error', text: err }))
+        })
     }
   }
 
@@ -56,6 +70,7 @@ class ProfileForm extends React.Component {
     const isNewSubHeading = ( <h4 className="subtitle">Create your profile now to help other understand who you are and what you do!</h4> )
     const isUpdateSubHeading = ( <h4 className="subtitle">Update your profile!</h4> )
 
+    console.log(this.state)
     return (
       <section className="section">
       <div className="container">
@@ -66,7 +81,7 @@ class ProfileForm extends React.Component {
               { this.props.isNew ? isNewSubHeading : isUpdateSubHeading}
             </div>
             <form onSubmit={this.onSubmit}>
-              <div className="control is-grouped">
+              <div className="field is-grouped">
                   <InputField
                     name="first_name"
                     label="First Name"
@@ -86,7 +101,7 @@ class ProfileForm extends React.Component {
                   />
               </div>
 
-              <div className="control is-grouped">
+              <div className="field is-grouped">
                 <SelectInput
                   label="Profession"
                   name="profession"
@@ -108,16 +123,18 @@ class ProfileForm extends React.Component {
                 />
               </div>
 
-              <TextArea
-                label="Description"
-                name="description"
-                value={description}
-                placholder="Talk about you a little!"
-                onChange={this.onChange}
-                error={errors.description}
-              />
+              <div className="field">
+                <TextArea
+                  label="Description"
+                  name="description"
+                  value={description}
+                  placholder="Talk about you a little!"
+                  onChange={this.onChange}
+                  error={errors.description}
+                />
+              </div>
 
-              <div className="control is-grouped">
+              <div className="field">
                 <p className="control">
                   <button className="button is-primary" type="submit">Save Profile</button>
                 </p>
