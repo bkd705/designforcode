@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router'
 import io from 'socket.io-client'
 
 class ChatForm extends React.Component {

@@ -1,23 +1,40 @@
 import React from 'react'
+import md5 from 'blueimp-md5'
+import AgoDate from './AgoDate'
+import Comment from './Comment'
+import CommentForm from './CommentForm'
 
-const Post = ( { post: { id, created_at, updated_at, title, description, comments } } ) => {
+const Post = ( { post: { id, created_at, updated_at, user, title, description, comments } } ) => {
   return (
-    <div className="box">
-      <div className="media-content">
-        <div className="content">
-          <p>
-            <strong>{title}</strong> <small>{created_at}</small>
-            <br />
+    <div className="post">
+      <div className="box">
+        <article className="media">
+          <div className="media-left">
+            <figure className="image is-64x64">
+              <img src={`https://www.gravatar.com/avatar/${md5(user.email)}?s=128x128`} alt={`${user.username}'s avatar`}/>
+            </figure>
+          </div>
+          <div className="media-content">
+            <div className="content">
+              <p>
+                <strong>{title}</strong> <a href={`/profile/${user.username}`}><small>{user.username}</small></a> <AgoDate date={created_at}/>
+                <br />
 
-            {description}
-          </p>
+                {description}
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
 
-          <ul>
+      <div className="box comments">
             {comments.map(comment => {
-              return <li key={comment.id}>{comment.body}</li>
+              return <Comment comment={comment} key={comment.id}/>
             })}
-          </ul>
-        </div>
+      </div>
+
+      <div className="box add-comment">
+        <CommentForm />
       </div>
     </div>
   )

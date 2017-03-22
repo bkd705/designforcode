@@ -17,15 +17,15 @@ class Feed extends React.Component {
   componentDidMount() {
     if(this.state.posts.length <= 0) {
        Api.fetchPosts()
-      .then(res => {
-        this.setState({
-          posts: res.data.posts,
-          filteredPosts: res.data.posts
+        .then(res => {
+          this.setState({
+            posts: res.data.posts,
+            filteredPosts: res.data.posts
+          })
         })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 

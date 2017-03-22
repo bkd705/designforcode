@@ -1055,6 +1055,10 @@ bluebird@^3.3.5, bluebird@^3.4.3, bluebird@^3.4.6:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
+blueimp-md5@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/blueimp-md5/-/blueimp-md5-2.7.0.tgz#7f518e0dd70467fefe28ecba398916092f2a02a9"
+
 bookshelf-cascade-delete@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/bookshelf-cascade-delete/-/bookshelf-cascade-delete-2.0.1.tgz#411a83e3c838954b923914bd73fac21271a3ae9c"

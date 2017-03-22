@@ -1,5 +1,3 @@
-import statusHelper from '../util/StatusHelper'
-
 export default class Api {
   static signup (data) {
     return fetch('/user/create', {

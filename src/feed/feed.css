@@ -6,3 +6,33 @@
   max-width: 960px;
   margin: 50px auto 0 auto;
 }
+
+.feed .post .box {
+  box-shadow: 0 0 0 1px rgba(10,10,10,.1);
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 0;
+}
+
+.feed .post .box.comments {
+  margin-top: 0;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 0 1px rgba(10,10,10,.1);
+  border-radius: 0;
+}
+
+.comment {
+  margin-left: 25px;
+}
+
+.feed .post .box.add-comment {
+  border-radius: 0 0 5px 5px;
+}
+
+.comment-form textarea {
+  min-height: 24px;
+}
+
+.comment-form .label {
+  font-size: 12px;
+  font-weight: 500;
+}

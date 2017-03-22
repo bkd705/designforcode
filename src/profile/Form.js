@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
 import { addFlashMessage } from '../flashmessage/actions'
 import { validateProfile } from '../util/FormValidations'
 import TransformObj from '../util/TransformObj'
@@ -20,8 +19,7 @@ class ProfileForm extends React.Component {
       profession: '',
       skill_level: '',
       description: '',
-      errors: {},
-      helpers: {}
+      errors: {}
     }
   }
 
@@ -65,7 +63,7 @@ class ProfileForm extends React.Component {
   }
 
   render() {
-    const { first_name, last_name, profession, skill_level, description, errors, helpers } = this.state
+    const { first_name, last_name, profession, skill_level, description, errors } = this.state
 
     const isNewSubHeading = ( <h4 className="subtitle">Create your profile now to help other understand who you are and what you do!</h4> )
     const isUpdateSubHeading = ( <h4 className="subtitle">Update your profile!</h4> )
