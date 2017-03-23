@@ -34,10 +34,12 @@ module.exports = (io) => {
         JRes.success('Received private message', { message: data.message })
       )
 
-      socket.emit(
-        'send-message-success',
-        JRes.success('Successfully sent private message!')
-      )
+      const sent = await SocketController.createMessage(auth.data.sender.id, auth.data.recipient.id, data.message)
+      if (!sent) {
+         socket.emit('send-message-error', sent)
+      }
+
+      socket.emit('send-message-success', JRes.success('Successfully sent private message!'))
     })
 
     socket.on('join', async (data) => {
@@ -47,9 +49,23 @@ module.exports = (io) => {
       }
 
       socket.join(auth.data.room)
+
+      // Emit success
       socket.emit(
         'join-success',
         JRes.success('Successfully joined private chat!', { recipient: auth.data.recipient })
+      )
+
+      // Retreive messages
+      const messages = await SocketController.fetchMessages(auth.data.sender.id, auth.data.recipient.id)
+      if (!messages.success) {
+        return socket.emit('fetch-messages-error', messages)
+      }
+
+      // Emit messages in room
+      socket.emit(
+        'fetch-messages-success',
+        JRes.success('Successfully fetched messages!', { messages: messages.data.messages })
       )
     })
   })
