@@ -1,5 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Api from './Api'
+import { addFlashMessage } from '../flashmessage/actions'
 import Post from './post/Post'
 import PostForm from './post/Form'
 import './feed.css'
@@ -26,7 +28,7 @@ class Feed extends React.Component {
           })
         })
         .catch(err => {
-          console.log(err)
+          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching posts: ${err}`}))
         })
     }
   }
@@ -35,19 +37,26 @@ class Feed extends React.Component {
     Api.deletePost(id)
       .then(res => {
         if(res.success) {
-          const postsCopy = [ ...this.state.filteredPosts ]
+          const postsCopy = [ ...this.state.posts ]
+          const filteredPostsCopy = [ ...this.state.filteredPosts ]
           const index = postsCopy.findIndex(x => x.id === id)
 
           this.setState({
             filteredPosts: [
+              ...filteredPostsCopy.slice(0, index),
+              ...filteredPostsCopy.slice(index + 1)
+            ],
+            posts: [
               ...postsCopy.slice(0, index),
               ...postsCopy.slice(index + 1)
             ]
           })
+
+          this.props.dispatch(addFlashMessage({ type: 'success', text: 'Post deleted successfully!'}))
         }
       })
       .catch(err => {
-        console.log(err)
+        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred deleting the post: ${err}`}))
       })
   }
 
@@ -116,4 +125,4 @@ class Feed extends React.Component {
   }
 }
 
-export default Feed
+export default connect()(Feed)

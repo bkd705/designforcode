@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import md5 from 'blueimp-md5'
+import { addFlashMessage } from '../../flashmessage/actions'
 import AgoDate from './AgoDate'
 import CommentForm from './CommentForm'
 import CommentList from './CommentList'
@@ -52,25 +53,31 @@ class Post extends React.Component {
           }))
         }
       })
+      .catch(err => {
+        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred saving comment: ${err}`}))
+      })
   }
 
   deleteComment = (e, id) => {
     e.preventDefault()
 
     Api.deleteComment(id)
-    .then(res => {
-      if(res.success) {
-        const commentsCopy = [ ...this.state.comments ]
-        const index = commentsCopy.findIndex(x => x.id === id)
+      .then(res => {
+        if(res.success) {
+          const commentsCopy = [ ...this.state.comments ]
+          const index = commentsCopy.findIndex(x => x.id === id)
 
-        this.setState({
-          comments: [
-            ...commentsCopy.slice(0, index),
-            ...commentsCopy.slice(index + 1)
-          ]
-        })
-      }
-    })
+          this.setState({
+            comments: [
+              ...commentsCopy.slice(0, index),
+              ...commentsCopy.slice(index + 1)
+            ]
+          })
+        }
+      })
+      .catch(err => {
+        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred deleting the comment: ${err}`}))
+      })
   }
 
   toggleExpandedComments = (e) => {
