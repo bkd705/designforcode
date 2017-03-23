@@ -1,6 +1,7 @@
 import React from 'react'
 import Api from './Api'
 import Post from './post/Post'
+import PostForm from './post/Form'
 import './feed.css'
 
 class Feed extends React.Component {
@@ -11,6 +12,7 @@ class Feed extends React.Component {
       posts: [],
       filteredPosts: [],
       typeFilter: 'all',
+      showPostForm: false
     }
   }
 
@@ -40,6 +42,14 @@ class Feed extends React.Component {
         filteredPosts: newFilteredPosts
       })
     }
+  }
+
+  togglePostForm = (e) => {
+    e.preventDefault()
+
+    this.setState(prevState => ({
+      showPostForm: !prevState.showPostForm
+    }))
   }
 
   render() {
@@ -72,10 +82,11 @@ class Feed extends React.Component {
             <p className="level-item">Looking for:</p>
             <p className="level-item"><a onClick={(e) => this.changeFilter(e, 'design')}>{ typeFilter === 'design' ? <strong>Design</strong> : 'Design' }</a></p>
             <p className="level-item"><a onClick={(e) => this.changeFilter(e, 'code')}>{ typeFilter === 'code' ? <strong>Code</strong> : 'Code' }</a></p>
-            <p className="level-item"><a className="button is-success">Create Yours</a></p>
+            <p className="level-item"><a className="button is-success" onClick={this.togglePostForm}>Create Yours</a></p>
           </div>
         </nav>
         <div className="feed">
+          { this.state.showPostForm ? <PostForm togglePostForm={this.togglePostForm} /> : '' }
           {this.state.filteredPosts.map(post => {
             return <Post post={post} key={post.id} />
           })}

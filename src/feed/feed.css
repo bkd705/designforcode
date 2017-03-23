@@ -54,6 +54,10 @@
   flex-grow: 1;
 }
 
+.post-form .textarea--grow .control:first-of-type {
+  flex-grow: 1;
+}
+
 .comment-form .label {
   font-size: 12px;
   font-weight: 500;

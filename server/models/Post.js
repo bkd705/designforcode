@@ -23,7 +23,7 @@ class Post extends Bookshelf.Model {
    */
   static getRules(required = false) {
     let rules = {
-      title: 'min:5|max:50',
+      title: 'min:1|max:50',
       description: 'string',
       type: 'in:code,design'
     }
