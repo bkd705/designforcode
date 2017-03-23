@@ -21,7 +21,6 @@ class CommentForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-
     this.props.addComment(this.state.comment)
   }
 

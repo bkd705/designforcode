@@ -1,53 +1,40 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Comment from './Comment'
 
-class CommentList extends React.Component {
-  constructor(props) {
-    super(props)
+const CommentList = ({ comments, expanded, currentUser, deleteComment, toggleComments }) => {
+  if(comments.length > 3 && !expanded) {
+    const slicedComments = comments.slice(comments.length - 3, comments.length)
 
-    this.state = {
-      expanded: false
-    }
-  }
+    return (
+      <div className="box comments">
+        {slicedComments.map(comment => {
+          return <Comment comment={comment} deleteComment={deleteComment} currentUser={currentUser} key={comment.id} />
+        })}
 
-  toggleExpanded = (e) => {
-    e.preventDefault()
-
-    this.setState(prevState => ({
-      expanded: !prevState.expanded
-    }))
-  }
-
-  render() {
-    const { comments } = this.props
-
-    if(comments.length > 3 && !this.state.expanded) {
-      const slicedComments = comments.slice(comments.length - 3, comments.length)
-
-      return (
-        <div className="box comments">
-          {slicedComments.map(comment => {
-            return <Comment comment={comment} key={comment.id} />
-          })}
-
-          <div className="comments-meta">
-            <a onClick={this.toggleExpanded}>Show all comments</a>
-            <small className="small--right">{`${slicedComments.length} of ${comments.length} comments`}</small>
-          </div>
+        <div className="comments-meta">
+          <a onClick={toggleComments}>Show all comments</a>
+          <small className="small--right">{`${slicedComments.length} of ${comments.length} comments`}</small>
         </div>
-      )
-    } else {
-      return (
-        <div className="box comments">
-          {comments.map(comment => {
-            return <Comment comment={comment} key={comment.id} />
-          })}
+      </div>
+    )
+  } else {
+    return (
+      <div className="box comments">
+        {comments.map(comment => {
+          return <Comment comment={comment} deleteComment={deleteComment} currentUser={currentUser} key={comment.id} />
+        })}
 
-          { comments.length > 3 ? <div className="comments-meta"><a onClick={this.toggleExpanded}>Hide comments</a></div> : '' }
-        </div>
-      )
-    }
+        { comments.length > 3 ? <div className="comments-meta"><a onClick={toggleComments}>Hide comments</a></div> : '' }
+      </div>
+    )
   }
 }
 
-export default CommentList
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps)(CommentList)

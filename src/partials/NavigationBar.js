@@ -26,7 +26,7 @@ class NavigationBar extends React.Component {
   render() {
     const authLinks = (
       <div className={`nav-right nav-menu ${this.state.navExpanded ? 'is-active' : ''}`}>
-        <Link path="/profile/update" className="nav-item">Profile</Link>
+        <Link to="/profile/update" className="nav-item">Profile</Link>
         <Link onClick={this.logout} className="nav-item">Logout</Link>
       </div>
     )

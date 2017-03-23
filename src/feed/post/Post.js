@@ -11,17 +11,18 @@ class Post extends React.Component {
     super(props)
 
     this.state = {
-      showComment: false,
+      showCommentForm: false,
+      expanded: false,
       comments: []
     }
   }
 
-  toggleCommentForm = (e) => {
-    e.preventDefault()
-
-    this.setState(prevState => ({
-      showComment: !prevState.showComment
-    }))
+  componentWillMount() {
+    if(this.props.post.comments.length > 0) {
+      this.setState({
+        comments: this.props.post.comments
+      })
+    }
   }
 
   addComment = (comment) => {
@@ -46,17 +47,51 @@ class Post extends React.Component {
             comments: [
               ...prevState.comments,
               commentWithUser
-            ]
+            ],
+            showCommentForm: false
           }))
         }
       })
   }
 
-  render() {
-    const { post: { id, created_at, updated_at, user, title, description } } = this.props
-    const { showComment } = this.state
+  deleteComment = (e, id) => {
+    e.preventDefault()
 
-    const comments = [ ...this.props.post.comments, ...this.state.comments ]
+    Api.deleteComment(id)
+    .then(res => {
+      if(res.success) {
+        const commentsCopy = [ ...this.state.comments ]
+        const index = commentsCopy.findIndex(x => x.id === id)
+
+        this.setState({
+          comments: [
+            ...commentsCopy.slice(0, index),
+            ...commentsCopy.slice(index + 1)
+          ]
+        })
+      }
+    })
+  }
+
+  toggleExpandedComments = (e) => {
+    e.preventDefault()
+
+    this.setState(prevState => ({
+      expanded: !prevState.expanded
+    }))
+  }
+
+  toggleCommentForm = (e) => {
+    e.preventDefault()
+
+    this.setState(prevState => ({
+      showCommentForm: !prevState.showCommentForm
+    }))
+  }
+
+  render() {
+    const { post: { type, created_at, user, title, description } } = this.props
+    const { showCommentForm, expanded, comments } = this.state
 
     return (
       <div className="post">
@@ -71,6 +106,7 @@ class Post extends React.Component {
               <div className="content">
                 <p>
                   <strong>{title}</strong> <a href={`/profile/${user.username}`}><small>{user.username}</small></a> <AgoDate date={created_at}/>
+                  <span className="tag is-info pull-right">{ type === 'design' ? 'Design' : 'Code' }</span>
                   <br />
 
                   {description}
@@ -80,10 +116,17 @@ class Post extends React.Component {
           </article>
         </div>
 
-        { comments.length > 0 ? <CommentList comments={comments} /> : '' }
+        { comments.length > 0 
+        ? <CommentList 
+            comments={comments} 
+            expanded={expanded} 
+            deleteComment={this.deleteComment} 
+            toggleComments={this.toggleExpandedComments} 
+          /> 
+        : '' }
 
         <div className="box add-comment">
-          { showComment ? <CommentForm addComment={this.addComment} /> : <small><a onClick={this.toggleCommentForm}>Add a comment</a></small> }
+          { showCommentForm ? <CommentForm addComment={this.addComment} /> : <small><a onClick={this.toggleCommentForm}>Add a comment</a></small> }
         </div>
       </div>
     )

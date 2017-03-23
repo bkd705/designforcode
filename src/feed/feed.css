@@ -11,10 +11,6 @@
   margin-bottom: 50px;
 }
 
-.feed .post:last-of-type {
-  margin-bottom: 0;
-}
-
 .feed .post .box {
   box-shadow: 0 0 0 1px rgba(10,10,10,.1);
   border-radius: 3px 3px 0 0;
@@ -65,5 +61,18 @@
 }
 
 .image--avatar {
-  border-radius: 5px;
+  border-radius: 3px;
+}
+
+.comment .meta-buttons {
+  opacity: 0;
+  transition: all 250ms ease-in-out;
+}
+
+.comment:hover .meta-buttons {
+  opacity: 1;
+}
+
+span.tag.is-info {
+  background-color: rgba(50,115,220, 0.8);
 }

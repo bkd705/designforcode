@@ -2,7 +2,20 @@ import React from 'react'
 import md5 from 'blueimp-md5'
 import AgoDate from './AgoDate'
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, currentUser, deleteComment }) => {
+
+  const deleteButton = (
+    <nav className="level is-mobile meta-buttons">
+      <div className="level-right">
+        <a onClick={(e) => deleteComment(e, comment.id)} className="level-item is-danger">
+          <span className="icon is-small">
+            <i className="fa fa-trash"></i>
+          </span>
+        </a>
+      </div>
+    </nav>
+  )
+
   return (
     <div className="comment">
       <article className="media">
@@ -11,7 +24,6 @@ const Comment = ({ comment }) => {
             <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(comment.user.email)}?s=128x128`} alt={`${comment.user.username}'s avatar`}/>
           </figure>
         </div>
-
         <div className="media-content">
             <div className="content">
               <p>
@@ -22,6 +34,8 @@ const Comment = ({ comment }) => {
               </p>
             </div>
           </div>
+
+          { currentUser && currentUser.id === comment.user.id ? deleteButton : '' }
       </article>
     </div>
   )

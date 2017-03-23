@@ -18,6 +18,17 @@ class Api {
       .then(res => res.json())
       .catch(err => err)
   }
+
+  static deleteComment(id) {
+    return fetch(`/comment/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+      }
+    })
+      .then(res => res.json())
+      .catch(err => err) 
+  }
 }
 
 export default Api
