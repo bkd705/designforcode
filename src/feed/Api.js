@@ -29,6 +29,31 @@ class Api {
       .then(res => res.json())
       .catch(err => err) 
   }
+
+  static storePost(post) {
+    return fetch('/post/create', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+      },
+      body: JSON.stringify(post)
+    })
+      .then(res => res.json())
+      .catch(err => err)
+  }
+
+  static deletePost(id) {
+    return fetch(`/post/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+      }
+    })
+      .then(res => res.json())
+      .catch(err => err) 
+  }
 }
 
 export default Api

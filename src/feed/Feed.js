@@ -31,6 +31,26 @@ class Feed extends React.Component {
     }
   }
 
+  deletePost = (e, id) => {
+    Api.deletePost(id)
+      .then(res => {
+        if(res.success) {
+          const postsCopy = [ ...this.state.filteredPosts ]
+          const index = postsCopy.findIndex(x => x.id === id)
+
+          this.setState({
+            filteredPosts: [
+              ...postsCopy.slice(0, index),
+              ...postsCopy.slice(index + 1)
+            ]
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   changeFilter = (e, filter) => {
     e.preventDefault()
 
@@ -88,7 +108,7 @@ class Feed extends React.Component {
         <div className="feed">
           { this.state.showPostForm ? <PostForm togglePostForm={this.togglePostForm} /> : '' }
           {this.state.filteredPosts.map(post => {
-            return <Post post={post} key={post.id} />
+            return <Post post={post} key={post.id} deletePost={this.deletePost} />
           })}
         </div>
       </div>

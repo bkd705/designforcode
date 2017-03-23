@@ -90,8 +90,22 @@ class Post extends React.Component {
   }
 
   render() {
-    const { post: { type, created_at, user, title, description } } = this.props
+    const { post: { id, type, created_at, user, title, description }, deletePost } = this.props
     const { showCommentForm, expanded, comments } = this.state
+
+    const postAuthButtons = (
+      <nav className="level is-mobile">
+        <div className="level-left">
+          <a className="level-item">
+            <span className="icon is-small"><i className="fa fa-pencil"></i></span>
+          </a>
+
+          <a className="level-item" onClick={(e) => deletePost(e, id)}>
+            <span className="icon is-small"><i className="fa fa-trash"></i></span>
+          </a>
+        </div>
+      </nav>
+    )
 
     return (
       <div className="post">
@@ -113,6 +127,8 @@ class Post extends React.Component {
                   {description}
                 </p>
               </div>
+
+              { this.props.user.id === user.id ? postAuthButtons : '' }
             </div>
           </article>
         </div>
