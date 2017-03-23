@@ -31,6 +31,7 @@ require('./routes/UserRoutes')(router)
 require('./routes/AuthRoutes')(router)
 require('./routes/CommentRoutes')(router)
 require('./routes/PostRoutes')(router)
+require('./routes/SearchRoutes')(router)
 
 // Serve front-end route
 router.get('*', function * (next) {

@@ -48,6 +48,38 @@ class ChatForm extends React.Component {
       })
     })
 
+    socket.on('send-message-success', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.message
+      })
+    })
+
+    socket.on('send-message-error', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.error
+      })
+    })
+
+    socket.on('fetch-messages-error', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.error
+      })
+    })
+
+    socket.on('fetch-messages-success', data => {
+      console.log(data)
+
+      this.setState({
+        response: data.message
+      })
+    })
+
     socket.on('join-error', data => {
       console.log(data)
 
