@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import md5 from 'blueimp-md5'
+import TransformObj from '../../util/TransformObj'
 import TextArea from '../../form/TextArea'
 import InputField from '../../form/InputField'
 
@@ -19,7 +20,7 @@ class PostForm extends React.Component {
   onSubmit = (e) => {
     e.preventDefault()
 
-    console.log(this.state)
+    this.props.storePost(TransformObj(this.state, ['title', 'description', 'type']))
   }
 
   onChange = (e) => {

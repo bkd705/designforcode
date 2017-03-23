@@ -33,6 +33,38 @@ class Feed extends React.Component {
     }
   }
 
+  storePost = (post) => {
+    Api.storePost(post)
+      .then(res => {
+        if(res.success) {
+          const postWithUser = {
+            ...res.data.post,
+            user: {
+              id: this.props.user.id,
+              username: this.props.user.username,
+              email: this.props.user.email
+            },
+            comments: []
+          }
+          this.setState(prevState => ({
+            posts: [
+              postWithUser,
+              ...prevState.posts
+            ],
+            filteredPosts: [
+              postWithUser,
+              ...prevState.filteredPosts
+            ],
+            typeFilter: 'all',
+            showPostForm: false
+          }))
+        }
+      })
+      .catch(err => {
+        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred saving post: ${err}`}))
+      })
+  }
+
   deletePost = (e, id) => {
     Api.deletePost(id)
       .then(res => {
@@ -115,7 +147,7 @@ class Feed extends React.Component {
           </div>
         </nav>
         <div className="feed">
-          { this.state.showPostForm ? <PostForm togglePostForm={this.togglePostForm} /> : '' }
+          { this.state.showPostForm ? <PostForm togglePostForm={this.togglePostForm} storePost={this.storePost} /> : '' }
           {this.state.filteredPosts.map(post => {
             return <Post post={post} key={post.id} deletePost={this.deletePost} />
           })}
@@ -125,4 +157,10 @@ class Feed extends React.Component {
   }
 }
 
-export default connect()(Feed)
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps)(Feed)
