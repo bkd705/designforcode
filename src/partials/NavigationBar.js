@@ -45,7 +45,7 @@ class NavigationBar extends React.Component {
     )
 
     return (
-      <section className="hero is-primary is-medium">
+      <section className="hero is-info is-medium is-bold">
         <div className="hero-head">
           <header className="nav">
             <div className="container">

@@ -3,6 +3,7 @@ import md5 from 'blueimp-md5'
 import { connect } from 'react-redux'
 import { addFlashMessage } from '../flashmessage/actions'
 import Api from './api'
+import GitRepoList from './GitRepoList'
 import './profile.css'
 
 class Profile extends React.Component {
@@ -11,7 +12,8 @@ class Profile extends React.Component {
 
     this.state = {
       profile: {},
-      user: {}
+      user: {},
+      gitRepos: []
     }
   }
 
@@ -24,16 +26,32 @@ class Profile extends React.Component {
               profile: res.data.profile,
               user: res.data.user
             })
+            this.fetchGithubRepos()
+          } else {
+            this.context.router.push('/')
+            this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
           }
         })
         .catch(err => {
+          this.context.router.push('/')
           this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching profile: ${err}`}))
         })
     }
   }
 
+  fetchGithubRepos = () => {
+    fetch(`https://api.github.com/users/${this.props.params.username}/repos`)
+        .then(res => res.json())
+        .then(data => {
+          this.setState(prevState => ({
+            gitRepos: [ ...data.slice(0, 3) ]
+          }))
+        })
+        .catch(err => console.log(err))
+  }
+
   render() {
-    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level }} = this.state
+    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level }, gitRepos} = this.state
     return (
       <div className="container profile">
         <div className="columns">
@@ -68,9 +86,25 @@ class Profile extends React.Component {
             </div>
           </div>
         </div>
+
+        <div className="columns">
+          <div className="column">
+            <div className="box">
+              <div className="content">
+                <h4>Github Repos</h4>
+
+                <GitRepoList repos={gitRepos} />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
+}
+
+Profile.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }
 
 export default connect()(Profile)

@@ -10,10 +10,10 @@
   justify-content: center;
 }
 
-.hero.is-primary .is-hero-half h1.title {
+.hero.is-info .is-hero-half h1.title {
   margin-top: -5%;
 }
 
-.hero.is-primary .hero-form h1.title {
+.hero.is-info .hero-form h1.title {
   color: #2c2c2c;
 }
