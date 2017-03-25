@@ -42,6 +42,7 @@
     "shortid": "^2.2.8",
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3",
+    "uuid-validate": "^0.0.2",
     "validator": "^7.0.0"
   },
   "scripts": {

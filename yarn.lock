@@ -6267,6 +6267,10 @@ utils-merge@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
 
+uuid-validate@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/uuid-validate/-/uuid-validate-0.0.2.tgz#ed883d26cf0d1819763abfa315e9626ddb67c8e8"
+
 uuid@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
