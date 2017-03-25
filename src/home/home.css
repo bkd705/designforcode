@@ -1,0 +1,19 @@
+.hero-form .box {
+  box-shadow: 0 0 0 1px rgba(10,10,10,.1);
+  border-radius: 3px;
+  margin-bottom: 0;
+}
+
+.is-hero-half {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero.is-primary .is-hero-half h1.title {
+  margin-top: -5%;
+}
+
+.hero.is-primary .hero-form h1.title {
+  color: #2c2c2c;
+}

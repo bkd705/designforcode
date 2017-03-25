@@ -116,83 +116,71 @@ class SignupForm extends React.Component {
   render() {
     const { username, email, password, password_confirm, errors, helpers } = this.state
     return (
-      <section className="section">
-        <div className="container">
-          <div className="columns">    
-            <div className="column is-half is-offset-one-quarter">
-              <div className="heading">
-                <h3 className="title">Register</h3>
-                <h4 className="subtitle">Sign up for an account today, and get immediate access to the app!</h4>
-              </div>
-              <form onSubmit={this.onSubmit}>
-                <div className="field">
-                  <label className="label">Username</label>
-                  <InputField
-                    label="Username"
-                    name="username"
-                    value={username}
-                    placeholder="Username"
-                    onChange={this.onChange}
-                    error={errors.username}
-                    helper={helpers.username}
-                    onBlur={this.checkExisting}
-                  />
-                </div>
-
-                <div className="field">
-                  <label className="label">E-Mail</label>
-                  <InputField
-                    label="E-Mail"
-                    name="email"
-                    value={email}
-                    placeholder="E-Mail"
-                    onChange={this.onChange}
-                    error={errors.email}
-                    helper={helpers.email}
-                    onBlur={this.checkExisting}
-                  />
-                </div>
-
-                <div className="field">
-                  <label className="label">Password</label>
-                  <InputField
-                    label="Password"
-                    name="password"
-                    value={password}
-                    type="password"
-                    placeholder="Password"
-                    onChange={this.onChange}
-                    error={errors.password}
-                  />
-                </div>
-
-                <div className="field">
-                  <label className="label">Confirm Password</label>
-                  <InputField
-                    label="Confirm Password"
-                    name="password_confirm"
-                    value={password_confirm}
-                    type="password"
-                    placeholder="Confirm Password"
-                    onChange={this.onChange}
-                    error={errors.password_confirm}
-                    onBlur={this.checkPasswordMatch}
-                  />
-                </div>
-
-                <div className="field is-grouped">
-                  <p className="control">
-                    <button className="button is-primary" type="submit">Sign Up</button>
-                  </p>
-                  <p className="control">
-                    <Link to="/"><button className="button is-link">Cancel</button></Link>
-                  </p>
-                </div>
-              </form>
-            </div>
-          </div>
+      <form onSubmit={this.onSubmit}>
+        <div className="field">
+          <label className="label">Username</label>
+          <InputField
+            label="Username"
+            name="username"
+            value={username}
+            placeholder="Username"
+            onChange={this.onChange}
+            error={errors.username}
+            helper={helpers.username}
+            onBlur={this.checkExisting}
+          />
         </div>
-      </section>
+
+        <div className="field">
+          <label className="label">E-Mail</label>
+          <InputField
+            label="E-Mail"
+            name="email"
+            value={email}
+            placeholder="E-Mail"
+            onChange={this.onChange}
+            error={errors.email}
+            helper={helpers.email}
+            onBlur={this.checkExisting}
+          />
+        </div>
+
+        <div className="field">
+          <label className="label">Password</label>
+          <InputField
+            label="Password"
+            name="password"
+            value={password}
+            type="password"
+            placeholder="Password"
+            onChange={this.onChange}
+            error={errors.password}
+          />
+        </div>
+
+        <div className="field">
+          <label className="label">Confirm Password</label>
+          <InputField
+            label="Confirm Password"
+            name="password_confirm"
+            value={password_confirm}
+            type="password"
+            placeholder="Confirm Password"
+            onChange={this.onChange}
+            error={errors.password_confirm}
+            onBlur={this.checkPasswordMatch}
+          />
+        </div>
+
+        <div className="field is-grouped">
+          <p className="control">
+            <button className="button is-primary" type="submit">Sign Up</button>
+          </p>
+          <p className="control">
+            <Link to="/"><button className="button is-link">Cancel</button></Link>
+          </p>
+        </div>
+      </form>
     )
   }
 }

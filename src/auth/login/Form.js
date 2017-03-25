@@ -60,52 +60,40 @@ class LoginForm extends React.Component {
   render() {
     const { username, password, errors } = this.state
     return (
-      <section className="section">
-      <div className="container">
-        <div className="columns">    
-          <div className="column is-half is-offset-one-quarter">
-            <div className="heading">
-              <h3 className="title">Login</h3>
-              <h4 className="subtitle">Log into your account now to access the app!</h4>
-            </div>
-            <form onSubmit={this.onSubmit}>
-              <div className="field">
-                <label className="label">Username</label>
-                <InputField
-                  name="username"
-                  value={username}
-                  placeholder="Username"
-                  onChange={this.onChange}
-                  error={errors.username}
-                />
-              </div>
-
-              <div className="field">
-                <label className="label">Password</label>
-                <InputField
-                  label="Password"
-                  name="password"
-                  value={password}
-                  type="password"
-                  placeholder="Password"
-                  onChange={this.onChange}
-                  error={errors.password}
-                />
-              </div>
-
-              <div className="field is-grouped">
-                <p className="control">
-                  <button className="button is-primary" type="submit">Login</button>
-                </p>
-                <p className="control">
-                  <Link to="/signup"><button className="button is-link">Need an account?</button></Link>
-                </p>
-              </div>
-            </form>
-          </div>
+      <form onSubmit={this.onSubmit}>
+        <div className="field">
+          <label className="label">Username</label>
+          <InputField
+            name="username"
+            value={username}
+            placeholder="Username"
+            onChange={this.onChange}
+            error={errors.username}
+          />
         </div>
-      </div>
-    </section>
+
+        <div className="field">
+          <label className="label">Password</label>
+          <InputField
+            label="Password"
+            name="password"
+            value={password}
+            type="password"
+            placeholder="Password"
+            onChange={this.onChange}
+            error={errors.password}
+          />
+        </div>
+
+        <div className="field is-grouped">
+          <p className="control">
+            <button className="button is-primary" type="submit">Login</button>
+          </p>
+          <p className="control">
+            <Link to="/signup"><button className="button is-link">Need an account?</button></Link>
+          </p>
+        </div>
+      </form>
     )
   }
 }
