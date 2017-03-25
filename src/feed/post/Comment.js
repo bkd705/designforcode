@@ -1,5 +1,6 @@
 import React from 'react'
 import md5 from 'blueimp-md5'
+import { Link } from 'react-router'
 import AgoDate from './AgoDate'
 
 const Comment = ({ comment, currentUser, deleteComment }) => {
@@ -27,7 +28,7 @@ const Comment = ({ comment, currentUser, deleteComment }) => {
         <div className="media-content">
             <div className="content">
               <p>
-                <a href={`/profile/${comment.user.username}`}>{comment.user.username}</a> <small><AgoDate date={comment.created_at}/></small>
+                <Link to={`/profile/${comment.user.username}`}>{comment.user.username}</Link> <small><AgoDate date={comment.created_at}/></small>
                 <br />
 
                 {comment.body}

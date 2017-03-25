@@ -1,9 +1,17 @@
+.profile {
+  margin-top: 50px;
+}
+
 .is-grouped .field {
   margin-left: 10px;
 }
 
 .is-grouped .field:first-of-type {
   margin-left: 0;
+}
+
+.is-capital {
+  text-transform: capitalize;
 }
 
 .profile .box {

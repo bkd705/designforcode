@@ -203,7 +203,7 @@ export default class UserController {
         'id', 'username', 'email', 'role', 'created_at'
       ]),
       profile: Helpers.transformObj(user.relations.profile.attributes, [
-        'firt_name', 'last_name', 'profession', 'skill_level', 'description'
+        'first_name', 'last_name', 'profession', 'skill_level', 'description'
       ])
     })
   }

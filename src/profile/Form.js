@@ -69,7 +69,6 @@ class ProfileForm extends React.Component {
     const isNewSubHeading = ( <h4 className="subtitle">Create your profile now to help other understand who you are and what you do!</h4> )
     const isUpdateSubHeading = ( <h4 className="subtitle">Update your profile!</h4> )
 
-    console.log(this.state)
     return (
       <section className="section">
       <div className="container">

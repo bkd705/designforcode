@@ -20,10 +20,10 @@ const routes = (
 
       <Route path="/chat/:id" component={Chat} onEnter={RequireAuth} />
       <Route path="/feed" component={Feed} onEnter={RequireAuth} />
-      
-      <Route path="/profile/:username" component={Profile} onEnter={RequireAuth} />
+    
       <Route path="/profile/create" component={() => <ProfileForm isNew />} onEnter={RequireAuth} />
       <Route path="/profile/update" component={() => <ProfileForm />} onEnter={RequireAuth} />
+      <Route path="/profile/:username" component={Profile} onEnter={RequireAuth} />
     </Route>
   </Router>
 )

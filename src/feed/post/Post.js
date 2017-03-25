@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import md5 from 'blueimp-md5'
+import { Link } from 'react-router'
 import { addFlashMessage } from '../../flashmessage/actions'
 import AgoDate from './AgoDate'
 import CommentForm from './CommentForm'
@@ -126,8 +127,8 @@ class Post extends React.Component {
             <div className="media-content">
               <div className="content">
                 <p>
-                  <strong>{title}</strong> <a href={`/profile/${user.id}`}>
-                  <small>{user.username}</small></a> <AgoDate date={created_at}/>
+                  <strong>{title}</strong> <Link to={`/profile/${user.username}`}>
+                  <small>{user.username}</small></Link> <AgoDate date={created_at}/>
                   <span className="tag is-info pull-right">{ type === 'design' ? 'Design' : 'Code' }</span>
                   <br />
 
