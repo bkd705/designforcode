@@ -5,3 +5,9 @@
 .is-grouped .field:first-of-type {
   margin-left: 0;
 }
+
+.profile .box {
+  box-shadow: 0 0 0 1px rgba(10,10,10,.1);
+  border-radius: 3px;
+  margin-bottom: 0;
+}

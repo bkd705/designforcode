@@ -126,7 +126,7 @@ class Post extends React.Component {
             <div className="media-content">
               <div className="content">
                 <p>
-                  <strong>{title}</strong> <a href={`/profile/${user.username}`}>
+                  <strong>{title}</strong> <a href={`/profile/${user.id}`}>
                   <small>{user.username}</small></a> <AgoDate date={created_at}/>
                   <span className="tag is-info pull-right">{ type === 'design' ? 'Design' : 'Code' }</span>
                   <br />

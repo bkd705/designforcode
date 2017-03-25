@@ -12,4 +12,10 @@ export default class Api {
     .then(res => res.json())
     .catch(err => err)
   }
+
+  static fetchUser (id) {
+    return fetch(`/user/${id}`)
+      .then(res => res.json())
+      .catch(err => err)
+  }
 }
