@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import md5 from 'blueimp-md5'
 import { Link } from 'react-router'
+import { addFlashMessage } from '../flashmessage/actions'
 import { logout } from '../auth/actions'
 
 class NavigationBar extends React.Component {
@@ -16,6 +17,8 @@ class NavigationBar extends React.Component {
   logout = (e) => {
     e.preventDefault()
     this.props.dispatch(logout())
+    this.context.router.push('/')
+    this.props.dispatch(addFlashMessage({ type: 'success', text: 'Come back soon!' }))
   }
 
   toggleNav = () => {
@@ -67,6 +70,10 @@ class NavigationBar extends React.Component {
       </section>
     )
   }
+}
+
+NavigationBar.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => {

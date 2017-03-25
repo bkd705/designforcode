@@ -17,7 +17,7 @@ const InputField = ({ label, name, value, type, options, placeholder, onChange, 
             onBlur={onBlur}
           >
             { options.map((option, key) => {
-              return <option value={option.toLowerCase()} key={key} selected>{option}</option>
+              return <option value={option.toLowerCase()} key={key}>{option}</option>
             })}
           </select>
         </span>

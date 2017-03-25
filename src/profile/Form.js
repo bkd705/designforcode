@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { isEmpty } from 'lodash'
 import { addFlashMessage } from '../flashmessage/actions'
 import { validateProfile } from '../util/FormValidations'
 import TransformObj from '../util/TransformObj'
@@ -17,10 +18,29 @@ class ProfileForm extends React.Component {
       user_id: this.props.user.id,
       first_name: '',
       last_name: '',
-      profession: '',
-      skill_level: '',
+      profession: 'designer',
+      skill_level: 'beginner',
+      dribbble_url: '',
+      github_url: '',
+      linkedin_url: '',
+      portfolio_url: '',
       description: '',
       errors: {}
+    }
+  }
+
+  componentWillMount() {
+    if(!this.props.isNew) {
+      Api.fetchUser(this.props.user.id)
+        .then(res => {
+          const profile = res.data.profile
+          if(!isEmpty(profile)) {
+            this.setState(prevState => ({
+              ...prevState,
+              ...profile
+            }))
+          }
+        })
     }
   }
 
@@ -48,7 +68,8 @@ class ProfileForm extends React.Component {
       errors: {}
     })
     if(this.isValid()) {
-      Api.update(TransformObj(this.state, ['user_id', 'first_name', 'last_name', 'profession', 'skill_level', 'description']))
+      Api.update(TransformObj(this.state, ['user_id', 'first_name', 'last_name', 'profession', 'skill_level', 
+        'dribbble_url', 'github_url', 'linkedin_url', 'portfolio_url', 'description']))
         .then(res => {
           if(res.success) {
             this.props.dispatch(addFlashMessage({ type: 'success', text: 'Profile updated successfully!!' }))
@@ -64,7 +85,7 @@ class ProfileForm extends React.Component {
   }
 
   render() {
-    const { first_name, last_name, profession, skill_level, description, errors } = this.state
+    const { first_name, last_name, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url, description, errors } = this.state
 
     const isNewSubHeading = ( <h4 className="subtitle">Create your profile now to help other understand who you are and what you do!</h4> )
     const isUpdateSubHeading = ( <h4 className="subtitle">Update your profile!</h4> )
@@ -117,6 +138,43 @@ class ProfileForm extends React.Component {
                   onChange={this.onChange}
                   error={errors.skill_level}
                   options={['Beginner', 'Intermediate', 'Advanced']}
+                />
+              </div>
+
+              <label className="label">Links</label>
+              <div className="field is-grouped">
+                <InputField
+                  name="dribbble_url"
+                  value={dribbble_url}
+                  placeholder="Dribbble Link"
+                  onChange={this.onChange}
+                  error={errors.dribbble_url}
+                />
+
+                <InputField
+                  name="github_url"
+                  value={github_url}
+                  placeholder="Github Link"
+                  onChange={this.onChange}
+                  error={errors.github_url}
+                />
+              </div>
+
+              <div className="field is-grouped">
+                <InputField
+                  name="linkedin_url"
+                  value={linkedin_url}
+                  placeholder="LinkedIn Link"
+                  onChange={this.onChange}
+                  error={errors.linkedin_url}
+                />
+
+                <InputField
+                  name="portfolio_url"
+                  value={portfolio_url}
+                  placeholder="Portfolio Link"
+                  onChange={this.onChange}
+                  error={errors.portfolio_url}
                 />
               </div>
 

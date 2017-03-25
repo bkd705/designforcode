@@ -26,7 +26,7 @@ class Profile extends React.Component {
               profile: res.data.profile,
               user: res.data.user
             })
-            this.fetchGithubRepos()
+            res.data.profile.github_url ? this.fetchGithubRepos() : f => f
           } else {
             this.context.router.push('/')
             this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
@@ -40,18 +40,19 @@ class Profile extends React.Component {
   }
 
   fetchGithubRepos = () => {
-    fetch(`https://api.github.com/users/${this.props.params.username}/repos`)
+    const gitUsername = new URL(this.state.profile.github_url).pathname.replace('/', '')
+    fetch(`https://api.github.com/users/${gitUsername}/repos`)
         .then(res => res.json())
         .then(data => {
           this.setState(prevState => ({
-            gitRepos: [ ...data.slice(0, 3) ]
+            gitRepos: [ ...data.slice(0, 4) ]
           }))
         })
         .catch(err => console.log(err))
   }
 
   render() {
-    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level }, gitRepos} = this.state
+    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos} = this.state
     return (
       <div className="container profile">
         <div className="columns">
@@ -82,6 +83,16 @@ class Profile extends React.Component {
             <div className="box">
               <div className="content">
                 <h4>Links</h4>
+
+                <p>
+                  <strong>Github: </strong> <a href={github_url} alt="Github Link">{github_url}</a>
+                  <br />
+                  <strong>Dribbble: </strong> <a href={dribbble_url} alt="Github Link">{dribbble_url}</a>
+                  <br />
+                  <strong>LinkedIn: </strong> <a href={linkedin_url} alt="Github Link">{linkedin_url}</a>
+                  <br />
+                  <strong>Portfolio: </strong> <a href={portfolio_url} alt="Github Link">{portfolio_url}</a>
+                </p>
               </div>
             </div>
           </div>
