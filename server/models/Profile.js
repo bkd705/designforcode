@@ -19,7 +19,11 @@ class Profile extends Bookshelf.Model {
       last_name: 'alpha|min:2|max:20',
       profession: 'in:developer,designer',
       skill_level: 'in:beginner,intermediate,advanced',
-      description: 'string'
+      description: 'string',
+      dribbble_url: 'string',
+      github_url: 'string',
+      linkedin_url: 'string',
+      portfolio_url: 'stirng'
     }
 
     if (required) {

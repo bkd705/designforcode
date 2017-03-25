@@ -10,6 +10,10 @@ exports.up = (knex, Promise) => {
     table.string('last_name').nullable()
     table.string('profession').nullable()
     table.string('skill_level').nullable()
+    table.string('dribbble_url').nullable()
+    table.string('github_url').nullable()
+    table.string('linkedin_url').nullable()
+    table.string('portfolio_url').nullable()
     table.text('description').nullable()
   })
 }
