@@ -7,6 +7,7 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import reducer from './config/rootReducer'
 import { types } from './auth/actions'
+import './index.css'
 
 
 export const store = createStore(
