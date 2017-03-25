@@ -3,7 +3,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import RequireAuth from '../util/RequireAuth'
 
 import App from '../App'
-import Home from '../home/Home'
+import IndexRedirect from '../partials/IndexRedirect'
 import Login from '../auth/login/Form'
 import Signup from '../auth/signup/Form'
 import ProfileForm from '../profile/Form'
@@ -13,7 +13,7 @@ import Feed from '../feed/Feed'
 const routes = (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-      <IndexRoute component={Home} />
+      <IndexRoute component={IndexRedirect} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
 

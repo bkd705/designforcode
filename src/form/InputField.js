@@ -3,27 +3,22 @@ import classnames from 'classnames'
 
 const InputField = ({ label, name, value, type, placeholder, onChange, onBlur, error, helper }) => {
   return (
-    <div className="field-body">
-      <div className="field">
-        { label ? <label htmlFor={name} className='label'>{label}</label> : '' }
-        <p className={classnames('control is-expanded', { 'has-icon has-icon-right': error || helper })}>
-          <input
-            type={type}
-            name={name}
-            value={value}
-            className={classnames('input', { 'is-danger': error, 'is-success': helper })}
-            placeholder={placeholder}
-            onChange={onChange}
-            onBlur={onBlur}
-          />
-          { error ? <span className='icon is-small'><i className='fa fa-warning' /></span> : '' }
-          { error ? <span className='help is-danger'>{error}</span> : '' }
+    <p className={classnames('control is-expanded', { 'has-icon has-icon-right': error || helper })}>
+      <input
+        type={type}
+        name={name}
+        value={value}
+        className={classnames('input', { 'is-danger': error, 'is-success': helper })}
+        placeholder={placeholder}
+        onChange={onChange}
+        onBlur={onBlur}
+      />
+      { error ? <span className='icon is-small'><i className='fa fa-warning' /></span> : '' }
+      { error ? <span className='help is-danger'>{error}</span> : '' }
 
-          { helper ? <span className='icon is-small'><i className='fa fa-check' /></span> : '' }
-          { helper ? <span className='help is-success'>{helper}</span> : '' }
-        </p>
-      </div>
-    </div>
+      { helper ? <span className='icon is-small'><i className='fa fa-check' /></span> : '' }
+      { helper ? <span className='help is-success'>{helper}</span> : '' }
+    </p>
   )
 }
 

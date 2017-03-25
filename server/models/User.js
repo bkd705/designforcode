@@ -30,7 +30,7 @@ class User extends Bookshelf.Model {
     let rules = {
       username: 'min:3|max:15|alpha_numeric',
       email: 'email',
-      password: 'min:6|max:50'
+      password: 'min:1|max:50'
     }
 
     if (required) {

@@ -20,7 +20,7 @@ class Comment extends Bookshelf.Model {
   static getRules(required = false) {
     let rules = {
       post_id: 'min:5|max:50',
-      body: 'string|min:10'
+      body: 'string|min:1'
     }
 
     if (required) {

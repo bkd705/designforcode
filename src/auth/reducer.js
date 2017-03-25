@@ -14,7 +14,6 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   switch(action.type) {
     case types.AUTH_SET_USER:
-      console.log(action)
       localStorage.setItem('user_token', action.token)
       return {
         ...state,

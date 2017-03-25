@@ -1,0 +1,7 @@
+.is-grouped .field {
+  margin-left: 10px;
+}
+
+.is-grouped .field:first-of-type {
+  margin-left: 0;
+}

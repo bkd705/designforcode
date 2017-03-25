@@ -9,7 +9,7 @@ import reducer from './config/rootReducer'
 import { types } from './auth/actions'
 
 
-const store = createStore(
+export const store = createStore(
   reducer,
   compose(
     applyMiddleware(thunk),
@@ -25,7 +25,6 @@ if (localStorage.getItem('user_token')) {
     store.dispatch({ type: types.AUTH_SET_USER, user: decoded, token: token })
   } catch (ex) {
     localStorage.removeItem('user_token')
-    console.log(ex)
   }
 }
 

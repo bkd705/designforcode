@@ -126,11 +126,12 @@ class SignupForm extends React.Component {
               </div>
               <form onSubmit={this.onSubmit}>
                 <div className="field">
+                  <label className="label">Username</label>
                   <InputField
                     label="Username"
                     name="username"
                     value={username}
-                    placholder="Username"
+                    placeholder="Username"
                     onChange={this.onChange}
                     error={errors.username}
                     helper={helpers.username}
@@ -139,11 +140,12 @@ class SignupForm extends React.Component {
                 </div>
 
                 <div className="field">
+                  <label className="label">E-Mail</label>
                   <InputField
                     label="E-Mail"
                     name="email"
                     value={email}
-                    placholder="E-Mail"
+                    placeholder="E-Mail"
                     onChange={this.onChange}
                     error={errors.email}
                     helper={helpers.email}
@@ -152,24 +154,26 @@ class SignupForm extends React.Component {
                 </div>
 
                 <div className="field">
+                  <label className="label">Password</label>
                   <InputField
                     label="Password"
                     name="password"
                     value={password}
                     type="password"
-                    placholder="Password"
+                    placeholder="Password"
                     onChange={this.onChange}
                     error={errors.password}
                   />
                 </div>
 
                 <div className="field">
+                  <label className="label">Confirm Password</label>
                   <InputField
                     label="Confirm Password"
                     name="password_confirm"
                     value={password_confirm}
                     type="password"
-                    placholder="Confirm Password"
+                    placeholder="Confirm Password"
                     onChange={this.onChange}
                     error={errors.password_confirm}
                     onBlur={this.checkPasswordMatch}

@@ -1,5 +1,3 @@
-import statusHelper from '../util/StatusHelper'
-
 export default class Api {
   static update (data) {
     return fetch(`/user/${data.user_id}/profile`, {

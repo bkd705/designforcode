@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
 import { addFlashMessage } from '../flashmessage/actions'
 import { validateProfile } from '../util/FormValidations'
 import TransformObj from '../util/TransformObj'
@@ -8,6 +7,7 @@ import InputField from '../form/InputField'
 import TextArea from '../form/TextArea'
 import SelectInput from '../form/SelectInput'
 import Api from './api'
+import './profile.css'
 
 class ProfileForm extends React.Component {
   constructor(props) {
@@ -20,8 +20,7 @@ class ProfileForm extends React.Component {
       profession: '',
       skill_level: '',
       description: '',
-      errors: {},
-      helpers: {}
+      errors: {}
     }
   }
 
@@ -65,7 +64,7 @@ class ProfileForm extends React.Component {
   }
 
   render() {
-    const { first_name, last_name, profession, skill_level, description, errors, helpers } = this.state
+    const { first_name, last_name, profession, skill_level, description, errors } = this.state
 
     const isNewSubHeading = ( <h4 className="subtitle">Create your profile now to help other understand who you are and what you do!</h4> )
     const isUpdateSubHeading = ( <h4 className="subtitle">Update your profile!</h4> )
@@ -81,24 +80,23 @@ class ProfileForm extends React.Component {
               { this.props.isNew ? isNewSubHeading : isUpdateSubHeading}
             </div>
             <form onSubmit={this.onSubmit}>
-              <div className="field is-grouped">
-                  <InputField
-                    name="first_name"
-                    label="First Name"
-                    value={first_name}
-                    placholder="First Name"
-                    onChange={this.onChange}
-                    error={errors.first_name}
-                  />
+              <label className="label">Name</label>
+              <div className="field is-grouped">                  
+                <InputField
+                  name="first_name"
+                  value={first_name}
+                  placeholder="First Name"
+                  onChange={this.onChange}
+                  error={errors.first_name}
+                />
 
-                  <InputField
-                    name="last_name"
-                    label="Last Name"
-                    value={last_name}
-                    placholder="Last Name"
-                    onChange={this.onChange}
-                    error={errors.last_name}
-                  />
+                <InputField
+                  name="last_name"
+                  value={last_name}
+                  placeholder="Last Name"
+                  onChange={this.onChange}
+                  error={errors.last_name}
+                />
               </div>
 
               <div className="field is-grouped">
@@ -124,11 +122,11 @@ class ProfileForm extends React.Component {
               </div>
 
               <div className="field">
+                <label className="label">Description</label>
                 <TextArea
-                  label="Description"
                   name="description"
                   value={description}
-                  placholder="Talk about you a little!"
+                  placeholder="Talk about you a little!"
                   onChange={this.onChange}
                   error={errors.description}
                 />

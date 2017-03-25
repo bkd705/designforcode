@@ -2,6 +2,7 @@
 import jwt from 'jsonwebtoken'
 import indicative from 'indicative'
 import bcrypt from 'bcrypt'
+import validateUUID from 'uuid-validate'
 
 // Import utilities
 import JRes from '../util/JResponse'
@@ -184,7 +185,14 @@ export default class UserController {
 
     // Find user model with profile
     const opts = { withRelated: ['profile'] }
-    const user = await User.find(userId, opts)
+    let user = null
+
+    if (validateUUID(ctx.params.id)) {
+      user = await User.find(userId, opts)
+    } else {
+      user = await User.findByUsername(userId, opts)
+    }
+
     if (!user) {
       return SendError(ctx, 400, 'Failed to find user!', user)
     }
