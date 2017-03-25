@@ -1,5 +1,7 @@
 .container--feed {
   margin: 25px auto 0 auto;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .feed {
@@ -75,8 +77,4 @@
 
 .comment:hover .meta-buttons {
   opacity: 1;
-}
-
-span.tag.is-info {
-  background-color: rgba(50,115,220, 0.8);
 }

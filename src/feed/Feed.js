@@ -14,7 +14,8 @@ class Feed extends React.Component {
       posts: [],
       filteredPosts: [],
       typeFilter: 'all',
-      showPostForm: false
+      showPostForm: false,
+      searchTxt: ''
     }
   }
 
@@ -31,6 +32,25 @@ class Feed extends React.Component {
           this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching posts: ${err}`}))
         })
     }
+  }
+
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+
+  search = () => {
+    Api.searchPosts(this.state.searchTxt)
+     .then(res => {
+       this.setState({
+         posts: res.data.posts,
+         filteredPosts: res.data.posts
+       })
+     })
+     .catch(err => {
+       this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching posts: ${err}`}))
+     })
   }
 
   storePost = (post) => {
@@ -127,10 +147,10 @@ class Feed extends React.Component {
             <div className="level-item">
               <div className="field has-addons">
                 <p className="control">
-                  <input className="input" type="text" placeholder="Find a post" />
+                  <input onChange={this.onChange} name="searchTxt" className="input" type="text" placeholder="Find a post" />
                 </p>
                 <p className="control">
-                  <button className="button">
+                  <button className="button" onClick={this.search}>
                     Search
                   </button>
                 </p>
