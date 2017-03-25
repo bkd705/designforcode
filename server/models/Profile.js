@@ -11,24 +11,20 @@ class Profile extends Bookshelf.Model {
 
   /**
    * Returns the rules for validation
-   * @param required - If the fields should be required
    */
-  static getRules(required = false) {
-    let rules = {
+  static getRules() {
+    return {
       first_name: 'alpha|min:2|max:20',
       last_name: 'alpha|min:2|max:20',
       profession: 'in:developer,designer',
       skill_level: 'in:beginner,intermediate,advanced',
-      description: 'string'
-    }
+      description: 'string',
 
-    if (required) {
-      for (let key of Object.keys(rules)) {
-        rules[key] = 'required|' + rules[key]
-      }
+      dribbble_url: 'string|includes:http|includes:dribbble.com',
+      github_url: 'string|includes:http|includes:github.com',
+      linkedin_url: 'string|includes:http|includes:linkedin.com',
+      portfolio_url: 'string|includes:http'
     }
-
-    return rules
   }
 
   /**
