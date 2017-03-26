@@ -19,7 +19,7 @@ class ChatForm extends React.Component {
 
     socket.on('connect', () => {
       socket.emit('join', {
-        recipient_id: this.props.params.id,
+        recipient_name: this.props.params.username,
         token: "Bearer " + localStorage.getItem('user_token')
       })
     })
@@ -99,7 +99,7 @@ class ChatForm extends React.Component {
 
   sendMessage = (e) => {
     this.state.socket.emit('send-message', {
-      recipient_id: this.props.params.id,
+      recipient_name: this.props.params.username,
       token: "Bearer " + localStorage.getItem('user_token'),
       message: 'hey there'
     })

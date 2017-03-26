@@ -18,9 +18,9 @@ const routes = (
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
 
-      <Route path="/chat/:id" component={Chat} onEnter={RequireAuth} />
+      <Route path="/chat/:username" component={Chat} onEnter={RequireAuth} />
       <Route path="/feed" component={Feed} onEnter={RequireAuth} />
-    
+
       <Route path="/profile/create" component={() => <ProfileForm isNew />} onEnter={RequireAuth} />
       <Route path="/profile/update" component={() => <ProfileForm />} onEnter={RequireAuth} />
       <Route path="/profile/:username" component={Profile} onEnter={RequireAuth} />
