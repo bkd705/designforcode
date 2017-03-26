@@ -5,6 +5,16 @@ class Api {
       .catch(err => err)
   }
 
+  static searchPosts(terms) {
+    return fetch('/search?term=' + terms, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }})
+      .then(res => res.json())
+      .catch(err => err)
+  }
+
   static storeComment(comment) {
     return fetch('/comment/create', {
       method: 'POST',
@@ -27,7 +37,7 @@ class Api {
       }
     })
       .then(res => res.json())
-      .catch(err => err) 
+      .catch(err => err)
   }
 
   static storePost(post) {
@@ -52,7 +62,7 @@ class Api {
       }
     })
       .then(res => res.json())
-      .catch(err => err) 
+      .catch(err => err)
   }
 }
 

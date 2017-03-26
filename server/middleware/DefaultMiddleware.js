@@ -14,11 +14,16 @@ module.exports = (app) => {
       console.log(err)
 
       let data = null
+      let error = 'There was an error with your request'
+
       if (err.detail) {
         data = err.detail
+      } else if (err[0].validation && err[0].message) {
+        error = 'Validation error'
+        data = err[0].message
       }
 
-      SendError(ctx, 400, 'There was an error with your request', data)
+      SendError(ctx, 400, error, data)
     }
   })
 }

@@ -11,3 +11,8 @@ a {
 a:hover {
   color: #363636;
 }
+
+.nav-left {
+  overflow: inherit;
+  overflow-x: visible;
+}

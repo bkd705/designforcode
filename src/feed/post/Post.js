@@ -115,6 +115,8 @@ class Post extends React.Component {
       </nav>
     )
 
+    const color = (type === 'design') ? 'orange' : 'rgba(50,115,220, 0.8)'
+
     return (
       <div className="post">
         <div className="box">
@@ -129,7 +131,11 @@ class Post extends React.Component {
                 <p>
                   <strong>{title}</strong> <Link to={`/profile/${user.username}`}>
                   <small>{user.username}</small></Link> <AgoDate date={created_at}/>
-                  <span className="tag is-info pull-right">{ type === 'design' ? 'Design' : 'Code' }</span>
+                  <span
+                    className="tag pull-right"
+                    style={{ color: 'whitesmoke', backgroundColor: color }}>
+                    { type === 'design' ? 'Design' : 'Code' }
+                  </span>
                   <br />
 
                   {description}
@@ -141,13 +147,13 @@ class Post extends React.Component {
           </article>
         </div>
 
-        { comments.length > 0 
-        ? <CommentList 
-            comments={comments} 
-            expanded={expanded} 
-            deleteComment={this.deleteComment} 
-            toggleComments={this.toggleExpandedComments} 
-          /> 
+        { comments.length > 0
+        ? <CommentList
+            comments={comments}
+            expanded={expanded}
+            deleteComment={this.deleteComment}
+            toggleComments={this.toggleExpandedComments}
+          />
         : '' }
 
         <div className="box add-comment">

@@ -81,7 +81,7 @@ export default class UserController {
 
     // Sanitize user info
     const outputUser = Helpers.transformObj(
-      user.attributes, ['id', 'username', 'email']
+      user.attributes, ['id', 'username', 'email', 'role', 'created_at']
     )
 
     // Send response
@@ -122,10 +122,11 @@ export default class UserController {
     // Send response
     ctx.body = JRes.success('Successfully updated user profile!', {
       user: Helpers.transformObj(user.attributes, [
-        'id', 'username', 'email'
+        'id', 'username', 'email', 'role', 'created_at'
       ]),
       profile: Helpers.transformObj(result.attributes, [
-        'first_name', 'last_name', 'profession', 'skill_level', 'description'
+        'first_name', 'last_name', 'profession', 'skill_level', 'description',
+        'github_url', 'dribbble_url', 'linkedin_url', 'portfolio_url'
       ])
     })
   }
@@ -203,7 +204,8 @@ export default class UserController {
         'id', 'username', 'email', 'role', 'created_at'
       ]),
       profile: Helpers.transformObj(user.relations.profile.attributes, [
-        'first_name', 'last_name', 'profession', 'skill_level', 'dribbble_url', 'github_url', 'linkedin_url', 'portfolio_url', 'description'
+        'first_name', 'last_name', 'profession', 'skill_level', 'description',
+        'github_url', 'dribbble_url', 'linkedin_url', 'portfolio_url'
       ])
     })
   }

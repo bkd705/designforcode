@@ -32,8 +32,10 @@ export default class SearchController {
       qb.limit(count).offset(start)
 
       if (ctx.request.query.term && ctx.request.query.term.length > 0) {
-        qb.where('title', 'LIKE', '%' + ctx.request.query.term + '%')
-          .orWhere('description', 'LIKE', '%' + ctx.request.query.term + '%')
+        qb.whereRaw(
+          "LOWER(title) LIKE '%' || LOWER(?) || '%' OR LOWER(description) LIKE '%' || LOWER(?) || '%'",
+          [ctx.request.query.term, ctx.request.query.term]
+        )
       }
     }).fetchAll(opts)
 

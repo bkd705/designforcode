@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { addFlashMessage } from '../flashmessage/actions'
 import Api from './api'
 import GitRepoList from './GitRepoList'
+import DribbbleProjectList from './DribbbleProjectList'
 import './profile.css'
 
 class Profile extends React.Component {
@@ -13,7 +14,8 @@ class Profile extends React.Component {
     this.state = {
       profile: {},
       user: {},
-      gitRepos: []
+      gitRepos: [],
+      dribbbleProjects: []
     }
   }
 
@@ -27,6 +29,7 @@ class Profile extends React.Component {
               user: res.data.user
             })
             res.data.profile.github_url ? this.fetchGithubRepos() : f => f
+            res.data.profile.dribbble_url ? this.fetchDribbbleProjects() : f => f
           } else {
             this.context.router.push('/')
             this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
@@ -41,6 +44,8 @@ class Profile extends React.Component {
 
   fetchGithubRepos = () => {
     const gitUsername = new URL(this.state.profile.github_url).pathname.replace('/', '')
+    if (!gitUsername) return
+
     fetch(`https://api.github.com/users/${gitUsername}/repos`)
         .then(res => res.json())
         .then(data => {
@@ -51,8 +56,22 @@ class Profile extends React.Component {
         .catch(err => console.log(err))
   }
 
+  fetchDribbbleProjects = () => {
+    const dUsername = new URL(this.state.profile.dribbble_url).pathname.replace('/', '')
+    if (!dUsername) return
+
+    fetch(`https://api.dribbble.com/v1/users/${ dUsername }/projects?access_token=6ed972085fecb7078ef53a3056562c05de38514ebd7d095b6a84f6dba7743031`)
+        .then(res => res.json())
+        .then(data => {
+          this.setState(prevState => ({
+            dribbbleProjects: [ ...data.slice(0, 4) ]
+          }))
+        })
+        .catch(err => console.log(err))
+  }
+
   render() {
-    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos} = this.state
+    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleProjects} = this.state
     return (
       <div className="container profile">
         <div className="columns">
@@ -105,6 +124,10 @@ class Profile extends React.Component {
                 <h4>Github Repos</h4>
 
                 <GitRepoList repos={gitRepos} />
+
+                <h4>Dribbble Projects</h4>
+
+                <DribbbleProjectList projects={dribbbleProjects} />
               </div>
             </div>
           </div>
