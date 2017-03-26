@@ -40,7 +40,7 @@ module.exports = (io) => {
         })
       )
 
-      const sent = await SocketController.createMessage(auth.data.sender.id, auth.data.recipient.id, data.message)
+      const sent = await SocketController.createMessage(auth.data.sender.id, auth.data.recipient.id, auth.data.room, data.message)
       if (!sent) {
          socket.emit('send-message-error', sent)
       }
@@ -63,7 +63,7 @@ module.exports = (io) => {
       )
 
       // Retreive messages
-      const messages = await SocketController.fetchMessages(auth.data.sender.id, auth.data.recipient.id)
+      const messages = await SocketController.fetchMessages(auth.data.room)
       if (!messages.success) {
         return socket.emit('fetch-messages-error', messages)
       }

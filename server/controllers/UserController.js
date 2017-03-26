@@ -13,6 +13,7 @@ import Responses from '../util/Responses'
 // Import models
 import User from '../models/User'
 import Profile from '../models/Profile'
+import Message from '../models/Message'
 
 export default class UserController {
   /**
@@ -235,6 +236,47 @@ export default class UserController {
         'id', 'title', 'description', 'type', 'created_at'
       ])
     })
+  }
+
+  /**
+   * Method for finding a user's chats
+   * @param ctx - The current request context
+   * @param next - The next state to transition to
+   */
+  static async findChats(ctx, next) {
+    const currUser = ctx.state.user
+    const userId = ctx.params.id
+
+    // Check permissions
+    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
+    }
+
+    // Find user by ID
+    const user = await User.find(userId)
+    if (!user) {
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
+    }
+
+    // Find chats
+    let chats = await Message.query(qb => {
+      qb.distinct('room_id')
+      qb.where('room_id', 'LIKE', '%' + user.id + '%')
+    }).fetchAll()
+
+    chats = chats.serialize()
+
+    for (let i = 0; i < chats.length; i++) {
+      let otherUserId = chats[i].room_id.replace(user.id, '').replace(':', '')
+
+      const otherUser = await User.find(otherUserId)
+      chats[i]['user'] = Helpers.transformObj(otherUser.attributes, [
+        'id', 'username', 'email'
+      ])
+    }
+
+    // Send response
+    ctx.body = JRes.success(Responses.SHOW_CHATS_SUCCESS, { chats })
   }
 
   /**

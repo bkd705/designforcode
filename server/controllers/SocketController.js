@@ -71,13 +71,15 @@ export default class SocketController {
     })
   }
 
-  static async createMessage(sender_id, receiver_id, message) {
-    if (!sender_id || !receiver_id || !message) {
+  static async createMessage(sender_id, receiver_id, room_id, message) {
+    if (!room_id || !sender_id || !receiver_id || !message) {
       return JRes.failure('Please provide the required information!')
     }
 
+    // Validation?
+
     const msg = await Message.create({
-      sender_id, receiver_id, message
+      sender_id, receiver_id, room_id, message
     })
 
     if (!msg) {
@@ -91,12 +93,12 @@ export default class SocketController {
     })
   }
 
-  static async fetchMessages(sender_id, receiver_id) {
-    if (!sender_id || !receiver_id) {
-      return JRes.failure('Please provide valid user IDs!')
+  static async fetchMessages(room_id) {
+    if (!room_id) {
+      return JRes.failure('Please provide a valid room ID')
     }
 
-    const messages = await Message.findAll(sender_id, receiver_id)
+    const messages = await Message.findAll(room_id)
     if (!messages) {
       return JRes.success('No messages have been sent')
     }

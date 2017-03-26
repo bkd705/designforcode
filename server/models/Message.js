@@ -19,6 +19,7 @@ class Message extends Bookshelf.Model {
    */
   static getRules(required = false) {
     let rules = {
+      room_id: '',
       sender_id: '',
       receiver_id: '',
       message: 'string|min:10'
@@ -46,10 +47,9 @@ class Message extends Bookshelf.Model {
    * @param id - Comment identifier
    * @param opts - Options for the fetch
    */
-  static async findAll(sender_id, receiver_id, opts = {}) {
+  static async findAll(room_id, opts = {}) {
     return await Message.query(qb => {
-      qb.where('sender_id', '=', sender_id).andWhere('receiver_id', '=', receiver_id)
-      qb.orWhere('sender_id', '=', receiver_id).andWhere('receiver_id', '=', sender_id)
+      qb.where('room_id', '=', room_id)
       qb.orderBy('created_at', 'asc')
     }).fetchAll(opts)
   }

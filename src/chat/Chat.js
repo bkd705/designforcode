@@ -22,7 +22,7 @@ class Chat extends React.Component {
 
   componentDidMount() {
     const socket = io('http://localhost:3000')
-    fetch(`/user/${this.props.params.username}`)
+    fetch(`/api/v1/users/${this.props.params.username}`)
       .then(res => res.json())
       .then(data => {
         console.log(data)
@@ -142,11 +142,11 @@ class Chat extends React.Component {
           <div className="box">
             <ChatList messages={this.state.messages} sender={this.props.user} receiver={this.state.receiver.user} />
           </div>
-          <ChatForm 
-              onSubmit={this.onSubmit} 
-              onChange={this.onChange} 
-              messageValue={this.state.message} 
-              errors={this.state.errors} 
+          <ChatForm
+              onSubmit={this.onSubmit}
+              onChange={this.onChange}
+              messageValue={this.state.message}
+              errors={this.state.errors}
             />
         </div>
       </div>
