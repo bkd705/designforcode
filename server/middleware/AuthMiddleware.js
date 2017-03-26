@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 
 // Import utilities
 import SendError from '../util/SendError'
+import Responses from '../util/Responses'
 
 // Import models
 import User from '../models/User'
@@ -18,13 +19,13 @@ export default async function (ctx, next) {
 
   // Verify the authorization is present
   if (!authorization) {
-    return SendError(ctx, 400, 'No authorization header provided')
+    return SendError(ctx, 400, Responses.NO_AUTHORIZATION_PROVIDED)
   }
 
   // Verify the authorization is in the correct format
   const token = authorization.split(' ')[1]
   if (!token || token.length == 0) {
-    return SendError(ctx, 400, 'Invalid token provided')
+    return SendError(ctx, 400, Responses.INVALID_TOKEN)
   }
 
   // Verify and decode the token
@@ -32,12 +33,12 @@ export default async function (ctx, next) {
   try {
     payload = jwt.verify(token, process.env.JWT_SECRET)
   } catch (ex) {
-    let error = 'An unhandled error has ocurred'
+    let error = Responses.INTERNAL_SERVER_ERROR
 
     if (ex.name === 'TokenExpiredError') {
-      error = 'Token provided has expired'
+      error = Responses.TOKEN_EXPIRED
     } else if (ex.name === 'JsonWebTokenError' && ex.message === 'invalid signature') {
-      error = 'Invalid token'
+      error = Responses.INVALID_TOKEN
     }
 
     return SendError(ctx, 400, error, ex)
@@ -46,7 +47,7 @@ export default async function (ctx, next) {
   // Find user model by ID
   const user = await User.find(payload.id)
   if (!user) {
-    return SendError(ctx, 403, 'Failed to authenticate user!', user)
+    return SendError(ctx, 403, Responses.NOT_AUTHORIZED, user)
   }
 
   // If no errors occured, set user and go to next state (route)

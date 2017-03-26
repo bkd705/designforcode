@@ -5,6 +5,7 @@ import indicative from 'indicative'
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
 import SendError from '../util/SendError'
+import Responses from '../util/Responses'
 
 // Import models
 import Comment from '../models/Comment'
@@ -29,11 +30,11 @@ export default class CommentController {
     // Create comment
     const comment = await Comment.create(commentInfo)
     if (!comment) {
-      return SendError(ctx, 400, 'Failed to create comment!', comment)
+      return SendError(ctx, 400, Responses.CREATE_COMMENT_FAILURE, comment)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully created comment!', {
+    ctx.body = JRes.success(Responses.CREATE_COMMENT_SUCCESS, {
       comment: Helpers.transformObj(comment.attributes, [
         'id', 'post_id', 'user_id', 'body', 'created_at'
       ])
@@ -51,10 +52,10 @@ export default class CommentController {
     // Find comment by ID
     const comment = await Comment.find(commentId)
     if (!comment) {
-      return SendError(ctx, 400, 'Failed to find comment!', comment)
+      return SendError(ctx, 400, Responses.COMMENT_NOT_FOUND, comment)
     }
 
-    ctx.body = JRes.success('Successfully fetched comment!', {
+    ctx.body = JRes.success(Responses.SHOW_COMMENT_SUCCESS, {
       comment: Helpers.transformObj(comment.attributes, [
         'id', 'post_id', 'user_id', 'body', 'created_at'
       ])
@@ -77,22 +78,22 @@ export default class CommentController {
     // Find comment by ID
     const comment = await Comment.find(commentId)
     if (!comment) {
-      return SendError(ctx, 400, 'Failed to find comment!', comment)
+      return SendError(ctx, 400, Responses.COMMENT_NOT_FOUND, comment)
     }
 
     // If authenticated user is not the owner, return
     if (comment.attributes.user_id !== currUser.id && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 403, 'You are unauthorized to do this')
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Update comment
     const updated = await Comment.update(comment, commentInfo)
     if (!updated) {
-      return SendError(ctx, 400, 'Failed to update comment!', updated)
+      return SendError(ctx, 400, Responses.UPDATE_COMMENT_FAILURE, updated)
     }
 
     // Send response
-    ctx.body = ctx.body = JRes.success('Successfully updated comment!', {
+    ctx.body = ctx.body = JRes.success(Responses.UPDATE_COMMENT_SUCCESS, {
       comment: Helpers.transformObj(updated.attributes, [
         'id', 'post_id', 'user_id', 'body', 'created_at'
       ])
@@ -111,21 +112,21 @@ export default class CommentController {
     // Find comment by ID
     const comment = await Comment.find(commentId)
     if (!comment) {
-      return SendError(ctx, 400, 'Failed to find comment!', comment)
+      return SendError(ctx, 400, Responses.COMMENT_NOT_FOUND, comment)
     }
 
     // If authenticated user is not the owner, return
     if (comment.attributes.user_id !== currUser.id && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 403, 'You are unauthorized to do this')
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Delete comment
     const deleted = await Comment.delete(comment)
     if (!deleted) {
-      return SendError(ctx, 400, 'Failed to delete comment!', deleted)
+      return SendError(ctx, 400, Responses.DELETE_COMMENT_FAILURE, deleted)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully deleted comment!')
+    ctx.body = JRes.success(Responses.DELETE_COMMENT_SUCCESS)
   }
 }

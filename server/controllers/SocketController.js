@@ -101,8 +101,6 @@ export default class SocketController {
       return JRes.success('No messages have been sent')
     }
 
-    console.log(messages.serialize())
-
     return JRes.success('Successfully fetched private messages!', {
       messages: Helpers.transformArray(messages.serialize(), [
         'sender_id', 'receiver_id', 'message'

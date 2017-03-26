@@ -5,6 +5,7 @@ import indicative from 'indicative'
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
 import SendError from '../util/SendError'
+import Responses from '../util/Responses'
 
 // Import models
 import Post from '../models/Post'
@@ -30,11 +31,11 @@ export default class PostController {
     // Create post
     const post = await Post.create(postInfo)
     if (!post) {
-      return SendError(ctx, 400, 'Failed to create post!', post)
+      return SendError(ctx, 400, Responses.CREATE_POST_FAILURE, post)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully created post!', {
+    ctx.body = JRes.success(Responses.CREATE_POST_SUCCESS, {
       post: Helpers.transformObj(post.attributes, [
         'id', 'title', 'description', 'type', 'user_id', 'created_at'
       ])
@@ -53,11 +54,11 @@ export default class PostController {
     const opts = { withRelated: ['comments'] }
     const post = await Post.find(postId, opts)
     if (!post) {
-      return SendError(ctx, 400, 'Failed to find post!', post)
+      return SendError(ctx, 400, Responses.POST_NOT_FOUND, post)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully fetched post!', {
+    ctx.body = JRes.success(Responses.SHOW_POST_SUCCESS, {
       post: Helpers.transformObj(post.attributes, [
         'id', 'title', 'description', 'type', 'user_id', 'created_at'
       ]),
@@ -92,7 +93,7 @@ export default class PostController {
 
     // If none, return
     if (!posts) {
-      return SendError(ctx, 400, 'No posts at this time!', posts)
+      return SendError(ctx, 400, Responses.NO_POSTS_FOUND, posts)
     }
 
     // Serialize so we can iterate through results
@@ -110,7 +111,7 @@ export default class PostController {
       }
     }
 
-    ctx.body = JRes.success('Posts found', {
+    ctx.body = JRes.success(Responses.POSTS_FOUND, {
       posts: Helpers.transformArray(serialized, [
         'id',
         { attribute: 'user', fields: ['id', 'username', 'email'] },
@@ -136,22 +137,22 @@ export default class PostController {
     // Find post by ID
     const post = await Post.find(postId)
     if (!post) {
-      return SendError(ctx, 400, 'Failed to find post!', post)
+      return SendError(ctx, 400, Responses.POST_NOT_FOUND, post)
     }
 
     // If authenticated user is not the owner, return
     if (post.attributes.user_id !== currUser.id && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 403, 'You are not authorized to do this')
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Update post
     const updated = await Post.update(post, postInfo)
     if (!updated) {
-      return SendError(ctx, 400, 'Failed to update post!', updated)
+      return SendError(ctx, 400, Responses.UPDATE_POST_FAILURE, updated)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully updated post!', {
+    ctx.body = JRes.success(Responses.UPDATE_POST_SUCCESS, {
       post: Helpers.transformObj(updated.attributes, [
         'id', 'title', 'description', 'type', 'user_id', 'created_at'
       ])
@@ -170,21 +171,21 @@ export default class PostController {
     // Find post by ID
     const post = await Post.find(postId)
     if (!post) {
-      return SendError(ctx, 400, 'Failed to find post!', post)
+      return SendError(ctx, 400, Responses.POST_NOT_FOUND, post)
     }
 
     // If authenticated user is not the owner, return
     if (post.attributes.user_id !== currUser.id && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 403, 'You are unauthorized to do this')
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Delete post
     const deleted = await Post.delete(post)
     if (!deleted) {
-      return SendError(ctx, 400, 'Failed to delete post!', deleted)
+      return SendError(ctx, 400, Responses.DELETE_POST_FAILURE, deleted)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully deleted post!')
+    ctx.body = JRes.success(Responses.DELETE_POST_SUCCESS)
   }
 }

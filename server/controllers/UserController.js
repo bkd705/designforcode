@@ -8,6 +8,7 @@ import validateUUID from 'uuid-validate'
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
 import SendError from '../util/SendError'
+import Responses from '../util/Responses'
 
 // Import models
 import User from '../models/User'
@@ -28,7 +29,7 @@ export default class UserController {
     // Create user
     const user = await User.create(userInfo)
     if (!user) {
-      return SendError(ctx, 400, 'Failed to create user!', user)
+      return SendError(ctx, 400, Responses.CREATE_USER_FAILURE, user)
     }
 
     // Sanitize user info
@@ -43,7 +44,7 @@ export default class UserController {
     const token = jwt.sign(outputUser, process.env.JWT_SECRET, { expiresIn: '14 days' })
 
     // Send response
-    ctx.body = JRes.success('Successfully created user!', {
+    ctx.body = JRes.success(Responses.CREATE_USER_SUCCESS, {
       user: outputUser,
       token
     })
@@ -61,7 +62,7 @@ export default class UserController {
 
     // Check permissions
     if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 400, 'You are not authorized to do this')
+      return SendError(ctx, 400, Responses.NOT_AUTORIZED)
     }
 
     // Validate user info
@@ -70,7 +71,7 @@ export default class UserController {
     // Find user by ID
     const user = await User.find(userId)
     if (!user) {
-      return SendError(ctx, 400, 'Failed to update user!', user)
+      return SendError(ctx, 400, Responses.UPDATE_USER_FAILURE, user)
     }
 
     // Update user
@@ -85,7 +86,7 @@ export default class UserController {
     )
 
     // Send response
-    ctx.body = JRes.success('Successfully updated user!', { user: outputUser })
+    ctx.body = JRes.success(Responses.UPDATE_USER_SUCCESS, { user: outputUser })
   }
 
   /**
@@ -100,7 +101,7 @@ export default class UserController {
 
     // Check permissions
     if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 403, 'You are not authorized to do this')
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Validate user info
@@ -109,18 +110,18 @@ export default class UserController {
     // Find user by ID
     const user = await User.find(userId)
     if (!user) {
-      return SendError(ctx, 400, user)
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
     }
 
     // Fetch profile, and save new profile info
     const profile = await user.profile().fetch()
     const result = await Profile.update(profile, profileInfo)
     if (!result) {
-      return SendError(ctx, 400, result)
+      return SendError(ctx, 400, Responses.UPDATE_PROFILE_FAILURE, result)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully updated user profile!', {
+    ctx.body = JRes.success(Responses.UPDATE_PROFILE_SUCCESS, {
       user: Helpers.transformObj(user.attributes, [
         'id', 'username', 'email', 'role', 'created_at'
       ]),
@@ -144,23 +145,23 @@ export default class UserController {
 
     // Check if passwords are provided
     if (!oldPassword || !newPassword) {
-      return SendError(ctx, 400, 'Required information not provided')
+      return SendError(ctx, 400, Responses.REQUIRED_FIELDS_NOT_FOUND)
     }
 
     // Check permissions
     if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
-      return SendError(ctx, 403, 'You are not authorized to do this')
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Find user by ID
     const user = await User.find(userId)
     if (!user) {
-      return SendError(ctx, 400, user)
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
     }
 
     // Compare password to current password
     if (!bcrypt.compareSync(oldPassword, user.attributes.password)) {
-      return SendError(ctx, 400, 'Old password in incorrect')
+      return SendError(ctx, 400, Responses.INCORRECT_PASSWORD)
     }
 
     // Hash new password
@@ -169,11 +170,11 @@ export default class UserController {
     // Set new password
     const result = await User.update(user, { password: newPassword })
     if (!result) {
-      return SendError(ctx, 400, user)
+      return SendError(ctx, 400, Responses.UPDATE_PASSWORD_FAILURE, user)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully updated user password!')
+    ctx.body = JRes.success(Responses.UPDATE_PASSWORD_SUCCESS)
   }
 
   /**
@@ -195,11 +196,11 @@ export default class UserController {
     }
 
     if (!user) {
-      return SendError(ctx, 400, 'Failed to find user!', user)
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
     }
 
     // Send response
-    ctx.body = JRes.success('Successfully fetched user!', {
+    ctx.body = JRes.success(Responses.SHOW_USER_SUCCESS, {
       user: Helpers.transformObj(user.attributes, [
         'id', 'username', 'email', 'role', 'created_at'
       ]),
@@ -222,11 +223,11 @@ export default class UserController {
     const opts = { withRelated: ['posts'] }
     const user = await User.find(userId, opts)
     if (!user) {
-      return SendError(ctx, 400, 'Failed to find user!', user)
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
     }
 
     // Send response
-    ctx.body = JRes.success(`Successfully fetched user's posts!`, {
+    ctx.body = JRes.success(Responses.SHOW_USER_POSTS_SUCCESS, {
       user: Helpers.transformObj(user.attributes, [
         'id', 'username', 'email', 'role', 'created_at'
       ]),
@@ -248,10 +249,10 @@ export default class UserController {
 
     const user = await User.query({ where: conditionalWhere }).fetch()
     if (!user) {
-      ctx.body = JRes.success('Available!')
+      ctx.body = JRes.success(Responses.USER_EXISTS)
       return
     }
 
-    SendError(ctx, 400, 'Unavailable!')
+    SendError(ctx, 400, Responses.USER_NOT_FOUND)
   }
 }

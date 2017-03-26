@@ -2,6 +2,7 @@
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
 import SendError from '../util/SendError'
+import Responses from '../util/Responses'
 
 // Import models
 import Post from '../models/Post'
@@ -41,7 +42,7 @@ export default class SearchController {
 
     // If none, return
     if (!posts) {
-      return SendError(ctx, 400, 'No posts at this time!', posts)
+      return SendError(ctx, 400, Responses.NO_POSTS_FOUND, posts)
     }
 
     // Serialize so we can iterate through results
@@ -59,7 +60,7 @@ export default class SearchController {
       }
     }
 
-    ctx.body = JRes.success('Posts found', {
+    ctx.body = JRes.success(Responses.POSTS_FOUND, {
       posts: Helpers.transformArray(serialized, [
         'id',
         { attribute: 'user', fields: ['id', 'username', 'email'] },
