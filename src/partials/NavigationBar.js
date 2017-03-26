@@ -29,7 +29,7 @@ class NavigationBar extends React.Component {
 
   render() {
     const authLinks = (
-      <div className={`nav-right nav-menu ${this.state.navExpanded ? 'is-active' : ''}`}>
+      <div className={`nav-right nav-menu ${this.state.navExpanded && 'is-active'}`}>
         <Link to={`/profile/${this.props.user.username}`} className="nav-item">
           <figure className="image is-24x24" style={{marginRight: '8px'}}>
             <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(this.props.user.email)}?s=128x128`} alt={`${this.props.user.username}'s avatar`}/>
@@ -41,7 +41,7 @@ class NavigationBar extends React.Component {
     )
 
     const notAuthLinks = (
-      <div className={`nav-right nav-menu ${this.state.navExpanded ? 'is-active' : ''}`}>
+      <div className={`nav-right nav-menu ${this.state.navExpanded && 'is-active'}`}>
         <Link to="/login" className="nav-item">Login</Link>
         <Link to="/signup" className="nav-item">Sign up</Link>
       </div>

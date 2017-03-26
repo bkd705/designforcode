@@ -36,7 +36,7 @@ const Comment = ({ comment, currentUser, deleteComment }) => {
             </div>
           </div>
 
-          { currentUser && currentUser.id === comment.user.id ? deleteButton : '' }
+          { currentUser && currentUser.id === comment.user.id && deleteButton }
       </article>
     </div>
   )

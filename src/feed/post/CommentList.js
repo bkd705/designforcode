@@ -25,7 +25,7 @@ const CommentList = ({ comments, expanded, currentUser, deleteComment, toggleCom
           return <Comment comment={comment} deleteComment={deleteComment} currentUser={currentUser} key={comment.id} />
         })}
 
-        { comments.length > 3 ? <div className="comments-meta"><a onClick={toggleComments}>Hide comments</a></div> : '' }
+        { comments.length > 3 && <div className="comments-meta"><a onClick={toggleComments}>Hide comments</a></div> }
       </div>
     )
   }

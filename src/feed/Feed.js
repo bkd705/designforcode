@@ -167,7 +167,7 @@ class Feed extends React.Component {
           </div>
         </nav>
         <div className="feed">
-          { this.state.showPostForm ? <PostForm togglePostForm={this.togglePostForm} storePost={this.storePost} /> : '' }
+          { this.state.showPostForm && <PostForm togglePostForm={this.togglePostForm} storePost={this.storePost} /> }
           {this.state.filteredPosts.map(post => {
             return <Post post={post} key={post.id} deletePost={this.deletePost} />
           })}

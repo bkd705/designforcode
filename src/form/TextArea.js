@@ -13,11 +13,11 @@ const TextArea = ({ name, value, type, placeholder, onChange, onBlur, error, hel
         onChange={onChange}
         onBlur={onBlur}
       ></textarea>
-      { error ? <span className='icon is-small'><i className='fa fa-warning' /></span> : '' }
-      { error ? <span className='help is-danger'>{error}</span> : '' }
+      { error && <span className='icon is-small'><i className='fa fa-warning' /></span> }
+      { error && <span className='help is-danger'>{error}</span> }
 
-      { helper ? <span className='icon is-small'><i className='fa fa-check' /></span> : '' }
-      { helper ? <span className='help is-success'>{helper}</span> : '' }
+      { helper && <span className='icon is-small'><i className='fa fa-check' /></span> }
+      { helper && <span className='help is-success'>{helper}</span> }
     </p>
   )
 }

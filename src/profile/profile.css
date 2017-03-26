@@ -22,8 +22,17 @@
 }
 
 .box .box--github {
-  box-shadow: 0 0 0 1px rgba(10,10,10,.1);
+  /*box-shadow: 0 0 0 1px rgba(10,10,10,.1);*/
   border-radius: 2px;
+}
+
+.box .box--github {
+  /*box-shadow: 0 0 0 1px rgba(10,10,10,.1);*/
+  border-radius: 2px;
+}
+
+.image--dribbble {
+  border-radius: 3px;
 }
 
 .icon-label {

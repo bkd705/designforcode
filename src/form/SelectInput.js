@@ -4,7 +4,7 @@ import classnames from 'classnames'
 const InputField = ({ label, name, value, type, options, placeholder, onChange, onBlur, error, helper }) => {
   return (
     <div className="field">
-      { label ? <label htmlFor={name} className='label'>{label}</label> : '' }
+      { label && <label htmlFor={name} className='label'>{label}</label> }
       <p className={classnames('control', { 'has-icon has-icon-right': error || helper })}>
         <span className="select">
           <select
@@ -21,11 +21,11 @@ const InputField = ({ label, name, value, type, options, placeholder, onChange, 
             })}
           </select>
         </span>
-        { error ? <span className='icon is-small'><i className='fa fa-warning' /></span> : '' }
-        { error ? <span className='help is-danger'>{error}</span> : '' }
+        { error && <span className='icon is-small'><i className='fa fa-warning' /></span> }
+        { error && <span className='help is-danger'>{error}</span> }
 
-        { helper ? <span className='icon is-small'><i className='fa fa-check' /></span> : '' }
-        { helper ? <span className='help is-success'>{helper}</span> : '' }
+        { helper && <span className='icon is-small'><i className='fa fa-check' /></span> }
+        { helper && <span className='help is-success'>{helper}</span> }
       </p>
     </div>
   )

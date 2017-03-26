@@ -30,14 +30,14 @@ const GitRepoItem = ({ repo }) => {
   )
 }
 
-const GitRepoList = ({ repos }) => {
+const ProfileGithubList = ({ repos }) => {
   return (
     <div className="columns">
       { repos.length > 0 
       ? repos.map(repo => <GitRepoItem repo={repo} key={repo.id} />)
-      : <p>Unfortunately, this user has no repositories on github. :(</p> }
+      : <div className="column"><p>Unfortunately, this user has no repositories on github. :(</p></div> }
     </div>
   )
 }
 
-export default GitRepoList
+export default ProfileGithubList

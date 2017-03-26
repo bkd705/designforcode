@@ -3,8 +3,8 @@ import md5 from 'blueimp-md5'
 import { connect } from 'react-redux'
 import { addFlashMessage } from '../flashmessage/actions'
 import Api from './api'
-import GitRepoList from './GitRepoList'
-import DribbbleProjectList from './DribbbleProjectList'
+import ProfileGithubList from './ProfileGithubList'
+import ProfileDribbbleList from './ProfileDribbbleList'
 import './profile.css'
 
 class Profile extends React.Component {
@@ -15,7 +15,7 @@ class Profile extends React.Component {
       profile: {},
       user: {},
       gitRepos: [],
-      dribbbleProjects: []
+      dribbbleShots: []
     }
   }
 
@@ -29,7 +29,7 @@ class Profile extends React.Component {
               user: res.data.user
             })
             res.data.profile.github_url ? this.fetchGithubRepos() : f => f
-            res.data.profile.dribbble_url ? this.fetchDribbbleProjects() : f => f
+            res.data.profile.dribbble_url ? this.fetchDribbbleShots() : f => f
           } else {
             this.context.router.push('/')
             this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
@@ -53,25 +53,29 @@ class Profile extends React.Component {
             gitRepos: [ ...data.slice(0, 4) ]
           }))
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching repos: ${err}`}))
+        })
   }
 
-  fetchDribbbleProjects = () => {
+  fetchDribbbleShots = () => {
     const dUsername = new URL(this.state.profile.dribbble_url).pathname.replace('/', '')
     if (!dUsername) return
 
-    fetch(`https://api.dribbble.com/v1/users/${ dUsername }/projects?access_token=6ed972085fecb7078ef53a3056562c05de38514ebd7d095b6a84f6dba7743031`)
+    fetch(`https://api.dribbble.com/v1/users/${ dUsername }/shots?access_token=6ed972085fecb7078ef53a3056562c05de38514ebd7d095b6a84f6dba7743031`)
         .then(res => res.json())
         .then(data => {
           this.setState(prevState => ({
-            dribbbleProjects: [ ...data.slice(0, 4) ]
+            dribbbleShots: [ ...data.slice(0, 3) ]
           }))
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching shots: ${err}`}))
+        })
   }
 
   render() {
-    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleProjects} = this.state
+    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleShots} = this.state
     return (
       <div className="container profile">
         <div className="columns">
@@ -123,11 +127,11 @@ class Profile extends React.Component {
               <div className="content">
                 <h4>Github Repos</h4>
 
-                <GitRepoList repos={gitRepos} />
+                <ProfileGithubList repos={gitRepos} />
 
                 <h4>Dribbble Projects</h4>
 
-                <DribbbleProjectList projects={dribbbleProjects} />
+                <ProfileDribbbleList shots={dribbbleShots} />
               </div>
             </div>
           </div>

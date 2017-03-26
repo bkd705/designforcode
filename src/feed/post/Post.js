@@ -142,19 +142,18 @@ class Post extends React.Component {
                 </p>
               </div>
 
-              { this.props.user.id === user.id ? postAuthButtons : '' }
+              { this.props.user.id === user.id && postAuthButtons }
             </div>
           </article>
         </div>
 
-        { comments.length > 0
-        ? <CommentList
+        { comments.length > 0 &&
+          <CommentList
             comments={comments}
             expanded={expanded}
             deleteComment={this.deleteComment}
             toggleComments={this.toggleExpandedComments}
-          />
-        : '' }
+          /> }
 
         <div className="box add-comment">
           { showCommentForm ? <CommentForm addComment={this.addComment} /> : <small><a onClick={this.toggleCommentForm}>Add a comment</a></small> }
