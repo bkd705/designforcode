@@ -1,5 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import io from 'socket.io-client'
+import InputField from '../form/InputField'
 
 class ChatForm extends React.Component {
   constructor(props) {
@@ -7,7 +9,10 @@ class ChatForm extends React.Component {
 
     this.state = {
       response: '',
-      socket: null
+      message: '',
+      messages: [],
+      socket: null,
+      errors: {}
     }
   }
 
@@ -25,11 +30,13 @@ class ChatForm extends React.Component {
     })
 
     socket.on('private-message', data => {
-      console.log(data)
-
-      this.setState({
-        response: data.message
-      })
+      this.setState(prevState => ({
+        response: data.message,
+        messages: [
+          ...prevState.messages,
+          data.data.message
+        ]
+      }))
     })
 
     socket.on('server-error', data => {
@@ -49,7 +56,7 @@ class ChatForm extends React.Component {
     })
 
     socket.on('send-message-success', data => {
-      console.log(data)
+      console.log('sent', data)
 
       this.setState({
         response: data.message
@@ -73,10 +80,9 @@ class ChatForm extends React.Component {
     })
 
     socket.on('fetch-messages-success', data => {
-      console.log(data)
-
       this.setState({
-        response: data.message
+        response: data.message,
+        messages: data.data.messages
       })
     })
 
@@ -97,20 +103,56 @@ class ChatForm extends React.Component {
     })
   }
 
-  sendMessage = (e) => {
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+
+  onSubmit = (e) => {
+    e.preventDefault()
+
+    this.sendMessage()
+  }
+
+  sendMessage = () => {
     this.state.socket.emit('send-message', {
       recipient_name: this.props.params.username,
       token: "Bearer " + localStorage.getItem('user_token'),
-      message: 'hey there'
+      message: this.state.messages
     })
   }
 
   render() {
+    console.log(this.state)
     return (
-      <section className="section">
-        <h1>{ this.state.response }</h1>
-        <button onClick={ this.sendMessage }>Send Msg </button>
-      </section>
+      <div className="container">
+        <div className="columns">
+          <div className="column is-three-quarters is-offset-one-eight">
+            <div className="box">
+              <div className="media">
+                <ul>
+                  { this.state.messages.map(message => {
+                    return <li key={message.id} style={ message.sender_id === this.props.user.id ? { color: 'red' } : { color: 'blue' }}>{message.message}</li>
+                  })}
+                </ul>
+                <form onSubmit={this.onSubmit}>
+                  <div className="field">
+                    <InputField
+                      name="message"
+                      value={this.state.message}
+                      placeholder="Enter your message..."
+                      onChange={this.onChange}
+                      error={this.state.errors.message}
+                    />
+                  </div>
+                  <input type="submit" hidden/>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 }
@@ -119,4 +161,10 @@ ChatForm.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 
-export default ChatForm
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps)(ChatForm)
