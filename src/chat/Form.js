@@ -119,38 +119,52 @@ class ChatForm extends React.Component {
     this.state.socket.emit('send-message', {
       recipient_name: this.props.params.username,
       token: "Bearer " + localStorage.getItem('user_token'),
-      message: this.state.messages
+      message: this.state.message
     })
+
+    console.log(this.props.user)
+
+    let msg = {
+      id: Math.floor((Math.random() * 1000) + 1),
+      sender_id: this.props.user.id,
+      message: this.state.message
+    }
+
+    this.setState(prevState => ({
+      messages: [
+        ...prevState.messages,
+        msg
+      ],
+      message: ''
+    }))
   }
 
   render() {
-    console.log(this.state)
     return (
       <div className="container">
-        <div className="columns">
-          <div className="column is-three-quarters is-offset-one-eight">
-            <div className="box">
-              <div className="media">
-                <ul>
-                  { this.state.messages.map(message => {
-                    return <li key={message.id} style={ message.sender_id === this.props.user.id ? { color: 'red' } : { color: 'blue' }}>{message.message}</li>
-                  })}
-                </ul>
-                <form onSubmit={this.onSubmit}>
-                  <div className="field">
-                    <InputField
-                      name="message"
-                      value={this.state.message}
-                      placeholder="Enter your message..."
-                      onChange={this.onChange}
-                      error={this.state.errors.message}
-                    />
-                  </div>
-                  <input type="submit" hidden/>
-                </form>
-              </div>
-            </div>
+        <div className="box" style={{width: '500px', margin: '0 auto', marginTop: '20px'}}>
+          <div className="media">
+            <ul style={{width: '100%', marginBottom: '15px'}}>
+              { this.state.messages.map(message => {
+                const color = (message.sender_id === this.props.user.id) ? 'red' : 'blue'
+                const align = (message.sender_id === this.props.user.id) ? 'right' : 'left'
+                const bg = (message.sender_id === this.props.user.id) ? 'white' : '#f9f9f9'
+                return <li key={message.id} style={{color: color, textAlign: align, backgroundColor: bg}}>{message.message}</li>
+              })}
+            </ul>
           </div>
+          <form onSubmit={this.onSubmit}>
+            <div className="field">
+              <InputField
+                name="message"
+                value={this.state.message}
+                placeholder="Enter your message..."
+                onChange={this.onChange}
+                error={this.state.errors.message}
+              />
+            </div>
+            <input type="submit" hidden/>
+          </form>
         </div>
       </div>
     )
