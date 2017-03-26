@@ -1,6 +1,6 @@
 export default class Api {
   static signup (data) {
-    return fetch('/user/create', {
+    return fetch('/api/v1/users', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -13,7 +13,7 @@ export default class Api {
   }
 
   static login (data) {
-    return fetch('/auth/login', {
+    return fetch('/api/v1/auth/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

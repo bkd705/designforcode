@@ -1,6 +1,6 @@
 export default class Api {
   static update (data) {
-    return fetch(`/user/${data.user_id}/profile`, {
+    return fetch(`/api/v1/users/${data.user_id}/profile`, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -14,7 +14,7 @@ export default class Api {
   }
 
   static fetchUser (id) {
-    return fetch(`/user/${id}`)
+    return fetch(`/api/v1/users/${id}`)
       .then(res => res.json())
       .catch(err => err)
   }

@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import md5 from 'blueimp-md5'
 import { Link } from 'react-router'
 import { addFlashMessage } from '../../flashmessage/actions'
+import Avatar from '../../user/Avatar'
 import AgoDate from './AgoDate'
 import CommentForm from './CommentForm'
 import CommentList from './CommentList'
@@ -123,7 +123,7 @@ class Post extends React.Component {
           <article className="media">
             <div className="media-left">
               <figure className="image is-64x64">
-                <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(user.email)}?s=128x128`} alt={`${user.username}'s avatar`}/>
+                <Avatar email={user.email} username={user.username} />
               </figure>
             </div>
             <div className="media-content">

@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
 import SendError from '../util/SendError'
+import Responses from '../util/Responses'
 
 // Import models
 import User from '../models/User'
@@ -23,12 +24,12 @@ export default class AuthController {
     // Find user by username
     const user = await User.findByUsername(userInfo.username)
     if (!user) {
-      return SendError(ctx, 400, 'Failed to find user!')
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND)
     }
 
     // Compare password with database hash
     if (!bcrypt.compareSync(userInfo.password, user.attributes.password)) {
-      return SendError(ctx, 400, 'Incorrect password!')
+      return SendError(ctx, 400, Responses.INCORRECT_PASSWORD)
     }
 
     // Sanitize user
@@ -38,7 +39,7 @@ export default class AuthController {
     const token = jwt.sign(outputUser, process.env.JWT_SECRET, { expiresIn: '14 days' })
 
     // Send response
-    ctx.body = JRes.success('Successfully logged in!', {
+    ctx.body = JRes.success(Responses.LOGIN_SUCCESS, {
       user: outputUser,
       token: token
     })

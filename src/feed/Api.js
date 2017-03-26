@@ -1,12 +1,12 @@
 class Api {
   static fetchPosts() {
-    return fetch('/posts')
+    return fetch('/api/v1/posts')
       .then(res => res.json())
       .catch(err => err)
   }
 
   static searchPosts(terms) {
-    return fetch('/search?term=' + terms, {
+    return fetch('/api/v1/search?term=' + terms, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
@@ -16,7 +16,7 @@ class Api {
   }
 
   static storeComment(comment) {
-    return fetch('/comment/create', {
+    return fetch('/api/v1/comments', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -30,7 +30,7 @@ class Api {
   }
 
   static deleteComment(id) {
-    return fetch(`/comment/${id}`, {
+    return fetch(`/api/v1/comments/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('user_token')}`
@@ -41,7 +41,7 @@ class Api {
   }
 
   static storePost(post) {
-    return fetch('/post/create', {
+    return fetch('/api/v1/posts', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -55,7 +55,7 @@ class Api {
   }
 
   static deletePost(id) {
-    return fetch(`/post/${id}`, {
+    return fetch(`/api/v1/posts/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('user_token')}`
