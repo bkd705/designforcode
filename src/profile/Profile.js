@@ -3,6 +3,7 @@ import md5 from 'blueimp-md5'
 import { connect } from 'react-redux'
 import { addFlashMessage } from '../flashmessage/actions'
 import Api from './api'
+import Avatar from '../user/Avatar'
 import ProfileGithubList from './ProfileGithubList'
 import ProfileDribbbleList from './ProfileDribbbleList'
 import './profile.css'
@@ -84,7 +85,7 @@ class Profile extends React.Component {
               <div className="media">
                 <div className="media-left">
                   <figure className="image is-128x128">
-                    <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(email)}?s=128x128`} alt={`${username}'s avatar`}/>
+                    <Avatar email={email} username={username}/>
                   </figure>
                 </div>
 

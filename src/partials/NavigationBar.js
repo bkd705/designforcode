@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import md5 from 'blueimp-md5'
 import { Link } from 'react-router'
+import Avatar from '../user/Avatar'
 import { addFlashMessage } from '../flashmessage/actions'
 import { logout } from '../auth/actions'
 
@@ -32,7 +33,7 @@ class NavigationBar extends React.Component {
       <div className={`nav-right nav-menu ${this.state.navExpanded && 'is-active'}`}>
         <Link to={`/profile/${this.props.user.username}`} className="nav-item">
           <figure className="image is-24x24" style={{marginRight: '8px'}}>
-            <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(this.props.user.email)}?s=128x128`} alt={`${this.props.user.username}'s avatar`}/>
+            <Avatar email={this.props.user.email} username={this.props.user.username} />
           </figure>
           Profile
         </Link>

@@ -1,9 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import io from 'socket.io-client'
-import InputField from '../form/InputField'
+import { addFlashMessage } from '../flashmessage/actions'
+import ChatList from './ChatList'
+import ChatForm from './ChatForm'
+import './chat.css'
 
-class ChatForm extends React.Component {
+class Chat extends React.Component {
   constructor(props) {
     super(props)
 
@@ -12,15 +15,26 @@ class ChatForm extends React.Component {
       message: '',
       messages: [],
       socket: null,
+      receiver: {},
       errors: {}
     }
   }
 
   componentDidMount() {
     const socket = io('http://localhost:3000')
-    this.setState({
-      socket: socket
-    })
+    fetch(`/user/${this.props.params.username}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        this.setState({
+          receiver: data.data,
+          socket: socket
+        })
+      })
+      .catch(err => {
+        this.context.router.push('/')
+        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred: ${err}` }))
+      })
 
     socket.on('connect', () => {
       socket.emit('join', {
@@ -40,40 +54,27 @@ class ChatForm extends React.Component {
     })
 
     socket.on('server-error', data => {
-      console.log(data)
-
+      this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred: ${data.error}` }))
       this.setState({
         response: data.error
       })
     })
 
     socket.on('send-message-error', data => {
-      console.log(data)
-
+      this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred sending message: ${data.error}` }))
       this.setState({
         response: data.error
       })
     })
 
     socket.on('send-message-success', data => {
-      console.log('sent', data)
-
       this.setState({
         response: data.message
       })
     })
 
-    socket.on('send-message-error', data => {
-      console.log(data)
-
-      this.setState({
-        response: data.error
-      })
-    })
-
     socket.on('fetch-messages-error', data => {
-      console.log(data)
-
+      this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching messages: ${data.error}` }))
       this.setState({
         response: data.error
       })
@@ -87,16 +88,13 @@ class ChatForm extends React.Component {
     })
 
     socket.on('join-error', data => {
-      console.log(data)
-
+      this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred joining chat: ${data.error}` }))
       this.setState({
         response: data.error
       })
     })
 
     socket.on('join-success', data => {
-      console.log(data)
-
       this.setState({
         response: data.message
       })
@@ -111,7 +109,6 @@ class ChatForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-
     this.sendMessage()
   }
 
@@ -121,8 +118,6 @@ class ChatForm extends React.Component {
       token: "Bearer " + localStorage.getItem('user_token'),
       message: this.state.message
     })
-
-    console.log(this.props.user)
 
     let msg = {
       id: Math.floor((Math.random() * 1000) + 1),
@@ -142,36 +137,24 @@ class ChatForm extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="box" style={{width: '500px', margin: '0 auto', marginTop: '20px'}}>
-          <div className="media">
-            <ul style={{width: '100%', marginBottom: '15px'}}>
-              { this.state.messages.map(message => {
-                const color = (message.sender_id === this.props.user.id) ? 'red' : 'blue'
-                const align = (message.sender_id === this.props.user.id) ? 'right' : 'left'
-                const bg = (message.sender_id === this.props.user.id) ? 'white' : '#f9f9f9'
-                return <li key={message.id} style={{color: color, textAlign: align, backgroundColor: bg}}>{message.message}</li>
-              })}
-            </ul>
+        <div className="chat--container">
+          <h2 className="subtitle has-text-center">Chat with {this.props.params.username}</h2>
+          <div className="box">
+            <ChatList messages={this.state.messages} sender={this.props.user} receiver={this.state.receiver.user} />
           </div>
-          <form onSubmit={this.onSubmit}>
-            <div className="field">
-              <InputField
-                name="message"
-                value={this.state.message}
-                placeholder="Enter your message..."
-                onChange={this.onChange}
-                error={this.state.errors.message}
-              />
-            </div>
-            <input type="submit" hidden/>
-          </form>
+          <ChatForm 
+              onSubmit={this.onSubmit} 
+              onChange={this.onChange} 
+              messageValue={this.state.message} 
+              errors={this.state.errors} 
+            />
         </div>
       </div>
     )
   }
 }
 
-ChatForm.contextTypes = {
+Chat.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 
@@ -181,4 +164,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(ChatForm)
+export default connect(mapStateToProps)(Chat)

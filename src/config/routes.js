@@ -8,7 +8,7 @@ import Login from '../auth/login/LoginPage'
 import Signup from '../auth/signup/SignupPage'
 import ProfileForm from '../profile/Form'
 import Profile from '../profile/Profile'
-import Chat from '../chat/Form'
+import Chat from '../chat/Chat'
 import Feed from '../feed/Feed'
 
 const routes = (

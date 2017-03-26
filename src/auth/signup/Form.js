@@ -82,7 +82,7 @@ class SignupForm extends React.Component {
     const value = this.state[field]
 
     if(value.length > 0) {
-      fetch(`/user/${field}/${value}`)
+      fetch(`/api/v1/users/${field}/${value}`)
       .then(res => res.json())
       .then(res => {
         if(!res.success) {

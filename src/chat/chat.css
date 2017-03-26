@@ -1,0 +1,19 @@
+.chat--container {
+  margin: 0 auto;
+  max-width: 960px;
+  margin-top: 25px;
+  padding: 0 15px;
+}
+
+.chat--container .box {
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(10,10,10,.1);
+  max-height: 75vh;
+  overflow: scroll;
+
+}
+
+.chat--list {
+  height: 100%;
+  overflow: scroll;
+}

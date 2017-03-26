@@ -1,6 +1,6 @@
 import React from 'react'
-import md5 from 'blueimp-md5'
 import { Link } from 'react-router'
+import Avatar from '../../user/Avatar'
 import AgoDate from './AgoDate'
 
 const Comment = ({ comment, currentUser, deleteComment }) => {
@@ -22,7 +22,7 @@ const Comment = ({ comment, currentUser, deleteComment }) => {
       <article className="media">
         <div className="media-left">
           <figure className="image is-48x48">
-            <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(comment.user.email)}?s=128x128`} alt={`${comment.user.username}'s avatar`}/>
+            <Avatar email={comment.user.email} username={comment.user.username} />
           </figure>
         </div>
         <div className="media-content">
