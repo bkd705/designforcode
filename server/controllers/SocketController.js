@@ -17,9 +17,9 @@ export default class SocketController {
    */
   static async authenticateConnection(data) {
     let token = data.token
-    let recipient_id = data.recipient_id
+    let recipient_name = data.recipient_name
 
-    if (!token || !recipient_id) {
+    if (!token || !recipient_name) {
       return JRes.failure('Please provide the required data')
     }
 
@@ -52,7 +52,7 @@ export default class SocketController {
     }
 
     // Get other user's information
-    const recipient = await User.find(recipient_id)
+    const recipient = await User.findByUsername(recipient_name)
     if (!recipient) {
       return JRes.failure('Failed to find recipient', recipient)
     }
