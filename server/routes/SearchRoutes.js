@@ -1,5 +1,5 @@
 import SearchController from '../controllers/SearchController'
 
 module.exports = (router) => {
-  router.get('/search', SearchController.findPosts)
+  router.get('/api/v1/search', SearchController.findPosts)
 }

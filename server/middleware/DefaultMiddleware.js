@@ -1,5 +1,6 @@
 // Import utilities
 import SendError from '../util/SendError'
+import Responses from '../util/Responses'
 
 module.exports = (app) => {
   /**
@@ -14,12 +15,12 @@ module.exports = (app) => {
       console.log(err)
 
       let data = null
-      let error = 'There was an error with your request'
+      let error = Responses.INTERNAL_SERVER_ERROR
 
       if (err.detail) {
         data = err.detail
       } else if (err[0].validation && err[0].message) {
-        error = 'Validation error'
+        error = Responses.VALIDATION_ERROR
         data = err[0].message
       }
 

@@ -6,6 +6,7 @@ require("babel-polyfill")
 process.env.NODE_ENV = 'test'
 
 //Require the dev-dependencies
+const Responses = require('../server/util/Responses')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('../server')
@@ -49,13 +50,13 @@ describe('User', () => {
 
   it('Create user', (done) => {
     request
-      .post('/user/create')
+      .post('/api/v1/users')
       .send(user)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully created user!')
+        res.body.message.should.equal(Responses.CREATE_USER_SUCCESS)
         res.body.data.should.have.property('user')
         res.body.data.should.have.property('token')
 
@@ -68,12 +69,12 @@ describe('User', () => {
 
   it('Find user', (done) => {
     request
-      .get('/user/' + userId)
+      .get('/api/v1/users/' + userId)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully fetched user!')
+        res.body.message.should.equal(Responses.SHOW_USER_SUCCESS)
         res.body.data.should.have.property('user')
         res.body.data.should.have.property('profile')
         done()
@@ -82,14 +83,14 @@ describe('User', () => {
 
   it('Update user', (done) => {
     request
-      .put('/user/' + userId)
+      .put('/api/v1/users/' + userId)
       .set('Authorization', 'Bearer ' + token)
       .send(updateUser)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully updated user!')
+        res.body.message.should.equal(Responses.UPDATE_USER_SUCCESS)
         res.body.data.should.have.property('user')
         res.body.data.user.email.should.equal(updateUser.email)
         done()
@@ -98,14 +99,14 @@ describe('User', () => {
 
   it('Update user profile', (done) => {
     request
-      .put('/user/' + userId + '/profile')
+      .put('/api/v1/users/' + userId + '/profile')
       .set('Authorization', 'Bearer ' + token)
       .send(updateProfile)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully updated user profile!')
+        res.body.message.should.equal(Responses.UPDATE_PROFILE_SUCCESS)
         res.body.data.should.have.property('user')
         res.body.data.should.have.property('profile')
 
@@ -120,14 +121,14 @@ describe('User', () => {
 
   it('Update user password', (done) => {
     request
-      .put('/user/' + userId + '/password')
+      .put('/api/v1/users/' + userId + '/password')
       .set('Authorization', 'Bearer ' + token)
       .send(updatePassword)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully updated user password!')
+        res.body.message.should.equal(Responses.UPDATE_PASSWORD_SUCCESS)
         done()
     })
   })
@@ -139,13 +140,13 @@ describe('User', () => {
     }
 
     request
-      .post('/auth/login')
+      .post('/api/v1/auth/login')
       .send(fields)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully logged in!')
+        res.body.message.should.equal(Responses.LOGIN_SUCCESS)
         res.body.data.should.have.property('user')
         res.body.data.should.have.property('token')
         done()
@@ -166,14 +167,14 @@ describe('Post', () => {
 
   it('Create post', (done) => {
     request
-      .post('/post/create')
+      .post('/api/v1/posts')
       .set('Authorization', 'Bearer ' + token)
       .send(post)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully created post!')
+        res.body.message.should.equal(Responses.CREATE_POST_SUCCESS)
         res.body.data.should.have.property('post')
 
         postId = res.body.data.post.id
@@ -183,14 +184,14 @@ describe('Post', () => {
 
   it('Update post', (done) => {
     request
-      .put('/post/' + postId)
+      .put('/api/v1/posts/' + postId)
       .set('Authorization', 'Bearer ' + token)
       .send(updatePost)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully updated post!')
+        res.body.message.should.equal(Responses.UPDATE_POST_SUCCESS)
         res.body.data.should.have.property('post')
         res.body.data.post.description.should.equal(updatePost.description)
         done()
@@ -199,12 +200,12 @@ describe('Post', () => {
 
   it('Find post', (done) => {
     request
-      .get('/post/' + postId)
+      .get('/api/v1/posts/' + postId)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully fetched post!')
+        res.body.message.should.equal(Responses.SHOW_POST_SUCCESS)
        done()
     })
   })
@@ -226,14 +227,14 @@ describe('Comment', () => {
     comment.post_id = postId
 
     request
-      .post('/comment/create')
+      .post('/api/v1/comments')
       .set('Authorization', 'Bearer ' + token)
       .send(comment)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully created comment!')
+        res.body.message.should.equal(Responses.CREATE_COMMENT_SUCCESS)
         res.body.data.should.have.property('comment')
 
         commentId = res.body.data.comment.id
@@ -243,14 +244,14 @@ describe('Comment', () => {
 
   it('Create comment #2', (done) => {
     request
-      .post('/comment/create')
+      .post('/api/v1/comments')
       .set('Authorization', 'Bearer ' + token)
       .send(comment)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully created comment!')
+        res.body.message.should.equal(Responses.CREATE_COMMENT_SUCCESS)
         res.body.data.should.have.property('comment')
 
         commentId2 = res.body.data.comment.id
@@ -260,14 +261,14 @@ describe('Comment', () => {
 
   it('Update comment #1', (done) => {
     request
-      .put('/comment/' + commentId)
+      .put('/api/v1/comments/' + commentId)
       .set('Authorization', 'Bearer ' + token)
       .send(updateComment)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully updated comment!')
+        res.body.message.should.equal(Responses.UPDATE_COMMENT_SUCCESS)
         res.body.data.should.have.property('comment')
         res.body.data.comment.body.should.equal(updateComment.body)
         done()
@@ -276,12 +277,12 @@ describe('Comment', () => {
 
   it('Find comment #1', (done) => {
     request
-      .get('/comment/' + commentId)
+      .get('/api/v1/comments/' + commentId)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully fetched comment!')
+        res.body.message.should.equal(Responses.SHOW_COMMENT_SUCCESS)
         res.body.data.should.have.property('comment')
         done()
     })
@@ -291,38 +292,38 @@ describe('Comment', () => {
 describe('Deletions', () => {
   it('Delete comment #2', (done) => {
     request
-      .delete('/comment/' + commentId2)
+      .delete('/api/v1/comments/' + commentId2)
       .set('Authorization', 'Bearer ' + token)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully deleted comment!')
+        res.body.message.should.equal(Responses.DELETE_COMMENT_SUCCESS)
         done()
     })
   })
 
   it('Delete post', (done) => {
     request
-      .delete('/post/' + postId)
+      .delete('/api/v1/posts/' + postId)
       .set('Authorization', 'Bearer ' + token)
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a('object')
         res.body.success.should.equal(true)
-        res.body.message.should.equal('Successfully deleted post!')
+        res.body.message.should.equal(Responses.DELETE_POST_SUCCESS)
         done()
     })
   })
 
   it("Find comment from deleted post (shouldn't be there)", (done) => {
     request
-      .get('/comment/' + commentId)
+      .get('/api/v1/comments/' + commentId)
       .end((err, res) => {
         res.should.have.status(400)
         res.body.should.be.a('object')
         res.body.success.should.equal(false)
-        res.body.error.should.equal('Failed to find comment!')
+        res.body.error.should.equal(Responses.COMMENT_NOT_FOUND)
         done()
     })
   })
