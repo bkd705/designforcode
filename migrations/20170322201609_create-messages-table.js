@@ -3,6 +3,8 @@ exports.up = (knex, Promise) => {
   return knex.schema.createTable('messages', (table) => {
     table.uuid('id').primary()
 
+    table.string('room_id').notNullable()
+
     table.uuid('sender_id')
     table.foreign('sender_id').references('id').inTable('users')
 

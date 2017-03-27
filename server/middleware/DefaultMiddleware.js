@@ -19,7 +19,7 @@ module.exports = (app) => {
 
       if (err.detail) {
         data = err.detail
-      } else if (err[0].validation && err[0].message) {
+      } else if (err[0] && err[0].validation && err[0].message) {
         error = Responses.VALIDATION_ERROR
         data = err[0].message
       }
