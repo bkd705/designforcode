@@ -7,7 +7,7 @@ const CommentList = ({ comments, expanded, currentUser, deleteComment, toggleCom
     const slicedComments = comments.slice(comments.length - 3, comments.length)
 
     return (
-      <div className="box comments">
+      <div className="comments--list">
         {slicedComments.map(comment => {
           return <Comment comment={comment} deleteComment={deleteComment} currentUser={currentUser} key={comment.id} />
         })}
@@ -20,7 +20,7 @@ const CommentList = ({ comments, expanded, currentUser, deleteComment, toggleCom
     )
   } else {
     return (
-      <div className="box comments">
+      <div className="comments--list">
         {comments.map(comment => {
           return <Comment comment={comment} deleteComment={deleteComment} currentUser={currentUser} key={comment.id} />
         })}

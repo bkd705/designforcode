@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import md5 from 'blueimp-md5'
+import Avatar from '../../user/Avatar'
 import TransformObj from '../../util/TransformObj'
 import TextArea from '../../form/TextArea'
 import InputField from '../../form/InputField'
@@ -39,12 +39,12 @@ class PostForm extends React.Component {
     const { title, description, type, errors } = this.state
     const { user } = this.props
     return (
-      <div className="post">
+      <div className="post post--form">
         <div className="box">
           <article className="media">
             <div className="media-left">
               <figure className="image is-64x64">
-                <img className="image--avatar" src={`https://www.gravatar.com/avatar/${md5(user.email)}?s=128x128`} alt={`${user.username}'s avatar`}/>
+                <Avatar email={user.email} username={user.username} />
               </figure>
             </div>
             <div className="media-content">
