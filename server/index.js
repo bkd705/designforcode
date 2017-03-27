@@ -35,7 +35,7 @@ require('./routes/SearchRoutes')(router)
 
 // Serve front-end route
 router.get('*', function * (next) {
-  yield sendFile(this, path.join(__dirname, '../public/index.html'))
+  yield sendFile(this, path.join(__dirname, '../build/index.html'))
   yield next
 })
 
