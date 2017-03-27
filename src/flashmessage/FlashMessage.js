@@ -7,6 +7,10 @@ const FlashMessage = (props) => {
     props.deleteFlashMessage(props.message.id)
   }
 
+  setTimeout(() => {
+    props.deleteFlashMessage(props.message.id)
+  }, 3000)
+
   return (
     <div>
       <div className={classnames('notification', {
