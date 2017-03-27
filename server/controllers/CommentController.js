@@ -9,6 +9,8 @@ import Responses from '../util/Responses'
 
 // Import models
 import Comment from '../models/Comment'
+import Post from '../models/Post'
+import Notification from '../models/Notification'
 
 export default class CommentController {
 
@@ -27,6 +29,12 @@ export default class CommentController {
     // Set comment's user
     commentInfo.user_id = currUser.id
 
+    // Get post
+    const post = await Post.find(commentInfo.post_id)
+    if (!post) {
+      return SendError(ctx, 400, Responses.POST_NOT_FOUND, post)
+    }
+
     // Create comment
     const comment = await Comment.create(commentInfo)
     if (!comment) {
@@ -39,6 +47,15 @@ export default class CommentController {
         'id', 'post_id', 'user_id', 'body', 'created_at'
       ])
     })
+
+    // Store notification
+    if (currUser.id !== post.attributes.user_id) {
+      Notification.create({
+        to_user: post.attributes.user_id,
+        from_user: currUser.id,
+        text: `${ currUser.attributes.username } commented on your post`
+      })
+    }
   }
 
   /**

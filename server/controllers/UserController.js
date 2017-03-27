@@ -10,6 +10,9 @@ import Helpers from '../util/Helpers'
 import SendError from '../util/SendError'
 import Responses from '../util/Responses'
 
+// Import Bookshelf to use knex query
+import Bookshelf from '../config/Bookshelf'
+
 // Import models
 import User from '../models/User'
 import Profile from '../models/Profile'
@@ -266,6 +269,8 @@ export default class UserController {
 
     chats = chats.serialize()
 
+    // TODO: Find out how to replace this with a join/relationship
+
     for (let i = 0; i < chats.length; i++) {
       let otherUserId = chats[i].room_id.replace(user.id, '').replace(':', '')
 
@@ -277,6 +282,70 @@ export default class UserController {
 
     // Send response
     ctx.body = JRes.success(Responses.SHOW_CHATS_SUCCESS, { chats })
+  }
+
+  /**
+   * Method for finding a user's notifications
+   * @param ctx - The current request context
+   * @param next - The next state to transition to
+   */
+  static async findNotifications(ctx, next) {
+    const currUser = ctx.state.user
+    const userId = ctx.params.id
+
+    // Check permissions
+    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
+    }
+
+    // Find user by ID
+    const user = await User.find(userId)
+    if (!user) {
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
+    }
+
+    // Find notifications
+    const opts = { withRelated: ['from_user'] }
+    const notifications = await Notification.findByUserId(user.id, opts)
+    if (!notifications) {
+      return SendError(ctx, 400, Responses.NO_NOTIFICATIONS_FOUND, notifications)
+    }
+
+    // Send response
+    ctx.body = JRes.success(Responses.SHOW_NOTIFICATIONS_SUCCESS, {
+      notifications: Helpers.transformArray(notifications.serialize(), [
+        { attribute: 'from_user', fields: ['id', 'username', 'email'] },
+        'text', 'created_at'
+      ])
+    })
+  }
+
+  /**
+   * Method for clearing a user's notifications
+   * @param ctx - The current request context
+   * @param next - The next state to transition to
+   */
+  static async clearNotifications(ctx, next) {
+    const currUser = ctx.state.user
+    const userId = ctx.params.id
+
+    // Check permissions
+    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+      return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
+    }
+
+    // Find user by ID
+    const user = await User.find(userId)
+    if (!user) {
+      return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
+    }
+
+    const updated = await Bookshelf.knex('notifications')
+      .where('to_user', '=', user.id)
+      .update({ read: true })
+
+    // Send response
+    ctx.body = JRes.success(Responses.NOTIFICATIONS_CLEARED)
   }
 
   /**
