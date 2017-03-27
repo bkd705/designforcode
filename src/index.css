@@ -2,6 +2,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: #F2F4F6;
+  height: 100vh;
 }
 
 a {

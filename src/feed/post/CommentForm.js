@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import md5 from 'blueimp-md5'
-import TextArea from '../../form/TextArea'
+import Avatar from '../../user/Avatar'
+import InputField from '../../form/InputField'
 
 class CommentForm extends React.Component {
   constructor(props) {
@@ -28,18 +28,17 @@ class CommentForm extends React.Component {
     const { comment, errors } = this.state
     
     return (
-      <article className="media">
+      <article className="media comment-form--container">
         <div className="media-left">
           <figure className="image is-48x48">
-            <img src={`https://www.gravatar.com/avatar/${md5(this.props.user.email)}?s=128x128`} alt={`${this.props.user.username}'s avatar`}/>
+            <Avatar email={this.props.user.email} username={this.props.user.username} />
           </figure>
         </div>
 
         <div className="media-content">
           <form onSubmit={this.onSubmit} className="comment-form">
-            <label className="label">Your comment</label>
             <div className="field is-grouped">
-              <TextArea
+              <InputField
                 name="comment"
                 value={comment}
                 placeholder="Add a comment"

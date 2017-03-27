@@ -147,17 +147,16 @@ class Post extends React.Component {
           </article>
         </div>
 
-        { comments.length > 0 &&
-          <CommentList
-            comments={comments}
-            expanded={expanded}
-            deleteComment={this.deleteComment}
-            toggleComments={this.toggleExpandedComments}
-          /> }
-
-        <div className="box add-comment">
-          { showCommentForm ? <CommentForm addComment={this.addComment} /> : <small><a onClick={this.toggleCommentForm}>Add a comment</a></small> }
-        </div>
+        <div className="box comments">
+          { comments.length > 0 &&
+            <CommentList
+              comments={comments}
+              expanded={expanded}
+              deleteComment={this.deleteComment}
+              toggleComments={this.toggleExpandedComments}
+            /> }
+            <CommentForm addComment={this.addComment} />
+          </div>
       </div>
     )
   }
