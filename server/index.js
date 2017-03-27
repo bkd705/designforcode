@@ -16,7 +16,7 @@ const app = new koa()
 const router = koaRouter()
 
 // Serve static files
-app.use(serve(`${__dirname}/../public/`))
+app.use(serve(path.join(__dirname, '../build')))
 
 // Enable default middleware
 require('./middleware/DefaultMiddleware')(app)
@@ -34,9 +34,9 @@ require('./routes/PostRoutes')(router)
 require('./routes/SearchRoutes')(router)
 
 // Serve front-end route
-router.get('*', function * (next) {
-  yield sendFile(this, path.join(__dirname, '../public/index.html'))
-  yield next
+router.get('*', async function (ctx, next) {
+  await sendFile(ctx, path.join(__dirname, '../build/index.html'))
+  await next()
 })
 
 // Hook socket.io onto current HTTP server
