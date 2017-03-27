@@ -10,6 +10,7 @@ import ProfileForm from '../profile/Form'
 import Profile from '../profile/Profile'
 import Chat from '../chat/Chat'
 import Feed from '../feed/Feed'
+import NotFound from '../not-found/NotFound'
 
 const routes = (
   <Router history={browserHistory}>
@@ -24,6 +25,8 @@ const routes = (
       <Route path="/profile/create" component={() => <ProfileForm isNew />} onEnter={RequireAuth} />
       <Route path="/profile/update" component={() => <ProfileForm />} onEnter={RequireAuth} />
       <Route path="/profile/:username" component={Profile} onEnter={RequireAuth} />
+
+      <Route path="/*" component={NotFound} />
     </Route>
   </Router>
 )
