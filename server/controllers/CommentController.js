@@ -53,7 +53,7 @@ export default class CommentController {
       Notification.create({
         to_user: post.attributes.user_id,
         from_user: currUser.id,
-        text: `${ currUser.attributes.username } commented on your post`
+        type: 'comment'
       })
     }
   }

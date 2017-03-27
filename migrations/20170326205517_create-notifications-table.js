@@ -9,7 +9,7 @@ exports.up = (knex, Promise) => {
     table.uuid('from_user')
     table.foreign('from_user').references('id').inTable('users')
 
-    table.string('text').notNullable()
+    table.string('type').notNullable()
     table.boolean('read').defaultTo(false)
     table.timestamps()
   })

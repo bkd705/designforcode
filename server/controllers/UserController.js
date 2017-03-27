@@ -315,7 +315,7 @@ export default class UserController {
     ctx.body = JRes.success(Responses.SHOW_NOTIFICATIONS_SUCCESS, {
       notifications: Helpers.transformArray(notifications.serialize(), [
         { attribute: 'from_user', fields: ['id', 'username', 'email'] },
-        'text', 'created_at'
+        'type', 'created_at'
       ])
     })
   }
@@ -342,6 +342,7 @@ export default class UserController {
 
     const updated = await Bookshelf.knex('notifications')
       .where('to_user', '=', user.id)
+      .andWhere('read', '=', false)
       .update({ read: true })
 
     // Send response
