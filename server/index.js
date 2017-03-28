@@ -43,6 +43,9 @@ router.get('*', async function (ctx, next) {
 const server = http.Server(app.callback())
 const io = new SocketIO(server)
 
+// Bootstrap socketio to koa
+app.context.socketio = io
+
 // Serve socket.io sockets
 require('./routes/SocketRoutes')(io)
 

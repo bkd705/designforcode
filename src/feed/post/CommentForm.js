@@ -22,11 +22,15 @@ class CommentForm extends React.Component {
   onSubmit = (e) => {
     e.preventDefault()
     this.props.addComment(this.state.comment)
+
+    this.setState({
+      comment: ''
+    })
   }
 
   render() {
     const { comment, errors } = this.state
-    
+
     return (
       <article className="media comment-form--container">
         <div className="media-left">
@@ -44,6 +48,7 @@ class CommentForm extends React.Component {
                 placeholder="Add a comment"
                 onChange={this.onChange}
                 error={errors.comment}
+                autocomplete="off"
               />
 
               <p className="control">

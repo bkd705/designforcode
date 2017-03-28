@@ -24,6 +24,19 @@ module.exports = (io) => {
   io.on('connection', async (socket) => {
     console.log("connection received: " + socket.id)
 
+    socket.on('hook-notifications', async (data) => {
+      const user = await SocketController.getUser(data)
+      if (!user.success) {
+        socket.emit('hook-notifications-error', user)
+      }
+
+      socket.join(user.data.user.id)
+
+      socket.to(user.data.user.id).emit('hook-notifications-success',
+        JRes.success('Received hooked notifications')
+      )
+    })
+
     socket.on('send-message', async (data) => {
       const auth = await SocketController.authenticateConnection(data)
       if (!auth.success) {
