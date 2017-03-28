@@ -40,7 +40,9 @@ class Feed extends React.Component {
     })
   }
 
-  search = () => {
+  search = (e) => {
+    e.preventDefault()
+
     Api.searchPosts(this.state.searchTxt)
      .then(res => {
        this.setState({
@@ -144,18 +146,20 @@ class Feed extends React.Component {
                 <strong>{this.state.filteredPosts.length}</strong> posts
               </p>
             </div>
-            <div className="level-item">
-              <div className="field has-addons">
-                <p className="control">
-                  <input onChange={this.onChange} name="searchTxt" className="input" type="text" placeholder="Find a post" />
-                </p>
-                <p className="control">
-                  <button className="button" onClick={this.search}>
-                    Search
-                  </button>
-                </p>
+            <form onSubmit={this.search}>
+              <div className="level-item">
+                <div className="field has-addons">
+                  <p className="control">
+                    <input onChange={this.onChange} name="searchTxt" className="input" type="text" placeholder="Find a post" />
+                  </p>
+                  <p className="control">
+                    <button className="button">
+                      Search
+                    </button>
+                  </p>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
 
           <div className="level-right">
@@ -168,9 +172,10 @@ class Feed extends React.Component {
         </nav>
         <div className="feed">
           { this.state.showPostForm && <PostForm togglePostForm={this.togglePostForm} storePost={this.storePost} /> }
-          {this.state.filteredPosts.map(post => {
+          { this.state.filteredPosts.map(post => {
             return <Post post={post} key={post.id} deletePost={this.deletePost} />
-          })}
+          }) }
+          <p style={{textAlign: 'center'}}>{ (this.state.filteredPosts.length == 0) ? 'It appears there are not posts' : '' }</p>
         </div>
       </div>
     )

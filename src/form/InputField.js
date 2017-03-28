@@ -1,7 +1,7 @@
 import React, { PropTypes as P } from 'react'
 import classnames from 'classnames'
 
-const InputField = ({ label, name, value, type, placeholder, onChange, onBlur, error, helper }) => {
+const InputField = ({ label, name, value, type, placeholder, onChange, onBlur, error, autocomplete, helper }) => {
   return (
     <p className={classnames('control is-expanded', { 'has-icon has-icon-right': error || helper })}>
       <input
@@ -12,6 +12,7 @@ const InputField = ({ label, name, value, type, placeholder, onChange, onBlur, e
         placeholder={placeholder}
         onChange={onChange}
         onBlur={onBlur}
+        autoComplete={autocomplete}
       />
       { error && <span className='icon is-small'><i className='fa fa-warning' /></span> }
       { error && <span className='help is-danger'>{error}</span> }

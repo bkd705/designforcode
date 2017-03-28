@@ -5,6 +5,8 @@ module.exports = (router) => {
   router.post('/api/v1/users', User.create)
 
   router.get('/api/v1/users/:id/chats', AuthMiddleware, User.findChats)
+  router.get('/api/v1/users/:id/notifications', AuthMiddleware, User.findNotifications)
+  router.get('/api/v1/users/:id/notifications/clear', AuthMiddleware, User.clearNotifications)
 
   router.get('/api/v1/users/:id', User.findOne)
   router.get('/api/v1/users/:id/posts', User.findPosts)

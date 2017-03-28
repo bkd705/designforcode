@@ -7,6 +7,10 @@ const FlashMessage = (props) => {
     props.deleteFlashMessage(props.message.id)
   }
 
+  setTimeout(() => {
+    props.deleteFlashMessage(props.message.id)
+  }, 3000)
+
   return (
     <div>
       <div className={classnames('notification', {
@@ -14,7 +18,7 @@ const FlashMessage = (props) => {
         'is-danger': props.message.type === 'error'
       })}>
         <button onClick={onClick} className="delete"></button>
-        {props.message.text}
+        <p style={{wordWrap: 'break-word'}}>{props.message.text}</p>
       </div>
     </div>
   )

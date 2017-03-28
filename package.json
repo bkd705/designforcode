@@ -48,6 +48,7 @@
   "scripts": {
     "start": "react-scripts start",
     "server": "nodemon --watch server --exec babel-node -- server/index.js",
+    "server:prod": "babel-node server/index.js",
     "dev": "nf start",
     "build": "react-scripts build",
     "test:server": "knex migrate:rollback && knex migrate:latest && mocha tests",
