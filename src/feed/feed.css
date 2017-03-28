@@ -83,6 +83,12 @@
   opacity: 1;
 }
 
+@media only screen and (max-width: 768px) {
+  .comment .meta-buttons {
+    opacity: 1;
+  }
+}
+
 .comment-form--container {
   margin-top: 15px;
 }
