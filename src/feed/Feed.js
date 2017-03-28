@@ -36,12 +36,16 @@ class Feed extends React.Component {
 
   onChange = (e) => {
     this.setState({
-      [e.target.name]: e.target.value
+      searchTxt: e.target.value
     })
+
+    if(e.target.value.length === 0) {
+      this.search()
+    }
   }
 
   search = (e) => {
-    e.preventDefault()
+    if(e) e.preventDefault()
 
     Api.searchPosts(this.state.searchTxt)
      .then(res => {

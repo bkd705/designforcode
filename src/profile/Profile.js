@@ -20,7 +20,7 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if(this.props.params.username) {
       Api.fetchUser(this.props.params.username)
         .then(res => {
