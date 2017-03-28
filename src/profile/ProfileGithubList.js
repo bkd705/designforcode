@@ -15,16 +15,16 @@ const GitRepoItem = ({ repo }) => {
         </div>
         <br />
         <nav className="level is-mobile">
-            <div className="level-left">
-              <a className="level-item" href={repo.stargazers_url}>
-                <span className="icon is-small"><i className="fa fa-star"></i></span> <span className="icon-label">{repo.stargazers_count}</span>
-              </a>
+          <div className="level-left">
+            <a className="level-item" href={repo.stargazers_url}>
+              <span className="icon is-small"><i className="fa fa-star"></i></span> <span className="icon-label">{repo.stargazers_count}</span>
+            </a>
 
-              <a className="level-item" href={repo.subscribers_url}>
-                <span className="icon is-small"><i className="fa fa-eye"></i></span> <span className="icon-label">{repo.watchers_count}</span>
-              </a>
-            </div>
-          </nav>
+            <a className="level-item" href={repo.subscribers_url}>
+              <span className="icon is-small"><i className="fa fa-eye"></i></span> <span className="icon-label">{repo.watchers_count}</span>
+            </a>
+          </div>
+        </nav>
       </div>
     </div>
   )
@@ -33,7 +33,7 @@ const GitRepoItem = ({ repo }) => {
 const ProfileGithubList = ({ repos }) => {
   return (
     <div className="columns">
-      { repos.length > 0 
+      { repos.length > 0
       ? repos.map(repo => <GitRepoItem repo={repo} key={repo.id} />)
       : <div className="column"><p>Unfortunately, this user has no repositories on github. :(</p></div> }
     </div>

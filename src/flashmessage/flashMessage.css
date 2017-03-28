@@ -1,13 +1,19 @@
 .flashmessage-container {
   min-width: 200px;
-  max-width: 25%;
+  max-width: 50%;
   position: absolute;
-  right: calc(50% - 200px);
+  right: 24px;
   top: 5em;
   z-index: 999;
-  display: flex;
-  flex-direction: column-reverse;
   transition: height 250ms ease-in-out;
+}
+
+@media only screen and (max-width: 768px) {
+  .flashmessage-container {
+    min-width: 90%;
+    max-width: 90%;
+    right: 20px;
+  }
 }
 
 .flashmessage-container .notification {
