@@ -2,12 +2,18 @@ import React from 'react'
 import Avatar from '../user/Avatar'
 
 const ChatItem = ({ message, isCurrentUser, user }) => {
+  const date = new Date(message.created_at).toLocaleString()
+
   if(isCurrentUser) {
     return (
       <article className="media">
           <div className="media-content">
             <div className="content has-text-right">
               <p>
+                <span
+                  style={{fontSize: '12px', marginRight: '10px', color: 'darkgrey'}}>
+                  {date}
+                </span>
                 <strong>{user.username}</strong>
                 <br />
                 {message.message}
@@ -31,15 +37,19 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
           </figure>
         </div>
 
-          <div className="media-content">
-            <div className="content">
-              <p>
-                <strong>{user.username}</strong>
-                <br />
-                {message.message}
-              </p>
-            </div>
+        <div className="media-content">
+          <div className="content">
+            <p>
+              <strong>{user.username}</strong>
+              <span
+                style={{fontSize: '12px', marginLeft: '10px', color: 'darkgrey'}}>
+                {date}
+              </span>
+              <br />
+              {message.message}
+            </p>
           </div>
+        </div>
       </article>
     )
   }

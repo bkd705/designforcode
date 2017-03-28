@@ -51,6 +51,9 @@ class Chat extends React.Component {
           data.data.message
         ]
       }))
+
+      // This is needed or else the receiver's chat won't scroll right
+      this.scrollToBottom()
     })
 
     socket.on('server-error', data => {
@@ -86,6 +89,7 @@ class Chat extends React.Component {
         messages: data.data.messages
       })
 
+      // This is needed so it scrolls to bottom on load
       this.scrollToBottom()
     })
 
@@ -124,7 +128,8 @@ class Chat extends React.Component {
     let msg = {
       id: Math.floor((Math.random() * 1000) + 1),
       sender_id: this.props.user.id,
-      message: this.state.message
+      message: this.state.message,
+      created_at: new Date().toLocaleString()
     }
 
     this.setState(prevState => ({
@@ -144,8 +149,8 @@ class Chat extends React.Component {
   }
 
   render() {
+    // This is needed here instead of in sendMessage so it scrolls correctly
     this.scrollToBottom()
-
     return (
       <div className="container">
         <div className="chat--container">
