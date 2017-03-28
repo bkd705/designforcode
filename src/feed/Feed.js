@@ -40,7 +40,9 @@ class Feed extends React.Component {
     })
   }
 
-  search = () => {
+  search = (e) => {
+    e.preventDefault()
+
     Api.searchPosts(this.state.searchTxt)
      .then(res => {
        this.setState({
@@ -144,18 +146,20 @@ class Feed extends React.Component {
                 <strong>{this.state.filteredPosts.length}</strong> posts
               </p>
             </div>
-            <div className="level-item">
-              <div className="field has-addons">
-                <p className="control">
-                  <input onChange={this.onChange} name="searchTxt" className="input" type="text" placeholder="Find a post" />
-                </p>
-                <p className="control">
-                  <button className="button" onClick={this.search}>
-                    Search
-                  </button>
-                </p>
+            <form onSubmit={this.search}>
+              <div className="level-item">
+                <div className="field has-addons">
+                  <p className="control">
+                    <input onChange={this.onChange} name="searchTxt" className="input" type="text" placeholder="Find a post" />
+                  </p>
+                  <p className="control">
+                    <button className="button">
+                      Search
+                    </button>
+                  </p>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
 
           <div className="level-right">
