@@ -35,9 +35,22 @@ export function validateLogin (data) {
 export function validateProfile (data) {
   let errors = {}
 
+  let validations = {
+    user_id: true,
+    first_name: true,
+    last_name: true,
+    profession: true,
+    skill_level: true,
+    dribbble_url: false,
+    github_url: false,
+    linkedin_url: false,
+    portfolio_url: false,
+    description: true
+  }
+
   Object.keys(data).forEach(key => {
-    if (key === 'helpers') return
-    if (isEmpty(data[key])) errors[key] = 'This field is required!'
+    if(key === 'helpers') return
+    if(isEmpty(data[key]) && validations[key]) errors[key] = 'This field is required!'
   })
 
   return {
