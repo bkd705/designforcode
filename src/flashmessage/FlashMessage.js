@@ -3,8 +3,13 @@ import classnames from 'classnames'
 import './flashMessage.css'
 
 const FlashMessage = (props) => {
-  const onClick = () => {
+  const onRemove = () => {
     props.deleteFlashMessage(props.message.id)
+  }
+
+  const onClick = () => {
+    // TODO: Change this to a router push
+    location.href = props.message.link
   }
 
   setTimeout(() => {
@@ -12,12 +17,12 @@ const FlashMessage = (props) => {
   }, 3000)
 
   return (
-    <div>
+    <div onClick={onClick}>
       <div className={classnames('notification', {
         'is-success': props.message.type === 'success',
         'is-danger': props.message.type === 'error'
       })}>
-        <button onClick={onClick} className="delete"></button>
+        <button onClick={onRemove} className="delete"></button>
         <p style={{wordWrap: 'break-word'}}>{props.message.text}</p>
       </div>
     </div>

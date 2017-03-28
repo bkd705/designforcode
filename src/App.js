@@ -20,9 +20,21 @@ class App extends Component {
     })
 
     socket.on('notification', data => {
-      this.props.dispatch(addFlashMessage({
-        type: 'success', text: `${data.from_user.username} commented on your post`
-      }))
+      if (data.type == 'message') {
+        const chatPath = '/chat/' + data.from_user.username
+        
+        if (chatPath !== this.props.router.location.pathname) {
+          this.props.dispatch(addFlashMessage({
+            type: 'success',
+            text: `${data.from_user.username} sent you a message!`,
+            link: chatPath
+          }))
+        }
+      } else if (data.type == 'comment'){
+        this.props.dispatch(addFlashMessage({
+          type: 'success', text: `${data.from_user.username} commented on your post!`
+        }))
+      }
 
       // TODO: ADD TO GLOBAL NOTIFICATIONS
     })

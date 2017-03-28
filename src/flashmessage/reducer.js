@@ -10,7 +10,8 @@ export default (state = [], action = {}) => {
       {
         id: shortid.generate(),
         type: action.message.type,
-        text: action.message.text
+        text: action.message.text,
+        link: action.message.link
       }
     ]
   case types.DELETE_FLASH_MESSAGE:

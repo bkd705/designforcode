@@ -8,14 +8,14 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
       <article className="media">
           <div style={{width: '100%'}}>
             <div className="content has-text-right">
-              <p>
+              <p style={{wordWrap: 'break-word'}}>
                 <span
                   style={{marginRight: '5px', color: 'darkgrey'}}>
                   <AgoDate date={message.created_at} />
                 </span>
                 <strong>{user.username}</strong>
                 <br />
-                <p style={{wordWrap: 'break-word'}}>{message.message}</p>
+                {message.message}
               </p>
             </div>
           </div>
@@ -38,14 +38,14 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
 
         <div style={{width: '100%'}}>
           <div className="content">
-            <p>
+            <p style={{wordWrap: 'break-word'}}>
               <strong>{user.username}</strong>
               <span
                 style={{ marginLeft: '5px', color: 'darkgrey'}}>
                 <AgoDate date={message.created_at} />
               </span>
               <br />
-              <p style={{wordWrap: 'break-word'}}>{message.message}</p>
+              {message.message}
             </p>
           </div>
         </div>

@@ -17,6 +17,7 @@
 }
 
 .flashmessage-container .notification {
+  cursor: pointer;
   z-index: 999;
   margin-bottom: 10px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.2);
