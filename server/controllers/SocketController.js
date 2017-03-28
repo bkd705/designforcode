@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 // Import utilities
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
+import Responses from '../util/Responses'
 
 // Import models
 import User from '../models/User'
@@ -69,6 +70,42 @@ export default class SocketController {
         'id', 'username', 'email'
       ])
     })
+  }
+
+  static async getUser(data) {
+    let token = data.token
+
+    if (!token) {
+      return JRes.failure(Responses.INVALID_TOKEN)
+    }
+
+    // Verify the authorization is in the correct format
+    token = token.split(' ')[1]
+    if (!token || token.length == 0) {
+      return JRes.failure(Responses.INVALID_TOKEN)
+    }
+
+    // Verify JWT
+    let payload = null
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET)
+    } catch (ex) {
+      let error = Responses.INTERNAL_SERVER_ERROR
+
+      if (ex.name === 'TokenExpiredError') {
+        error = Responses.TOKEN_EXPIRED
+      }
+
+      return JRes.failure(error, ex)
+    }
+
+    // Get other user's information
+    const user = await User.find(payload.id)
+    if (!user) {
+      return JRes.failure(Responses.USER_NOT_FOUND, user)
+    }
+
+    return JRes.success(Responses.SHOW_USER_SUCCESS, { user })
   }
 
   static async createMessage(sender_id, receiver_id, room_id, message) {

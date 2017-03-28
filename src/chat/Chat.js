@@ -107,6 +107,10 @@ class Chat extends React.Component {
     })
   }
 
+  componentWillUnmount() {
+    this.state.socket.disconnect()
+  }
+
   onChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value

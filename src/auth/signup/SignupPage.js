@@ -5,7 +5,7 @@ const SignupPage = () => {
   return (
     <section className="section">
       <div className="container">
-        <div className="columns">    
+        <div className="columns">
           <div className="column is-half is-offset-one-quarter">
             <div className="heading">
               <h3 className="title">Register</h3>

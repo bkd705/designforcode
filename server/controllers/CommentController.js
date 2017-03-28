@@ -48,12 +48,21 @@ export default class CommentController {
       ])
     })
 
-    // Store notification
     if (currUser.id !== post.attributes.user_id) {
+      // Store notification
       Notification.create({
         to_user: post.attributes.user_id,
         from_user: currUser.id,
         type: 'comment'
+      })
+
+      // Send notification to socket
+      ctx.socketio.to(post.attributes.user_id).emit('notification', {
+        from_user: Helpers.transformObj(currUser.attributes, [
+          'id', 'username', 'email'
+        ]),
+        type: 'comment',
+        created_at: new Date()
       })
     }
   }
