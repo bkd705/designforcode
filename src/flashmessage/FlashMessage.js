@@ -8,7 +8,7 @@ const FlashMessage = (props) => {
   }
 
   setTimeout(() => {
-    //props.deleteFlashMessage(props.message.id)
+    props.deleteFlashMessage(props.message.id)
   }, 3000)
 
   return (
