@@ -1,9 +1,8 @@
 import React from 'react'
 import Avatar from '../user/Avatar'
+import AgoDate from '../feed/post/AgoDate'
 
 const ChatItem = ({ message, isCurrentUser, user }) => {
-  const date = new Date(message.created_at).toLocaleString()
-
   if(isCurrentUser) {
     return (
       <article className="media">
@@ -11,8 +10,8 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
             <div className="content has-text-right">
               <p>
                 <span
-                  style={{fontSize: '12px', marginRight: '10px', color: 'darkgrey'}}>
-                  {date}
+                  style={{marginRight: '5px', color: 'darkgrey'}}>
+                  <AgoDate date={message.created_at} />
                 </span>
                 <strong>{user.username}</strong>
                 <br />
@@ -42,8 +41,8 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
             <p>
               <strong>{user.username}</strong>
               <span
-                style={{fontSize: '12px', marginLeft: '10px', color: 'darkgrey'}}>
-                {date}
+                style={{ marginLeft: '5px', color: 'darkgrey'}}>
+                <AgoDate date={message.created_at} />
               </span>
               <br />
               <p style={{wordWrap: 'break-word'}}>{message.message}</p>
