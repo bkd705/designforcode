@@ -57,7 +57,7 @@ export default class CommentController {
       })
 
       // Send notification to socket
-      socket.to(post.attributes.user_id).emit('notification', {
+      ctx.socketio.to(post.attributes.user_id).emit('notification', {
         from_user: Helpers.transformObj(currUser.attributes, [
           'id', 'username', 'email'
         ]),
