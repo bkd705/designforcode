@@ -8,6 +8,8 @@ const FlashMessage = (props) => {
   }
 
   const onClick = () => {
+    if (!props.message.link) return
+    
     // TODO: Change this to a router push
     location.href = props.message.link
   }
