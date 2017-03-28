@@ -7,7 +7,7 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
   if(isCurrentUser) {
     return (
       <article className="media">
-          <div className="media-content">
+          <div style={{width: '100%'}}>
             <div className="content has-text-right">
               <p>
                 <span
@@ -16,7 +16,7 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
                 </span>
                 <strong>{user.username}</strong>
                 <br />
-                {message.message}
+                <p style={{wordWrap: 'break-word'}}>{message.message}</p>
               </p>
             </div>
           </div>
@@ -37,7 +37,7 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
           </figure>
         </div>
 
-        <div className="media-content">
+        <div style={{width: '100%'}}>
           <div className="content">
             <p>
               <strong>{user.username}</strong>
@@ -46,7 +46,7 @@ const ChatItem = ({ message, isCurrentUser, user }) => {
                 {date}
               </span>
               <br />
-              {message.message}
+              <p style={{wordWrap: 'break-word'}}>{message.message}</p>
             </p>
           </div>
         </div>

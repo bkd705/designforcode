@@ -36,7 +36,7 @@ module.exports = (io) => {
             id: Math.floor((Math.random() * 1000) + 1),
             sender_id: auth.data.sender.id,
             message: data.message,
-            created_at: new Date().toLocaleString()
+            created_at: new Date()
           }
         })
       )

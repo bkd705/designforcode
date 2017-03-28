@@ -129,7 +129,7 @@ class Chat extends React.Component {
       id: Math.floor((Math.random() * 1000) + 1),
       sender_id: this.props.user.id,
       message: this.state.message,
-      created_at: new Date().toLocaleString()
+      created_at: new Date()
     }
 
     this.setState(prevState => ({
