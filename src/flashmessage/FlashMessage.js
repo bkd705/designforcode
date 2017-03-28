@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import './flashMessage.css'
 
-const FlashMessage = (props) => {
+const FlashMessage = (props, context) => {
   const onRemove = () => {
     props.deleteFlashMessage(props.message.id)
   }
@@ -10,8 +10,7 @@ const FlashMessage = (props) => {
   const onClick = () => {
     if (!props.message.link) return
     
-    // TODO: Change this to a router push
-    location.href = props.message.link
+    context.router.push(props.message.link)
   }
 
   setTimeout(() => {
@@ -34,6 +33,10 @@ const FlashMessage = (props) => {
 FlashMessage.propTypes = {
   message: React.PropTypes.object.isRequired,
   deleteFlashMessage: React.PropTypes.func.isRequired
+}
+
+FlashMessage.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }
 
 export default FlashMessage
