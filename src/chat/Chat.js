@@ -21,11 +21,11 @@ class Chat extends React.Component {
   }
 
   componentDidMount() {
-    const socket = io('http://localhost:3000')
+    const socket = io()
+
     fetch(`/api/v1/users/${this.props.params.username}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
         this.setState({
           receiver: data.data,
           socket: socket
@@ -85,6 +85,8 @@ class Chat extends React.Component {
         response: data.message,
         messages: data.data.messages
       })
+
+      this.scrollToBottom()
     })
 
     socket.on('join-error', data => {
@@ -134,12 +136,21 @@ class Chat extends React.Component {
     }))
   }
 
+  scrollToBottom = () => {
+    if (global.document.getElementById('chat')) {
+      const element = global.document.getElementById('chat')
+      element.scrollTop = element.scrollHeight
+    }
+  }
+
   render() {
+    this.scrollToBottom()
+
     return (
       <div className="container">
         <div className="chat--container">
           <h2 className="subtitle has-text-center">Chat with {this.props.params.username}</h2>
-          <div className="box">
+          <div className="box" id="chat">
             <ChatList messages={this.state.messages} sender={this.props.user} receiver={this.state.receiver.user} />
           </div>
           <ChatForm

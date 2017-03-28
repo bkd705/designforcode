@@ -11,6 +11,7 @@ const ChatForm = ({ onSubmit, onChange, messageValue, errors }) => {
           placeholder="Enter your message..."
           onChange={onChange}
           error={errors.message}
+          autocomplete="off"
         />
       </div>
       <input type="submit" hidden/>

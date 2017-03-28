@@ -8,12 +8,13 @@
 .chat--container .box {
   border-radius: 3px;
   box-shadow: 0 0 0 1px rgba(10,10,10,.1);
-  max-height: 75vh;
-  overflow: scroll;
-
+  max-height: 400px;
+  min-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .chat--list {
   height: 100%;
-  overflow: scroll;
+  overflow: hidden;
 }
