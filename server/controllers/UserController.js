@@ -295,6 +295,7 @@ export default class UserController {
   static async findChats(ctx, next) {
     const currUser = ctx.state.user
     const userId = ctx.params.id
+    let user = null
 
     // Check permissions
     if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
@@ -302,7 +303,12 @@ export default class UserController {
     }
 
     // Find user by ID
-    const user = await User.find(userId)
+    if (validateUUID(ctx.params.id)) {
+      user = await User.find(userId, opts)
+    } else {
+      user = await User.findByUsername(userId, opts)
+    }
+
     if (!user) {
       return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
     }
@@ -338,6 +344,7 @@ export default class UserController {
   static async findNotifications(ctx, next) {
     const currUser = ctx.state.user
     const userId = ctx.params.id
+    let user = null
 
     // Check permissions
     if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
@@ -345,7 +352,12 @@ export default class UserController {
     }
 
     // Find user by ID
-    const user = await User.find(userId)
+    if (validateUUID(ctx.params.id)) {
+      user = await User.find(userId, opts)
+    } else {
+      user = await User.findByUsername(userId, opts)
+    }
+
     if (!user) {
       return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
     }
@@ -374,6 +386,7 @@ export default class UserController {
   static async clearNotifications(ctx, next) {
     const currUser = ctx.state.user
     const userId = ctx.params.id
+    let user = null
 
     // Check permissions
     if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
@@ -381,7 +394,12 @@ export default class UserController {
     }
 
     // Find user by ID
-    const user = await User.find(userId)
+    if (validateUUID(ctx.params.id)) {
+      user = await User.find(userId, opts)
+    } else {
+      user = await User.findByUsername(userId, opts)
+    }
+
     if (!user) {
       return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
     }
