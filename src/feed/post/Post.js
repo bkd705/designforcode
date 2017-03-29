@@ -20,7 +20,7 @@ class Post extends React.Component {
   }
 
   componentWillMount() {
-    if(this.props.post.comments.length > 0) {
+    if(this.props.post.comments && this.props.post.comments.length > 0) {
       this.setState({
         comments: this.props.post.comments
       })

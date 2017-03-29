@@ -6,7 +6,10 @@ import Api from './api'
 import Avatar from '../user/Avatar'
 import ProfileGithubList from './ProfileGithubList'
 import ProfileDribbbleList from './ProfileDribbbleList'
+import Post from '../feed/post/Post'
+
 import './profile.css'
+import '../feed/feed.css'
 
 class Profile extends React.Component {
   constructor(props) {
@@ -16,7 +19,8 @@ class Profile extends React.Component {
       profile: {},
       user: {},
       gitRepos: [],
-      dribbbleShots: []
+      dribbbleShots: [],
+      posts: []
     }
   }
 
@@ -39,6 +43,20 @@ class Profile extends React.Component {
         .catch(err => {
           this.context.router.push('/')
           this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching profile: ${err}`}))
+        })
+
+      Api.fetchUserPosts(this.props.params.username, '?start=0&count=3')
+        .then(res => {
+          if(res.success) {
+            this.setState({
+              posts: res.data.posts
+            })
+          } else {
+            this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching user posts: ${res.error}`}))
+          }
+        })
+        .catch(err => {
+          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching user posts: ${err}`}))
         })
     }
   }
@@ -127,12 +145,19 @@ class Profile extends React.Component {
             <div className="box">
               <div className="content">
                 <h4>Github Repos</h4>
-
                 <ProfileGithubList repos={gitRepos} />
 
                 <h4>Dribbble Projects</h4>
-
                 <ProfileDribbbleList shots={dribbbleShots} />
+
+                <br />
+                <h4>Recent Posts</h4>
+                <div className="feed" style={{margin: '0 auto'}}>
+                  { this.state.posts.map(post => {
+                    return <Post post={post} key={post.id} />
+                  }) }
+                  <p>{ (this.state.posts.length == 0) ? 'This user has no posts :(' : '' }</p>
+                </div>
               </div>
             </div>
           </div>
