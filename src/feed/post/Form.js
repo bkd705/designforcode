@@ -36,7 +36,7 @@ class PostForm extends React.Component {
   }
 
   render() {
-    const { title, description, type, errors } = this.state
+    const { title, description, errors } = this.state
     const { user } = this.props
     return (
       <div className="post post--form">

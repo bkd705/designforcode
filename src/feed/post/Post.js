@@ -13,7 +13,6 @@ class Post extends React.Component {
     super(props)
 
     this.state = {
-      showCommentForm: false,
       expanded: false,
       comments: []
     }
@@ -99,7 +98,7 @@ class Post extends React.Component {
 
   render() {
     const { post: { id, type, created_at, user, title, description }, deletePost } = this.props
-    const { showCommentForm, expanded, comments } = this.state
+    const { expanded, comments } = this.state
 
     const postAuthButtons = (
       <nav className="level is-mobile">

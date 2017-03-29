@@ -1,5 +1,4 @@
 import React from 'react'
-import md5 from 'blueimp-md5'
 import { connect } from 'react-redux'
 import { addFlashMessage } from '../flashmessage/actions'
 import Api from './api'
@@ -33,8 +32,8 @@ class Profile extends React.Component {
               profile: res.data.profile,
               user: res.data.user
             })
-            res.data.profile.github_url ? this.fetchGithubRepos() : f => f
-            res.data.profile.dribbble_url ? this.fetchDribbbleShots() : f => f
+            if (res.data.profile.github_url) this.fetchGithubRepos()
+            if (res.data.profile.dribbble_url) this.fetchDribbbleShots()
           } else {
             this.context.router.push('/')
             this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
