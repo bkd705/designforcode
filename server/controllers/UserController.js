@@ -17,6 +17,7 @@ import Bookshelf from '../config/Bookshelf'
 import User from '../models/User'
 import Profile from '../models/Profile'
 import Message from '../models/Message'
+import Post from '../models/Post'
 
 export default class UserController {
   /**
@@ -223,11 +224,33 @@ export default class UserController {
   static async findPosts(ctx, next) {
     const userId = ctx.params.id
 
-    // Get user and their posts
-    const opts = { withRelated: ['posts'] }
-    const user = await User.find(userId, opts)
+    // Limit/offset
+    let start = 0
+    let count = 10
+
+    // Validate and set start offset
+    if (ctx.request.query.start && ctx.request.query.start >= 0) {
+      start = ctx.request.query.start
+    }
+
+    // Validate and set end offset
+    if (ctx.request.query.count && ctx.request.query.count > 0) {
+      count = ctx.request.query.count
+    }
+
+    // Get user
+    const user = await User.find(userId)
     if (!user) {
       return SendError(ctx, 400, Responses.USER_NOT_FOUND, user)
+    }
+
+    let posts = await Post.query(qb => {
+      qb.where('user_id', '=', user.id)
+      qb.orderBy('created_at', 'desc')
+      qb.limit(count).offset(start)
+    }).fetchAll()
+    if (!posts) {
+      return SendError(ctx, 400, Responses.NO_POSTS_FOUND, posts)
     }
 
     // Send response
@@ -235,7 +258,7 @@ export default class UserController {
       user: Helpers.transformObj(user.attributes, [
         'id', 'username', 'email', 'role', 'created_at'
       ]),
-      posts: Helpers.transformArray(user.relations.posts.serialize(), [
+      posts: Helpers.transformArray(posts.serialize(), [
         'id', 'title', 'description', 'type', 'created_at'
       ])
     })
