@@ -115,8 +115,24 @@ class Post extends React.Component {
       </nav>
     )
 
-    const color = (type === 'design') ? 'orange' : 'rgba(50,115,220, 0.8)'
+    const userButtons = (
+      <div style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
+        <button
+          className="button is-primary is-small"
+          style={{width: '30px', marginTop: '10px'}}
+          onClick={() => this.context.router.push(`/chat/${user.username}`)}>
+          <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </button>
+        <button
+          className="button is-info is-small"
+          style={{width: '30px', marginTop: '10px'}}
+          onClick={() => this.context.router.push(`/profile/${user.username}`)}>
+          <i className="fa fa-user" aria-hidden="true"></i>
+        </button>
+      </div>
+    )
 
+    const color = (type === 'design') ? 'orange' : 'rgba(50,115,220, 0.8)'
     return (
       <div className="post">
         <div className="box">
@@ -125,6 +141,8 @@ class Post extends React.Component {
               <figure className="image is-64x64">
                 <Avatar email={user.email} username={user.username} />
               </figure>
+
+              { this.props.user.id !== user.id && userButtons }
             </div>
             <div className="media-content">
               <div className="content">
@@ -166,6 +184,10 @@ const mapStateToProps = (state) => {
   return {
     user: state.auth.user
   }
+}
+
+Post.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(Post)

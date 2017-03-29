@@ -95,6 +95,15 @@ class Profile extends React.Component {
 
   render() {
     const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleShots} = this.state
+
+    const messageButton = (
+      <button
+        className="button is-primary msg-btn"
+        onClick={() => this.context.router.push(`/chat/${username}`)}>
+        Send Message
+      </button>
+    )
+
     return (
       <div className="container profile">
         <div className="columns">
@@ -105,6 +114,8 @@ class Profile extends React.Component {
                   <figure className="image is-128x128">
                     <Avatar email={email} username={username}/>
                   </figure>
+
+                  { this.props.user.id !== this.state.user.id && messageButton }
                 </div>
 
                 <div className="media-content">
@@ -156,7 +167,7 @@ class Profile extends React.Component {
                   { this.state.posts.map(post => {
                     return <Post post={post} key={post.id} />
                   }) }
-                  <p>{ (this.state.posts.length == 0) ? 'This user has no posts :(' : '' }</p>
+                  <p>{ (this.state.posts.length === 0) ? 'This user has no posts :(' : '' }</p>
                 </div>
               </div>
             </div>
@@ -171,4 +182,10 @@ Profile.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 
-export default connect()(Profile)
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps)(Profile)
