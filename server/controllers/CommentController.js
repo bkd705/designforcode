@@ -1,6 +1,3 @@
-// Import node modules
-import indicative from 'indicative'
-
 // Import utilities
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
@@ -24,7 +21,7 @@ export default class CommentController {
     const commentInfo = ctx.request.body
 
     // Validate comment info
-    await indicative.validateAll(commentInfo, Comment.getRules(true))
+    await Comment.validate(Comment.rules, commentInfo, true)
 
     // Set comment's user
     commentInfo.user_id = currUser.id
@@ -99,7 +96,7 @@ export default class CommentController {
     const commentInfo = ctx.request.body
 
     // Validate comment info
-    await indicative.validateAll(commentInfo, Comment.getRules())
+    await Comment.validate(Comment.rules, commentInfo, false)
 
     // Find comment by ID
     const comment = await Comment.find(commentId)

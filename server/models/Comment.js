@@ -5,31 +5,15 @@ class Comment extends Bookshelf.Model {
   get uuid() { return true }
   get hasTimestamps() { return true }
 
-  post() {
-    return this.belongsTo('Post', 'post_id', 'id')
-  }
-
-  user() {
-    return this.belongsTo('User', 'user_id', 'id')
-  }
-
-  /**
-   * Returns the rules for validation
-   * @param required - If the fields should be required
-   */
-  static getRules(required = false) {
-    let rules = {
+  static get rules() {
+    return {
       post_id: 'min:5|max:50',
       body: 'string|min:1'
     }
+  }
 
-    if (required) {
-      for (let key of Object.keys(rules)) {
-        rules[key] = 'required|' + rules[key]
-      }
-    }
-
-    return rules
+  post() {
+    return this.belongsTo('Post', 'post_id', 'id')
   }
 
   /**

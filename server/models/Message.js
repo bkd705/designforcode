@@ -5,33 +5,21 @@ class Message extends Bookshelf.Model {
   get uuid() { return true }
   get hasTimestamps() { return true }
 
+  static get rules() {
+    return {
+      room_id: '',
+      sender_id: '',
+      receiver_id: '',
+      message: 'string|min:10'
+    }
+  }
+
   sender() {
     return this.belongsTo('User', 'sender_id', 'id')
   }
 
   receiver() {
     return this.belongsTo('User', 'receiver_id', 'id')
-  }
-
-  /**
-   * Returns the rules for validation
-   * @param required - If the fields should be required
-   */
-  static getRules(required = false) {
-    let rules = {
-      room_id: '',
-      sender_id: '',
-      receiver_id: '',
-      message: 'string|min:10'
-    }
-
-    if (required) {
-      for (let key of Object.keys(rules)) {
-        rules[key] = 'required|' + rules[key]
-      }
-    }
-
-    return rules
   }
 
   /**

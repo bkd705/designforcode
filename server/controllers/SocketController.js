@@ -109,11 +109,9 @@ export default class SocketController {
   }
 
   static async createMessage(sender_id, receiver_id, room_id, message) {
-    if (!room_id || !sender_id || !receiver_id || !message) {
-      return JRes.failure('Please provide the required information!')
-    }
-
-    // Validation?
+    await Message.validate(Message.rules, {
+      room_id, sender_id, receiver_id, message
+    }, true)
 
     const msg = await Message.create({
       sender_id, receiver_id, room_id, message

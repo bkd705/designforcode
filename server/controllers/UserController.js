@@ -1,6 +1,5 @@
 // Import node modules
 import jwt from 'jsonwebtoken'
-import indicative from 'indicative'
 import bcrypt from 'bcrypt'
 import validateUUID from 'uuid-validate'
 
@@ -29,7 +28,7 @@ export default class UserController {
     const userInfo = ctx.request.body
 
     // Validate user info
-    await indicative.validateAll(userInfo, User.getRules(true))
+    await User.validate(User.rules, userInfo, true)
 
     // Create user
     const user = await User.create(userInfo)
@@ -71,7 +70,7 @@ export default class UserController {
     }
 
     // Validate user info
-    await indicative.validateAll(userInfo, User.getRules())
+    await User.validate(User.rules, userInfo, false)
 
     // Find user by ID
     const user = await User.find(userId)
@@ -110,7 +109,7 @@ export default class UserController {
     }
 
     // Validate user info
-    await indicative.validateAll(profileInfo, Profile.getRules())
+    await Profile.validate(Profile.rules, profileInfo, false)
 
     // Find user by ID
     const user = await User.find(userId)
