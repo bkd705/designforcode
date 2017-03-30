@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import io from 'socket.io-client'
-import { addFlashMessage } from '../flashmessage/actions'
+import { addNotification } from '../notifications/actions'
 import ChatList from './ChatList'
 import ChatForm from './ChatForm'
 import './chat.css'
@@ -33,7 +33,7 @@ class Chat extends React.Component {
       })
       .catch(err => {
         this.context.router.push('/')
-        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred: ${err}` }))
+        this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred: ${err}` }))
       })
 
     socket.on('connect', () => {
@@ -57,14 +57,14 @@ class Chat extends React.Component {
     })
 
     socket.on('server-error', data => {
-      this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred: ${data.error}` }))
+      this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred: ${data.error}` }))
       this.setState({
         response: data.error
       })
     })
 
     socket.on('send-message-error', data => {
-      this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred sending message: ${data.error}` }))
+      this.props.dispatch(addNotification({ type: 'error', text: `An error occurred sending message: ${data.error}` }))
       this.setState({
         response: data.error
       })
@@ -77,7 +77,7 @@ class Chat extends React.Component {
     })
 
     socket.on('fetch-messages-error', data => {
-      this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching messages: ${data.error}` }))
+      this.props.dispatch(addNotification({ type: 'error', text: `An error occurred fetching messages: ${data.error}` }))
       this.setState({
         response: data.error
       })
@@ -94,7 +94,7 @@ class Chat extends React.Component {
     })
 
     socket.on('join-error', data => {
-      this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred joining chat: ${data.error}` }))
+      this.props.dispatch(addNotification({ type: 'error', text: `An error occurred joining chat: ${data.error}` }))
       this.setState({
         response: data.error
       })

@@ -4,7 +4,7 @@ import findIndex from 'lodash/findIndex'
 
 export default (state = [], action = {}) => {
   switch(action.type) {
-  case types.ADD_FLASH_MESSAGE:
+  case types.ADD_NOTIFICATION:
     return [
       ...state,
       {
@@ -14,7 +14,7 @@ export default (state = [], action = {}) => {
         link: action.message.link
       }
     ]
-  case types.DELETE_FLASH_MESSAGE:
+  case types.DELETE_NOTIFICATION:
     const index = findIndex(state, { id: action.id })
     if (index >= 0) {
       return [
@@ -23,8 +23,6 @@ export default (state = [], action = {}) => {
       ]
     }
     return state
-  case types.DELETE_ALL_MESSAGES:
-    return []
   default: return state
   }
 }

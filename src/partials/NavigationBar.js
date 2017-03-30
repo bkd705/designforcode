@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import Avatar from '../user/Avatar'
-import { addFlashMessage } from '../flashmessage/actions'
+import { addNotification } from '../notifications/actions'
 import { logout } from '../auth/actions'
 
 class NavigationBar extends React.Component {
@@ -18,7 +18,7 @@ class NavigationBar extends React.Component {
     e.preventDefault()
     this.props.dispatch(logout())
     this.context.router.push('/')
-    this.props.dispatch(addFlashMessage({ type: 'success', text: 'Come back soon!' }))
+    this.props.dispatch(addNotification({ type: 'success', text: 'Come back soon!' }))
   }
 
   toggleNav = () => {

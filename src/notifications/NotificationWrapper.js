@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addFlashMessage } from '../flashmessage/actions'
+import { addNotification } from './actions'
 import io from 'socket.io-client'
 
 export default function(ComposedComponent) {
@@ -22,14 +22,14 @@ export default function(ComposedComponent) {
           const chatPath = '/chat/' + data.from_user.username
 
           if (chatPath !== this.props.router.location.pathname) {
-            this.props.dispatch(addFlashMessage({
+            this.props.dispatch(addNotification({
               type: 'success',
               text: `${data.from_user.username} sent you a message!`,
               link: chatPath
             }))
           }
         } else if (data.type === 'comment'){
-          this.props.dispatch(addFlashMessage({
+          this.props.dispatch(addNotification({
             type: 'success', text: `${data.from_user.username} commented on your post!`
           }))
         }

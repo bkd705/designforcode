@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addFlashMessage } from '../flashmessage/actions'
+import { addNotification } from '../notifications/actions'
 import Api from './api'
 import Avatar from '../user/Avatar'
 import ProfileGithubList from './ProfileGithubList'
@@ -38,12 +38,12 @@ class Profile extends React.Component {
             if (res.data.profile.dribbble_url) this.fetchDribbbleShots()
           } else {
             this.context.router.push('/')
-            this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
+            this.props.dispatch(addNotification({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
           }
         })
         .catch(err => {
           this.context.router.push('/')
-          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching profile: ${err}`}))
+          this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred fetching profile: ${err}`}))
         })
     }
   }
@@ -60,7 +60,7 @@ class Profile extends React.Component {
           }))
         })
         .catch(err => {
-          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching repos: ${err}`}))
+          this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred fetching repos: ${err}`}))
         })
   }
 
@@ -76,7 +76,7 @@ class Profile extends React.Component {
           }))
         })
         .catch(err => {
-          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching shots: ${err}`}))
+          this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred fetching shots: ${err}`}))
         })
   }
 

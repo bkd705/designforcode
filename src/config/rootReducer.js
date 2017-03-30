@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import authReducer from '../auth/reducer'
-import flashMessageReducer from '../flashmessage/reducer'
+import notificationReducer from '../notifications/reducer'
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  flashMessages: flashMessageReducer
+  notifications: notificationReducer
 })
 
 export default rootReducer

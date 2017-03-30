@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { signup } from '../actions'
-import { addFlashMessage } from '../../flashmessage/actions'
+import { addNotification } from '../../notifications/actions'
 import { validateSignup } from '../../util/FormValidations'
 import TransformObj from '../../util/TransformObj'
 import InputField from '../../form/InputField'
@@ -49,14 +49,14 @@ class SignupForm extends React.Component {
       this.props.dispatch(signup(user))
         .then(res => {
           if(res.success) {
-            this.props.dispatch(addFlashMessage({ type: 'success', text: 'Signed up successfully!' }))
+            this.props.dispatch(addNotification({ type: 'success', text: 'Signed up successfully!' }))
             this.context.router.push('/profile/create')
           } else {
-            this.props.dispatch(addFlashMessage({ type: 'error', text: res.message }))
+            this.props.dispatch(addNotification({ type: 'error', text: res.message }))
           }
         })
         .catch(err => {
-          this.props.dispatch(addFlashMessage({ type: 'error', text: err }))
+          this.props.dispatch(addNotification({ type: 'error', text: err }))
         })
     }
   }

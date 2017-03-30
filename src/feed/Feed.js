@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Api from './Api'
-import { addFlashMessage } from '../flashmessage/actions'
+import { addNotification } from '../notifications/actions'
 import Post from './post/Post'
 import PostForm from './post/Form'
 import './feed.css'
@@ -29,7 +29,7 @@ class Feed extends React.Component {
           })
         })
         .catch(err => {
-          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching posts: ${err}`}))
+          this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred fetching posts: ${err}`}))
         })
     }
   }
@@ -55,7 +55,7 @@ class Feed extends React.Component {
        })
      })
      .catch(err => {
-       this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching posts: ${err}`}))
+       this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred fetching posts: ${err}`}))
      })
   }
 
@@ -87,7 +87,7 @@ class Feed extends React.Component {
         }
       })
       .catch(err => {
-        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred saving post: ${err}`}))
+        this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred saving post: ${err}`}))
       })
   }
 
@@ -110,11 +110,11 @@ class Feed extends React.Component {
             ]
           })
 
-          this.props.dispatch(addFlashMessage({ type: 'success', text: 'Post deleted successfully!'}))
+          this.props.dispatch(addNotification({ type: 'success', text: 'Post deleted successfully!'}))
         }
       })
       .catch(err => {
-        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred deleting the post: ${err}`}))
+        this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred deleting the post: ${err}`}))
       })
   }
 

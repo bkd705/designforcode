@@ -1,10 +1,10 @@
 import React from 'react'
 import classnames from 'classnames'
-import './flashMessage.css'
+import './notification.css'
 
-const FlashMessage = (props, context) => {
+const NotificationItem = (props, context) => {
   const onRemove = () => {
-    props.deleteFlashMessage(props.message.id)
+    props.deleteNotification(props.message.id)
   }
 
   const onClick = () => {
@@ -14,14 +14,15 @@ const FlashMessage = (props, context) => {
   }
 
   setTimeout(() => {
-    props.deleteFlashMessage(props.message.id)
+    props.deleteNotification(props.message.id)
   }, 3000)
 
   return (
     <div onClick={onClick}>
       <div className={classnames('notification', {
         'is-success': props.message.type === 'success',
-        'is-danger': props.message.type === 'error'
+        'is-danger': props.message.type === 'error',
+        'is-info': props.message.type === 'info'
       })}>
         <button onClick={onRemove} className="delete"></button>
         <p style={{wordWrap: 'break-word'}}>{props.message.text}</p>
@@ -30,13 +31,13 @@ const FlashMessage = (props, context) => {
   )
 }
 
-FlashMessage.propTypes = {
+Notification.propTypes = {
   message: React.PropTypes.object.isRequired,
-  deleteFlashMessage: React.PropTypes.func.isRequired
+  deleteNotification: React.PropTypes.func.isRequired
 }
 
-FlashMessage.contextTypes = {
+Notification.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 
-export default FlashMessage
+export default Notification

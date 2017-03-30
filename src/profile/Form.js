@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
-import { addFlashMessage } from '../flashmessage/actions'
+import { addNotification } from '../notifications/actions'
 import { validateProfile } from '../util/FormValidations'
 import TransformObj from '../util/TransformObj'
 import InputField from '../form/InputField'
@@ -72,14 +72,14 @@ class ProfileForm extends React.Component {
         'dribbble_url', 'github_url', 'linkedin_url', 'portfolio_url', 'description']))
         .then(res => {
           if(res.success) {
-            this.props.dispatch(addFlashMessage({ type: 'success', text: 'Profile updated successfully!!' }))
+            this.props.dispatch(addNotification({ type: 'success', text: 'Profile updated successfully!!' }))
             this.context.router.push('/')
           } else {
-            this.props.dispatch(addFlashMessage({ type: 'error', text: res.message }))
+            this.props.dispatch(addNotification({ type: 'error', text: res.message }))
           }
         })
         .catch(err => {
-          this.props.dispatch(addFlashMessage({ type: 'error', text: err }))
+          this.props.dispatch(addNotification({ type: 'error', text: err }))
         })
     }
   }

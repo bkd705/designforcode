@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { addFlashMessage } from '../../flashmessage/actions'
+import { addNotification } from '../../notifications/actions'
 import Avatar from '../../user/Avatar'
 import AgoDate from './AgoDate'
 import CommentForm from './CommentForm'
@@ -54,7 +54,7 @@ class Post extends React.Component {
         }
       })
       .catch(err => {
-        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred saving comment: ${err}`}))
+        this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred saving comment: ${err}`}))
       })
   }
 
@@ -76,7 +76,7 @@ class Post extends React.Component {
         }
       })
       .catch(err => {
-        this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred deleting the comment: ${err}`}))
+        this.props.dispatch(addNotification({ type: 'error', text: `An unexpected error occurred deleting the comment: ${err}`}))
       })
   }
 

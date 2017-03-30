@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import FlashMessages from './flashmessage/FlashMessageList'
+import Notifications from './notifications/NotificationList'
 import NavigationBar from './partials/NavigationBar'
-import NotificationWrapper from './partials/NotificationWrapper'
+import NotificationWrapper from './notifications/NotificationWrapper'
 
 class App extends Component {
   render () {
     return (
       <div className='app'>
         <NavigationBar />
-        <FlashMessages />
+        <Notifications />
         {this.props.children}
       </div>
     )
