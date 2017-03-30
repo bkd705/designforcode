@@ -19,7 +19,8 @@ class Profile extends React.Component {
       user: {},
       gitRepos: [],
       dribbbleShots: [],
-      posts: []
+      posts: [],
+      isLoading: true
     }
   }
 
@@ -30,7 +31,8 @@ class Profile extends React.Component {
           if(res.success) {
             this.setState({
               profile: res.data.profile,
-              user: res.data.user
+              user: res.data.user,
+              isLoading: false
             })
             if (res.data.profile.github_url) this.fetchGithubRepos()
             if (res.data.profile.dribbble_url) this.fetchDribbbleShots()
@@ -42,20 +44,6 @@ class Profile extends React.Component {
         .catch(err => {
           this.context.router.push('/')
           this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching profile: ${err}`}))
-        })
-
-      Api.fetchUserPosts(this.props.params.username, '?start=0&count=3')
-        .then(res => {
-          if(res.success) {
-            this.setState({
-              posts: res.data.posts
-            })
-          } else {
-            this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching user posts: ${res.error}`}))
-          }
-        })
-        .catch(err => {
-          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching user posts: ${err}`}))
         })
     }
   }
@@ -93,7 +81,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleShots} = this.state
+    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleShots, isLoading} = this.state
 
     const messageButton = (
       <button
@@ -103,77 +91,74 @@ class Profile extends React.Component {
       </button>
     )
 
-    return (
-      <div className="container profile">
-        <div className="columns">
-          <div className="column is-two-thirds">
-            <div className="box">
-              <div className="media">
-                <div className="media-left">
-                  <figure className="image is-128x128">
-                    <Avatar email={email} username={username}/>
-                  </figure>
+    if(isLoading) {
+      return (
+        <p></p>
+      )
+    } else {
+      return (
+        <div className="container profile">
+          <div className="columns">
+            <div className="column is-two-thirds">
+              <div className="box">
+                <div className="media">
+                  <div className="media-left">
+                    <figure className="image is-128x128">
+                      <Avatar email={email} username={username}/>
+                    </figure>
 
-                  { this.props.user.id !== this.state.user.id && messageButton }
-                </div>
+                    { this.props.user.id !== this.state.user.id && messageButton }
+                  </div>
 
-                <div className="media-content">
-                  <div className="content">
-                    <p>
-                    <strong> { first_name } { last_name }</strong>  { username }
-                    <br />
-                    <small className="is-capital">{ skill_level } { profession }</small>
-                    <br />
-                    { description ? description : `${username} has no description. :(`}</p>
+                  <div className="media-content">
+                    <div className="content">
+                      <p>
+                      <strong> { first_name } { last_name }</strong>  { username }
+                      <br />
+                      <small className="is-capital">{ skill_level } { profession }</small>
+                      <br />
+                      { description ? description : `${username} has no description. :(`}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="column is-one-third">
-            <div className="box">
-              <div className="content">
-                <h4>Links</h4>
+            <div className="column is-one-third">
+              <div className="box">
+                <div className="content">
+                  <h4>Links</h4>
 
-                <p>
-                  <strong>Github: </strong> <a href={github_url} alt="Github Link">{github_url}</a>
-                  <br />
-                  <strong>Dribbble: </strong> <a href={dribbble_url} alt="Github Link">{dribbble_url}</a>
-                  <br />
-                  <strong>LinkedIn: </strong> <a href={linkedin_url} alt="Github Link">{linkedin_url}</a>
-                  <br />
-                  <strong>Portfolio: </strong> <a href={portfolio_url} alt="Github Link">{portfolio_url}</a>
-                </p>
+                  <p>
+                    <strong>Github: </strong> <a href={github_url} alt="Github Link">{github_url}</a>
+                    <br />
+                    <strong>Dribbble: </strong> <a href={dribbble_url} alt="Github Link">{dribbble_url}</a>
+                    <br />
+                    <strong>LinkedIn: </strong> <a href={linkedin_url} alt="Github Link">{linkedin_url}</a>
+                    <br />
+                    <strong>Portfolio: </strong> <a href={portfolio_url} alt="Github Link">{portfolio_url}</a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="columns">
-          <div className="column">
-            <div className="box">
-              <div className="content">
-                <h4>Github Repos</h4>
-                <ProfileGithubList repos={gitRepos} />
+          <div className="columns">
+            <div className="column">
+              <div className="box">
+                <div className="content">
+                  <h4>Github Repos</h4>
+                  <ProfileGithubList repos={gitRepos} />
 
-                <h4>Dribbble Projects</h4>
-                <ProfileDribbbleList shots={dribbbleShots} />
-
-                <br />
-                <h4>Recent Posts</h4>
-                <div className="feed" style={{margin: '0 auto'}}>
-                  { this.state.posts.map(post => {
-                    return <Post post={post} key={post.id} />
-                  }) }
-                  <p>{ (this.state.posts.length === 0) ? 'This user has no posts :(' : '' }</p>
+                  <h4>Dribbble Projects</h4>
+                  <ProfileDribbbleList shots={dribbbleShots} />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    }
   }
 }
 
