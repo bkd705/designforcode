@@ -79,7 +79,7 @@ class Feed extends React.Component {
             ],
             filteredPosts: [
               postWithUser,
-              ...prevState.filteredPosts
+              ...prevState.posts
             ],
             typeFilter: 'all',
             showPostForm: false
@@ -140,6 +140,7 @@ class Feed extends React.Component {
   }
 
   render() {
+    console.log(this.state)
     const { typeFilter } = this.state
     return (
       <div className="container container--feed">

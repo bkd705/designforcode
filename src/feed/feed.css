@@ -13,6 +13,10 @@
   margin-bottom: 50px;
 }
 
+.feed .post:last-of-type {
+  margin-bottom: 0;
+}
+
 .feed .post .box {
   box-shadow: 0 0 0 1px rgba(10,10,10,.1);
   border-radius: 3px 3px 0 0;

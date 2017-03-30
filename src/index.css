@@ -3,7 +3,8 @@ body {
   padding: 0;
   font-family: sans-serif;
   background-color: #F2F4F6;
-  height: 100vh;
+  min-height: 100vh;
+  padding-bottom: 50px;
 }
 
 a {
