@@ -18,4 +18,10 @@ export default class Api {
       .then(res => res.json())
       .catch(err => err)
   }
+
+  static fetchUserPosts (id, params) {
+    return fetch(`/api/v1/users/${id}/posts${params}`)
+      .then(res => res.json())
+      .catch(err => err)
+  }
 }

@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import md5 from 'blueimp-md5'
 import { Link } from 'react-router'
 import Avatar from '../user/Avatar'
 import { addFlashMessage } from '../flashmessage/actions'
@@ -63,7 +62,7 @@ class NavigationBar extends React.Component {
                 <span></span>
                 <span></span>
               </span>
-              
+
               { this.props.isAuthenticated ? authLinks : notAuthLinks }
             </div>
           </header>

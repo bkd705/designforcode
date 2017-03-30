@@ -1,12 +1,14 @@
 import React from 'react'
-import md5 from 'blueimp-md5'
 import { connect } from 'react-redux'
 import { addFlashMessage } from '../flashmessage/actions'
 import Api from './api'
 import Avatar from '../user/Avatar'
 import ProfileGithubList from './ProfileGithubList'
 import ProfileDribbbleList from './ProfileDribbbleList'
+import Post from '../feed/post/Post'
+
 import './profile.css'
+import '../feed/feed.css'
 
 class Profile extends React.Component {
   constructor(props) {
@@ -16,7 +18,8 @@ class Profile extends React.Component {
       profile: {},
       user: {},
       gitRepos: [],
-      dribbbleShots: []
+      dribbbleShots: [],
+      posts: []
     }
   }
 
@@ -29,8 +32,8 @@ class Profile extends React.Component {
               profile: res.data.profile,
               user: res.data.user
             })
-            res.data.profile.github_url ? this.fetchGithubRepos() : f => f
-            res.data.profile.dribbble_url ? this.fetchDribbbleShots() : f => f
+            if (res.data.profile.github_url) this.fetchGithubRepos()
+            if (res.data.profile.dribbble_url) this.fetchDribbbleShots()
           } else {
             this.context.router.push('/')
             this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching profile: ${res.error}`}))
@@ -39,6 +42,20 @@ class Profile extends React.Component {
         .catch(err => {
           this.context.router.push('/')
           this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching profile: ${err}`}))
+        })
+
+      Api.fetchUserPosts(this.props.params.username, '?start=0&count=3')
+        .then(res => {
+          if(res.success) {
+            this.setState({
+              posts: res.data.posts
+            })
+          } else {
+            this.props.dispatch(addFlashMessage({ type: 'error', text: `An error occurred fetching user posts: ${res.error}`}))
+          }
+        })
+        .catch(err => {
+          this.props.dispatch(addFlashMessage({ type: 'error', text: `An unexpected error occurred fetching user posts: ${err}`}))
         })
     }
   }
@@ -77,6 +94,15 @@ class Profile extends React.Component {
 
   render() {
     const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleShots} = this.state
+
+    const messageButton = (
+      <button
+        className="button is-primary msg-btn"
+        onClick={() => this.context.router.push(`/chat/${username}`)}>
+        Send Message
+      </button>
+    )
+
     return (
       <div className="container profile">
         <div className="columns">
@@ -87,6 +113,8 @@ class Profile extends React.Component {
                   <figure className="image is-128x128">
                     <Avatar email={email} username={username}/>
                   </figure>
+
+                  { this.props.user.id !== this.state.user.id && messageButton }
                 </div>
 
                 <div className="media-content">
@@ -127,12 +155,19 @@ class Profile extends React.Component {
             <div className="box">
               <div className="content">
                 <h4>Github Repos</h4>
-
                 <ProfileGithubList repos={gitRepos} />
 
                 <h4>Dribbble Projects</h4>
-
                 <ProfileDribbbleList shots={dribbbleShots} />
+
+                <br />
+                <h4>Recent Posts</h4>
+                <div className="feed" style={{margin: '0 auto'}}>
+                  { this.state.posts.map(post => {
+                    return <Post post={post} key={post.id} />
+                  }) }
+                  <p>{ (this.state.posts.length === 0) ? 'This user has no posts :(' : '' }</p>
+                </div>
               </div>
             </div>
           </div>
@@ -146,4 +181,10 @@ Profile.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 
-export default connect()(Profile)
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps)(Profile)

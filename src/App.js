@@ -20,9 +20,9 @@ class App extends Component {
     })
 
     socket.on('notification', data => {
-      if (data.type == 'message') {
+      if (data.type === 'message') {
         const chatPath = '/chat/' + data.from_user.username
-        
+
         if (chatPath !== this.props.router.location.pathname) {
           this.props.dispatch(addFlashMessage({
             type: 'success',
@@ -30,7 +30,7 @@ class App extends Component {
             link: chatPath
           }))
         }
-      } else if (data.type == 'comment'){
+      } else if (data.type === 'comment'){
         this.props.dispatch(addFlashMessage({
           type: 'success', text: `${data.from_user.username} commented on your post!`
         }))

@@ -8,7 +8,7 @@ class NotFound extends React.Component {
       <div className="hero is-info is-bold is-fullheight">
         <div className="hero-body">
           <div className="container has-text-centered">
-            <img className="hero--image" src={Image} />
+            <img className="hero--image" src={Image} role="presentation" />
 
             <h1 className="title">404 Page Not Found</h1>
             <h2 className="subtitle">This is not the page you are looking for...</h2>

@@ -179,7 +179,7 @@ class Feed extends React.Component {
           { this.state.filteredPosts.map(post => {
             return <Post post={post} key={post.id} deletePost={this.deletePost} />
           }) }
-          <p style={{textAlign: 'center'}}>{ (this.state.filteredPosts.length == 0) ? 'It appears there are not posts' : '' }</p>
+          <p style={{textAlign: 'center'}}>{ (this.state.filteredPosts.length === 0) ? 'It appears there are not posts' : '' }</p>
         </div>
       </div>
     )
