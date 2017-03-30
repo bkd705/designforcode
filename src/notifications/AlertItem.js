@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import './notification.css'
 
-const NotificationItem = (props, context) => {
+const AlertItem = (props, context) => {
   const onRemove = () => {
     props.deleteNotification(props.message.id)
   }
@@ -22,7 +22,9 @@ const NotificationItem = (props, context) => {
       <div className={classnames('notification', {
         'is-success': props.message.type === 'success',
         'is-danger': props.message.type === 'error',
-        'is-info': props.message.type === 'info'
+        'is-info': props.message.type === 'info',
+        'is-caution': props.message.type === 'caution',
+        'is-default': props.message.type === 'default'
       })}>
         <button onClick={onRemove} className="delete"></button>
         <p style={{wordWrap: 'break-word'}}>{props.message.text}</p>

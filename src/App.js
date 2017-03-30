@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Notifications from './notifications/NotificationList'
+import Alerts from './notifications/AlertsList'
 import NavigationBar from './partials/NavigationBar'
 import NotificationWrapper from './notifications/NotificationWrapper'
 
@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div className='app'>
         <NavigationBar />
-        <Notifications />
+        <Alerts />
         {this.props.children}
       </div>
     )
