@@ -15,7 +15,7 @@ class User extends Bookshelf.Model {
   }
 
   static get dependents() {
-    return ['profiles', 'posts', 'comments']
+    return ['profiles', 'posts', 'comments', 'notifications']
   }
 
   profile() {

@@ -20,24 +20,7 @@ const Bookshelf = require('bookshelf')(knex);
 // Plugins
 Bookshelf.plugin(require('bookshelf-uuid'))
 Bookshelf.plugin(require('bookshelf-cascade-delete'))
+Bookshelf.plugin(require('./plugins/bookshelf-validation'))
 Bookshelf.plugin('registry')
-
-// Custom Bookshelf validation plugin
-Bookshelf.Model.validate = async (rules, data, required, exclude = []) => {
-  //console.log(Bookshelf.Model)
-  const newRules = rules
-
-  if (required) {
-    for (let key of Object.keys(newRules)) {
-
-      // Exclude making some fields required
-      if (exclude.indexOf(key) === -1) {
-        newRules[key] = 'required|' + newRules[key]
-      }
-    }
-  }
-
-  return await indicative.validateAll(data, newRules)
-}
 
 export default Bookshelf
