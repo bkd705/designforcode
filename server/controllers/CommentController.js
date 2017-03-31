@@ -59,7 +59,8 @@ export default class CommentController {
           'id', 'username', 'email'
         ]),
         type: 'comment',
-        created_at: new Date()
+        created_at: new Date(),
+        postId: post.id
       })
     }
   }

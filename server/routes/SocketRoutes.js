@@ -28,7 +28,7 @@ module.exports = (io) => {
       // Get user associated with request
       const user = await SocketController.getUser(data)
       if (!user.success) {
-        socket.emit('hook-notifications-error', user)
+        return socket.emit('hook-notifications-error', user)
       }
 
       // Join their notification room
@@ -47,6 +47,12 @@ module.exports = (io) => {
         socket.emit('send-message-error', auth)
       }
 
+      // Save message to database
+      const sent = await SocketController.createMessage(auth.data.sender.id, auth.data.recipient.id, auth.data.room, data.message)
+      if (!sent) {
+         return socket.emit('send-message-error', sent)
+      }
+
       // Emit message to recipient's private chat
       socket.to(auth.data.room).emit('private-message',
         JRes.success('Received private message', {
@@ -58,12 +64,6 @@ module.exports = (io) => {
           }
         })
       )
-
-      // Save message to database
-      const sent = await SocketController.createMessage(auth.data.sender.id, auth.data.recipient.id, auth.data.room, data.message)
-      if (!sent) {
-         socket.emit('send-message-error', sent)
-      }
 
       // Emit notification to recipient
       socket.to(auth.data.recipient.id).emit('notification', {
