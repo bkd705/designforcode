@@ -423,11 +423,11 @@ export default class UserController {
     conditionalWhere[field] = value
 
     const user = await User.query({ where: conditionalWhere }).fetch()
-    if (!user) {
-      ctx.body = JRes.success(Responses.USER_EXISTS)
+    if (user) {
+      ctx.body = JRes.failure(Responses.USER_EXISTS)
       return
     }
 
-    SendError(ctx, 400, Responses.USER_NOT_FOUND)
+    ctx.body = JRes.success(Responses.USER_NOT_FOUND)
   }
 }

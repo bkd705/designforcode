@@ -9,7 +9,7 @@ const AlertItem = (props, context) => {
 
   const onClick = () => {
     if (!props.message.link) return
-    
+
     context.router.push(props.message.link)
   }
 
@@ -33,12 +33,12 @@ const AlertItem = (props, context) => {
   )
 }
 
-Notification.propTypes = {
+AlertItem.propTypes = {
   message: React.PropTypes.object.isRequired,
   deleteNotification: React.PropTypes.func.isRequired
 }
 
-Notification.contextTypes = {
+AlertItem.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 

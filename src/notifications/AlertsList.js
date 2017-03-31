@@ -5,8 +5,8 @@ import { deleteNotification } from './actions';
 
 class AlertList extends React.Component {
   render(){
-    const alerts = this.props.alerts.map(message => 
-      <Notification key={message.id} message={message} deleteNotification={this.props.deleteNotification} />
+    const alerts = this.props.alerts.map(message =>
+      <AlertItem key={message.id} message={message} deleteNotification={this.props.deleteNotification} />
     )
 
     return (
