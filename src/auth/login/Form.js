@@ -25,7 +25,9 @@ class LoginForm extends React.Component {
   }
 
   isValid = () => {
-    const { isValid, errors } = validateLogin(this.state)
+    const { isValid, errors } = validateLogin(
+      TransformObj(this.state, ['username', 'password'])
+    )
 
     if(!isValid) {
       this.setState({

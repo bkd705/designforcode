@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { deleteNotification } from './actions';
 
 class AlertList extends React.Component {
-  render(){
+  render() {
     const alerts = this.props.alerts.map(message =>
       <AlertItem key={message.id} message={message} deleteNotification={this.props.deleteNotification} />
     )
