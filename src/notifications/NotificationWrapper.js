@@ -6,11 +6,30 @@ import { logout } from '../auth/actions'
 
 export default function(ComposedComponent) {
   class NotificationWrapper extends React.Component {
+    state = {
+      socket: null
+    }
     componentDidMount() {
-      // Return if no user token present
-      if (!localStorage.getItem('user_token')) return
+      if(this.props.isAuthenticated) {
+        this.connectSocket()
+      }
+    }
 
+    componentDidUpdate(prevProps) {
+      if(prevProps.isAuthenticated !== this.props.isAuthenticated && this.props.isAuthenticated) {
+        this.connectSocket()
+      } else if (prevProps.isAuthenticated !== this.props.isAuthenticated && !this.props.isAuthenticated) {
+        console.log('disconnecting socket')
+        this.state.socket.disconnect()
+      }
+    }
+
+    connectSocket = () => {
       const socket = io()
+
+      this.setState({
+        socket: socket
+      })
 
       socket.on('connect', () => {
         socket.emit('hook-notifications', {
@@ -53,5 +72,10 @@ export default function(ComposedComponent) {
     }
   }
 
-  return connect()(NotificationWrapper)
+  const mapStateToProps = (state) => {
+    return {
+      isAuthenticated: state.auth.isAuthenticated
+    }
+  }
+  return connect(mapStateToProps)(NotificationWrapper)
 }
