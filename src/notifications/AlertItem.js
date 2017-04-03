@@ -9,7 +9,7 @@ const AlertItem = (props, context) => {
 
   const onClick = () => {
     if (!props.message.link) return
-    
+
     context.router.push(props.message.link)
   }
 

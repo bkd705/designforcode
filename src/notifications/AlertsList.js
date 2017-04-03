@@ -6,7 +6,7 @@ import { hideNotificationAlert } from './actions';
 class AlertList extends React.Component {
   render(){
     const alerts = this.props.alerts.map(alert => 
-      <AlertItem key={alert.id} message={alert} hideNotificationAlert={this.props.hideNotificationAlert} />
+      <AlertItem key={alert.id} message={alert} hideNotificationAlert={this.props.hideNotificationAlert} /> 
     )
 
     return (

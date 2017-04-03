@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { addNotification } from './actions'
 import io from 'socket.io-client'
+import { logout } from '../auth/actions'
 
 export default function(ComposedComponent) {
   class NotificationWrapper extends React.Component {
@@ -36,6 +37,12 @@ export default function(ComposedComponent) {
         }
 
         // TODO: ADD TO GLOBAL NOTIFICATIONS
+      })
+
+      socket.on('hook-notifications-error', data => {
+        if (data.error === 'USER_NOT_FOUND') {
+          this.props.dispatch(logout())
+        }
       })
     }
 
