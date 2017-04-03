@@ -5,6 +5,14 @@ class Post extends Bookshelf.Model {
   get uuid() { return true }
   get hasTimestamps() { return true }
 
+  static get rules() {
+    return {
+      title: 'min:1|max:50',
+      description: 'string',
+      type: 'in:code,design'
+    }
+  }
+
   static get dependents() {
     return ['comments']
   }
@@ -15,26 +23,6 @@ class Post extends Bookshelf.Model {
 
   comments() {
     return this.hasMany('Comment')
-  }
-
-  /**
-   * Returns the rules for validation
-   * @param required - If the fields should be required
-   */
-  static getRules(required = false) {
-    let rules = {
-      title: 'min:1|max:50',
-      description: 'string',
-      type: 'in:code,design'
-    }
-
-    if (required) {
-      for (let key of Object.keys(rules)) {
-        rules[key] = 'required|' + rules[key]
-      }
-    }
-
-    return rules
   }
 
   /**

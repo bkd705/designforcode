@@ -1,6 +1,3 @@
-// Import node modules
-import indicative from 'indicative'
-
 // Import utilities
 import JRes from '../util/JResponse'
 import Helpers from '../util/Helpers'
@@ -23,7 +20,7 @@ export default class PostController {
     const postInfo = ctx.request.body
 
     // Validate post info
-    await indicative.validateAll(postInfo, Post.getRules(true))
+    await Post.validate(Post.rules, postInfo, true)
 
     // Set post's user
     postInfo.user_id = currUser.id
@@ -132,7 +129,7 @@ export default class PostController {
     const postInfo = ctx.request.body
 
     // Validate post info
-    await indicative.validateAll(postInfo, Post.getRules())
+    await Post.validate(Post.rules, postInfo, false)
 
     // Find post by ID
     const post = await Post.find(postId)

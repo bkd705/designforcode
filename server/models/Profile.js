@@ -5,14 +5,7 @@ class Profile extends Bookshelf.Model {
   get uuid() { return true }
   get hasTimestamps() { return false }
 
-  user() {
-    return this.belongsTo('User', 'user_id', 'id')
-  }
-
-  /**
-   * Returns the rules for validation
-   */
-  static getRules() {
+  static get rules() {
     return {
       first_name: 'alpha|min:2|max:20',
       last_name: 'alpha|min:2|max:20',
@@ -27,6 +20,10 @@ class Profile extends Bookshelf.Model {
     }
   }
 
+  user() {
+    return this.belongsTo('User', 'user_id', 'id')
+  }
+  
   /**
    * Create a profile
    * @param info - Information to create a profile

@@ -9,13 +9,13 @@ const AlertItem = (props, context) => {
 
   const onClick = () => {
     if (!props.message.link) return
-    
+
     context.router.push(props.message.link)
   }
 
   setTimeout(() => {
     props.deleteNotification(props.message.id)
-  }, 3000)
+  }, 4000)
 
   return (
     <div onClick={onClick}>
@@ -33,13 +33,13 @@ const AlertItem = (props, context) => {
   )
 }
 
-Notification.propTypes = {
+AlertItem.propTypes = {
   message: React.PropTypes.object.isRequired,
   deleteNotification: React.PropTypes.func.isRequired
 }
 
-Notification.contextTypes = {
+AlertItem.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 
-export default Notification
+export default AlertItem

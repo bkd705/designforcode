@@ -16,6 +16,7 @@ export default (state = initialState, action = {}) => {
       text: action.message.text,
       link: action.message.link
     }
+
     return {
       ...state,
       notifications: [

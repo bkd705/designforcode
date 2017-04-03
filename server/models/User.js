@@ -6,8 +6,16 @@ class User extends Bookshelf.Model {
   get uuid() { return true }
   get hasTimestamps() { return true }
 
+  static get rules() {
+    return {
+      username: 'min:3|max:15|alpha_numeric',
+      email: 'email',
+      password: 'min:1|max:50'
+    }
+  }
+
   static get dependents() {
-    return ['profiles', 'posts', 'comments']
+    return ['profiles', 'posts', 'comments', 'notifications']
   }
 
   profile() {
@@ -20,26 +28,6 @@ class User extends Bookshelf.Model {
 
   comments() {
     return this.hasMany('Comment')
-  }
-
-  /**
-   * Returns the rules for validation
-   * @param required - If the fields should be required
-   */
-  static getRules(required = false) {
-    let rules = {
-      username: 'min:3|max:15|alpha_numeric',
-      email: 'email',
-      password: 'min:1|max:50'
-    }
-
-    if (required) {
-      for (let key of Object.keys(rules)) {
-        rules[key] = 'required|' + rules[key]
-      }
-    }
-
-    return rules
   }
 
   /**

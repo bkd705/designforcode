@@ -29,7 +29,9 @@ class SignupForm extends React.Component {
   }
 
   isValid = () => {
-    const { isValid, errors } = validateSignup(this.state)
+    const { isValid, errors } = validateSignup(
+      TransformObj(this.state, ['username', 'email', 'password', 'password_confirm'])
+    )
 
     if(!isValid) {
       this.setState({
@@ -43,7 +45,7 @@ class SignupForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-    console.log('submit')
+
     if(this.isValid()) {
       const user = TransformObj(this.state, ['username', 'email', 'password'])
       this.props.dispatch(signup(user))
