@@ -1,6 +1,6 @@
 import React from 'react'
-import Avatar from '../user/Avatar'
-import AgoDate from '../feed/post/AgoDate'
+import Avatar from '../../user/Avatar'
+import AgoDate from '../../feed/post/AgoDate'
 
 const ChatItem = ({ message, isCurrentUser, user }) => {
   if(isCurrentUser) {

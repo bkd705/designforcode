@@ -16,6 +16,7 @@ class NavigationBar extends React.Component {
 
   logout = (e) => {
     e.preventDefault()
+
     this.props.dispatch(logout())
     this.context.router.push('/')
     this.props.dispatch(addNotification({ type: 'success', text: 'Come back soon!' }))
@@ -36,6 +37,7 @@ class NavigationBar extends React.Component {
           </figure>
           Profile
         </Link>
+        <Link to="/chats" className="nav-item">Chats</Link>
         <Link onClick={this.logout} className="nav-item">Logout</Link>
       </div>
     )

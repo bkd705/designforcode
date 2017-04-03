@@ -1,0 +1,22 @@
+.chat-container {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.list-container {
+  border: 1px solid lightgrey;
+  border-radius: 4px;
+  padding: 15px;
+  width: 200px;
+  height: 100%;
+  align-items: stretch !important;
+  margin-right: 10px;
+  width: 20%;
+}
+
+.messages-container {
+  width: 80%;
+}

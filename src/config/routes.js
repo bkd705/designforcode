@@ -8,7 +8,7 @@ import Login from '../auth/login/LoginPage'
 import Signup from '../auth/signup/SignupPage'
 import ProfileForm from '../profile/Form'
 import Profile from '../profile/Profile'
-import Chat from '../chat/Chat'
+import Chats from '../chats/Chats'
 import Feed from '../feed/Feed'
 import NotFound from '../not-found/NotFound'
 
@@ -19,7 +19,7 @@ const routes = (
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
 
-      <Route path="/chat/:username" component={Chat} onEnter={RequireAuth} />
+      <Route path="/chats" component={Chats} onEnter={RequireAuth} />
       <Route path="/feed" component={Feed} onEnter={RequireAuth} />
 
       <Route path="/profile/create" component={() => <ProfileForm isNew />} onEnter={RequireAuth} />

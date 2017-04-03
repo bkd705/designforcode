@@ -153,7 +153,7 @@ export default class UserController {
     }
 
     // Check permissions
-    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+    if (currUser.attributes.username !== userId && currUser.id !== userId && currUser.attributes.role !== 'admin') {
       return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
@@ -297,15 +297,15 @@ export default class UserController {
     let user = null
 
     // Check permissions
-    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+    if (currUser.attributes.username !== userId && currUser.id !== userId && currUser.attributes.role !== 'admin') {
       return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Find user by ID
     if (validateUUID(ctx.params.id)) {
-      user = await User.find(userId, opts)
+      user = await User.find(userId)
     } else {
-      user = await User.findByUsername(userId, opts)
+      user = await User.findByUsername(userId)
     }
 
     if (!user) {
@@ -324,6 +324,7 @@ export default class UserController {
 
     for (let i = 0; i < chats.length; i++) {
       let otherUserId = chats[i].room_id.replace(user.id, '').replace(':', '')
+      delete chats[i].room_id
 
       const otherUser = await User.find(otherUserId)
       chats[i]['user'] = Helpers.transformObj(otherUser.attributes, [
@@ -346,15 +347,15 @@ export default class UserController {
     let user = null
 
     // Check permissions
-    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+    if (currUser.attributes.username !== userId && currUser.id !== userId && currUser.attributes.role !== 'admin') {
       return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Find user by ID
     if (validateUUID(ctx.params.id)) {
-      user = await User.find(userId, opts)
+      user = await User.find(userId)
     } else {
-      user = await User.findByUsername(userId, opts)
+      user = await User.findByUsername(userId)
     }
 
     if (!user) {
@@ -388,15 +389,15 @@ export default class UserController {
     let user = null
 
     // Check permissions
-    if (currUser.id !== userId && currUser.attributes.role !== 'admin') {
+    if (currUser.attributes.username !== userId && currUser.id !== userId && currUser.attributes.role !== 'admin') {
       return SendError(ctx, 403, Responses.NOT_AUTHORIZED)
     }
 
     // Find user by ID
     if (validateUUID(ctx.params.id)) {
-      user = await User.find(userId, opts)
+      user = await User.find(userId)
     } else {
-      user = await User.findByUsername(userId, opts)
+      user = await User.findByUsername(userId)
     }
 
     if (!user) {
