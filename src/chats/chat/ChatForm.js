@@ -1,5 +1,5 @@
 import React from 'react'
-import InputField from '../form/InputField'
+import InputField from '../../form/InputField'
 
 const ChatForm = ({ onSubmit, onChange, messageValue, errors }) => {
   return (

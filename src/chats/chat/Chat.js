@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import io from 'socket.io-client'
-import { addNotification } from '../notifications/actions'
+import { addNotification } from '../../notifications/actions'
 import ChatList from './ChatList'
 import ChatForm from './ChatForm'
 import './chat.css'
@@ -20,10 +20,20 @@ class Chat extends React.Component {
     }
   }
 
+  componentWillReceiveProps() {
+    if (this.state.socket) this.state.socket.disconnect()
+    this.setupSockets()
+  }
+
   componentDidMount() {
+    if (this.state.socket) this.state.socket.disconnect()
+    this.setupSockets()
+  }
+
+  setupSockets() {
     const socket = io()
 
-    fetch(`/api/v1/users/${this.props.params.username}`)
+    fetch(`/api/v1/users/${this.props.chatWith.username}`)
       .then(res => res.json())
       .then(data => {
         this.setState({
@@ -38,7 +48,7 @@ class Chat extends React.Component {
 
     socket.on('connect', () => {
       socket.emit('join', {
-        recipient_name: this.props.params.username,
+        recipient_name: this.props.chatWith.username,
         token: "Bearer " + localStorage.getItem('user_token')
       })
     })
@@ -124,7 +134,7 @@ class Chat extends React.Component {
 
   sendMessage = () => {
     this.state.socket.emit('send-message', {
-      recipient_name: this.props.params.username,
+      recipient_name: this.props.chatWith.username,
       token: "Bearer " + localStorage.getItem('user_token'),
       message: this.state.message
     })
@@ -155,10 +165,11 @@ class Chat extends React.Component {
   render() {
     // This is needed here instead of in sendMessage so it scrolls correctly
     this.scrollToBottom()
+
     return (
       <div className="container">
         <div className="chat--container">
-          <h2 className="subtitle has-text-center">Chat with {this.props.params.username}</h2>
+          <h2 className="subtitle has-text-center">Chat with {this.props.chatWith.username}</h2>
           <div className="box" id="chat">
             <ChatList messages={this.state.messages} sender={this.props.user} receiver={this.state.receiver.user} />
           </div>
@@ -172,6 +183,10 @@ class Chat extends React.Component {
       </div>
     )
   }
+}
+
+Chat.propTypes = {
+  chatWith: React.PropTypes.object.isRequired
 }
 
 Chat.contextTypes = {
