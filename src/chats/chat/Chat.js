@@ -21,13 +21,22 @@ class Chat extends React.Component {
   }
 
   componentWillReceiveProps() {
-    if (this.state.socket) this.state.socket.disconnect()
+    this.cleanupSockets()
     this.setupSockets()
   }
 
   componentDidMount() {
-    if (this.state.socket) this.state.socket.disconnect()
+    this.cleanupSockets()
     this.setupSockets()
+  }
+
+  cleanupSockets() {
+    if (this.state.socket) {
+      this.state.socket.disconnect()
+      this.setState({
+        socket: null
+      })
+    }
   }
 
   setupSockets() {
