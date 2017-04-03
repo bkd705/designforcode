@@ -5,7 +5,6 @@ import Api from './api'
 import Avatar from '../user/Avatar'
 import ProfileGithubList from './ProfileGithubList'
 import ProfileDribbbleList from './ProfileDribbbleList'
-import Post from '../feed/post/Post'
 
 import './profile.css'
 import '../feed/feed.css'
@@ -81,7 +80,9 @@ class Profile extends React.Component {
   }
 
   render() {
-    const { user: { username, email }, profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, gitRepos, dribbbleShots, isLoading} = this.state
+    const { user: { username, email }, 
+            profile: { first_name, last_name, description, profession, skill_level, dribbble_url, github_url, linkedin_url, portfolio_url }, 
+            gitRepos, dribbbleShots, isLoading } = this.state
 
     const messageButton = (
       <button

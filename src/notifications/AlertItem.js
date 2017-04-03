@@ -4,7 +4,7 @@ import './notification.css'
 
 const AlertItem = (props, context) => {
   const onRemove = () => {
-    props.deleteNotification(props.message.id)
+    props.hideNotificationAlert(props.message.id)
   }
 
   const onClick = () => {
@@ -14,7 +14,7 @@ const AlertItem = (props, context) => {
   }
 
   setTimeout(() => {
-    props.deleteNotification(props.message.id)
+    props.hideNotificationAlert(props.message.id)
   }, 3000)
 
   return (
@@ -33,13 +33,13 @@ const AlertItem = (props, context) => {
   )
 }
 
-Notification.propTypes = {
+AlertItem.propTypes = {
   message: React.PropTypes.object.isRequired,
-  deleteNotification: React.PropTypes.func.isRequired
+  hideNotificationAlert: React.PropTypes.func.isRequired
 }
 
-Notification.contextTypes = {
+AlertItem.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
 
-export default Notification
+export default AlertItem

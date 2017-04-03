@@ -18,19 +18,20 @@ export default function(ComposedComponent) {
       })
 
       socket.on('notification', data => {
+        console.log(data)
         if (data.type === 'message') {
           const chatPath = '/chat/' + data.from_user.username
 
           if (chatPath !== this.props.router.location.pathname) {
             this.props.dispatch(addNotification({
-              type: 'success',
+              type: 'info',
               text: `${data.from_user.username} sent you a message!`,
               link: chatPath
             }))
           }
         } else if (data.type === 'comment'){
           this.props.dispatch(addNotification({
-            type: 'success', text: `${data.from_user.username} commented on your post!`
+            type: 'info', text: `${data.from_user.username} commented on your post!`
           }))
         }
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import AlertItem from './AlertItem';
 import { connect } from 'react-redux';
-import { deleteNotification } from './actions';
+import { hideNotificationAlert } from './actions';
 
 class AlertList extends React.Component {
   render(){
-    const alerts = this.props.alerts.map(message => 
-      <Notification key={message.id} message={message} deleteNotification={this.props.deleteNotification} />
+    const alerts = this.props.alerts.map(alert => 
+      <AlertItem key={alert.id} message={alert} hideNotificationAlert={this.props.hideNotificationAlert} />
     )
 
     return (
@@ -19,7 +19,7 @@ class AlertList extends React.Component {
 
 AlertList.propTypes = {
   alerts: React.PropTypes.array.isRequired,
-  deleteNotification: React.PropTypes.func.isRequired
+  hideNotificationAlert: React.PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -29,4 +29,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { deleteNotification })(AlertList);
+export default connect(mapStateToProps, { hideNotificationAlert })(AlertList);
