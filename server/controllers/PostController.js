@@ -82,6 +82,10 @@ export default class PostController {
       count = ctx.request.query.count
     }
 
+    const allPosts = await Post.fetchAll()
+    const postCount = allPosts.length
+    const pages = Math.ceil(postCount / count)
+
     // Get all posts
     let posts = await Post.query(qb => {
       qb.orderBy('created_at', 'desc')
@@ -114,7 +118,8 @@ export default class PostController {
         { attribute: 'user', fields: ['id', 'username', 'email'] },
         'title', 'description', 'type', 'created_at',
         { attribute: 'comments', fields: ['id', 'user', 'body', 'created_at'] }
-      ])
+      ]),
+      pages: pages
     })
   }
 
