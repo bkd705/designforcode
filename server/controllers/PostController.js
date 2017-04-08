@@ -72,6 +72,8 @@ export default class PostController {
     let start = 0
     let count = 10
 
+    const allPosts = await Post.fetchAll()
+
     // Validate and set start offset
     if (ctx.request.query.start && ctx.request.query.start >= 0) {
       start = ctx.request.query.start
@@ -81,10 +83,6 @@ export default class PostController {
     if (ctx.request.query.count && ctx.request.query.count > 0) {
       count = ctx.request.query.count
     }
-
-    const allPosts = await Post.fetchAll()
-    const postCount = allPosts.length
-    const pages = Math.ceil(postCount / count)
 
     // Get all posts
     let posts = await Post.query(qb => {
@@ -119,7 +117,7 @@ export default class PostController {
         'title', 'description', 'type', 'created_at',
         { attribute: 'comments', fields: ['id', 'user', 'body', 'created_at'] }
       ]),
-      pages: pages
+      total: allPosts.length
     })
   }
 
