@@ -4,6 +4,7 @@ import Api from './Api'
 import { addNotification } from '../notifications/actions'
 import Post from './post/Post'
 import PostForm from './post/Form'
+import Pagination from '../pagination/PaginationList'
 import './feed.css'
 
 class Feed extends React.Component {
@@ -13,19 +14,25 @@ class Feed extends React.Component {
     this.state = {
       posts: [],
       filteredPosts: [],
+      totalPosts: 0,
       typeFilter: 'all',
       showPostForm: false,
-      searchTxt: ''
+      searchTxt: '',
+      currentPage: 0,
+      pages: 0
     }
   }
 
   componentDidMount() {
     if(this.state.posts.length <= 0) {
-       Api.fetchPosts()
+       Api.fetchPosts(0, 10)
         .then(res => {
           this.setState({
             posts: res.data.posts,
-            filteredPosts: res.data.posts
+            filteredPosts: res.data.posts,
+            pages: res.data.total / 10,
+            totalPosts: res.data.total,
+            currentPage: 1
           })
         })
         .catch(err => {
@@ -121,14 +128,7 @@ class Feed extends React.Component {
   changeFilter = (e, filter) => {
     e.preventDefault()
 
-    if(this.setState.typeFilter !== filter) {
-      const newFilteredPosts = filter !== 'all' ? this.state.posts.filter(x => x.type === filter) : this.state.posts
-
-      this.setState({
-        typeFilter: filter,
-        filteredPosts: newFilteredPosts
-      })
-    }
+    // TODO after zach has made the API route
   }
 
   togglePostForm = (e) => {
@@ -139,6 +139,20 @@ class Feed extends React.Component {
     }))
   }
 
+  changePage = (e, newPage) => {
+    e.preventDefault()
+
+    Api.fetchPosts((newPage - 1) * 10, 10)
+      .then(data => {
+        this.setState(prevState => ({
+          posts: data.data.posts,
+          filteredPosts: data.data.posts,
+          typeFilter: 'all',
+          currentPage: newPage
+        }))
+      })
+  }
+
   render() {
     const { typeFilter } = this.state
     return (
@@ -147,7 +161,7 @@ class Feed extends React.Component {
           <div className="level-left">
             <div className="level-item">
               <p className="subtitle is-5">
-                <strong>{this.state.filteredPosts.length}</strong> posts
+                <strong>{this.state.totalPosts}</strong> posts
               </p>
             </div>
             <form onSubmit={this.search}>
@@ -175,11 +189,14 @@ class Feed extends React.Component {
           </div>
         </nav>
         <div className="feed">
+          { this.state.filteredPosts.length !== 0 && this.state.pages > 0
+          && <Pagination pages={this.state.pages} currentPage={this.state.currentPage} changePage={this.changePage} /> }
           { this.state.showPostForm && <PostForm togglePostForm={this.togglePostForm} storePost={this.storePost} /> }
           { this.state.filteredPosts.map(post => {
             return <Post post={post} key={post.id} deletePost={this.deletePost} />
           }) }
-          <p style={{textAlign: 'center'}}>{ (this.state.filteredPosts.length === 0) ? 'It appears there are not posts' : '' }</p>
+
+          { this.state.filteredPosts.length > 0 || <p style={{textAlign: 'center'}}>It appears there are not posts</p> }
         </div>
       </div>
     )
