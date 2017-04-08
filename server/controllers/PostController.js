@@ -84,8 +84,21 @@ export default class PostController {
       count = ctx.request.query.count
     }
 
+    // If start is greater than amount of posts, set start to 0
+    if (start > allPosts.length) {
+      start = 0
+    }
+
     // Get all posts
     let posts = await Post.query(qb => {
+      if (ctx.request.query.type) {
+        if (ctx.request.query.type === 'design') {
+          qb.where('type', '=', 'design')
+        } else if (ctx.request.query.type === 'code') {
+          qb.where('type', '=', 'code')
+        }
+      }
+
       qb.orderBy('created_at', 'desc')
       qb.limit(count).offset(start)
     }).fetchAll(opts)
