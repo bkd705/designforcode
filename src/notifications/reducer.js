@@ -4,11 +4,17 @@ import findIndex from 'lodash/findIndex'
 
 const initialState = {
   alerts: [],
-  notifications: []
+  notifications: [],
+  activeChat: ''
 }
 
 export default (state = initialState, action = {}) => {
   switch(action.type) {
+  case types.CHANGE_ACTIVE_CHAT:
+    return {
+      ...state,
+      activeChat: action.activeChat
+    }
   case types.ADD_NOTIFICATION:
     const notification = {
       id: shortid.generate(),

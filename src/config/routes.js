@@ -20,6 +20,7 @@ const routes = (
       <Route path="/signup" component={Signup} />
 
       <Route path="/chats" component={Chats} onEnter={RequireAuth} />
+      <Route path="/chats/:username" component={Chats} onEnter={RequireAuth} />
       <Route path="/feed" component={Feed} onEnter={RequireAuth} />
 
       <Route path="/profile/create" component={() => <ProfileForm isNew />} onEnter={RequireAuth} />

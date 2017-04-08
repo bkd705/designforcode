@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ChatsList = ({ chats, active, changeChat }) => {
+const ChatsList = ({ chats, active, changeChat, newChatComponent }) => {
   const list = chats.map((chat, key) => {
     if (active && active.username === chat.user.username) {
       return (
@@ -22,6 +22,7 @@ const ChatsList = ({ chats, active, changeChat }) => {
         Private Chats
       </p>
       <ul className="menu-list">
+        {newChatComponent}
         {list}
       </ul>
     </aside>

@@ -40,13 +40,11 @@ export default function(ComposedComponent) {
       socket.on('notification', data => {
         console.log(data)
         if (data.type === 'message') {
-          const chatPath = '/chat/' + data.from_user.username
-
-          if (chatPath !== this.props.router.location.pathname) {
+          if (data.from_user.username !== this.props.activeChat.username) {
             this.props.dispatch(addNotification({
               type: 'info',
               text: `${data.from_user.username} sent you a message!`,
-              link: chatPath
+              link: `/chats/${data.from_user.username}`
             }))
           }
         } else if (data.type === 'comment'){
@@ -74,7 +72,8 @@ export default function(ComposedComponent) {
 
   const mapStateToProps = (state) => {
     return {
-      isAuthenticated: state.auth.isAuthenticated
+      isAuthenticated: state.auth.isAuthenticated,
+      activeChat: state.notifications.activeChat
     }
   }
   return connect(mapStateToProps)(NotificationWrapper)

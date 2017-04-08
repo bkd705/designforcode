@@ -41,10 +41,11 @@ class Chat extends React.Component {
 
   setupSockets() {
     const socket = io()
-
+    console.log(this.props)
     fetch(`/api/v1/users/${this.props.chatWith.username}`)
       .then(res => res.json())
       .then(data => {
+        console.log(data)
         this.setState({
           receiver: data.data,
           socket: socket
