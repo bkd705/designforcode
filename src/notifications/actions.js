@@ -31,9 +31,22 @@ export function hideNotificationAlert(id) {
   }
 }
 
-export function changeActiveChat(chatId) {
+export function changeActiveChat(activeChat) {
+  if(!activeChat) {
+    return {
+      type: CHANGE_ACTIVE_CHAT,
+      activeChat: {
+        user: {
+          username: '',
+          email: '',
+          id: ''
+        }
+      }
+    }
+  }
+
   return {
     type: CHANGE_ACTIVE_CHAT,
-    activeChat: chatId
+    activeChat
   }
 }

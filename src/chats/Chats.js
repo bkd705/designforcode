@@ -70,6 +70,10 @@ class Chats extends React.Component {
     })
   }
 
+  componentWillUnmount() {
+    this.props.dispatch(changeActiveChat(null))
+  }
+
 
   onChange = (e) => {
     this.setState({
