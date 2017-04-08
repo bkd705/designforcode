@@ -1,6 +1,6 @@
 class Api {
-  static fetchPosts() {
-    return fetch('/api/v1/posts')
+  static fetchPosts(start, count) {
+    return fetch(`/api/v1/posts?start=${start}&count=${count}`)
       .then(res => res.json())
       .catch(err => err)
   }
