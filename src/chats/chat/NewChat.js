@@ -1,5 +1,6 @@
 import React from 'react'
 import InputField from '../../form/InputField'
+import '../styles.css'
 
 const NewChat = ({ onChange, newChatUser, error, onClick}) => {
   return (

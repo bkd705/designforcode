@@ -10,7 +10,8 @@
   border: 1px solid lightgrey;
   border-radius: 4px;
   padding: 15px;
-  width: 200px;
+  min-width: 300px;
+  width: 30%;
   height: 100%;
   align-items: stretch !important;
   margin-right: 10px;
@@ -19,4 +20,8 @@
 
 .messages-container {
   width: 80%;
+}
+
+.list-container > aside > .field > .control {
+  width: 100px;
 }

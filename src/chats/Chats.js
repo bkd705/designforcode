@@ -31,24 +31,28 @@ class Chats extends React.Component {
     })
     .then(res => res.json())
     .then(data => {
-      if(data.data.chats.length > 0) {
+      if (data.data.chats.length > 0) {
         this.setState({
           chats: data.data.chats,
           activeChat: data.data.chats[0].user,
           isLoading: false
         })
+
         this.props.dispatch(changeActiveChat(data.data.chats[0].user))
-        if(this.props.params.username) {
+
+        if (this.props.params.username) {
           const activeChat = data.data.chats.filter(chat => chat.user.username === this.props.params.username)
-          console.log(activeChat)
-          if(activeChat.length > 0) {
+
+          if (activeChat.length > 0) {
             this.setState({
               chats: data.data.chats,
-              activeChat: activeChat[0].user
+              activeChat: activeChat[0].user,
+              isLoading: false
             })
+
             this.props.dispatch(changeActiveChat(activeChat[0].user))
           } else {
-            if(this.props.params.username === this.props.user.username) {
+            if (this.props.params.username === this.props.user.username) {
               this.props.dispatch(addNotification({ type: 'error', text: 'Cannot start a new chat with yourself... loner'}))
             } else {
               fetch(`/api/v1/users/${this.props.params.username}`)
@@ -128,10 +132,13 @@ class Chats extends React.Component {
           username: data.data.user.username
         }
       }
+
       this.setState({
         chats: [ ...this.state.chats, chat ],
-        activeChat: chat.user
+        activeChat: chat.user,
+        isLoading: false
       })
+
       this.changeChat(chat.user)
     } else if (data.error === ResConst.USER_NOT_FOUND) {
       this.props.dispatch(addNotification({ type: 'error', text: `No user with that username was found :(` }))

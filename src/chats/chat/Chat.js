@@ -28,6 +28,7 @@ class Chat extends React.Component {
   componentDidMount() {
     this.cleanupSockets()
     this.setupSockets()
+    console.log("CHAT STARTED")
   }
 
   cleanupSockets() {
