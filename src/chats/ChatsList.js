@@ -21,8 +21,8 @@ const ChatsList = ({ chats, active, changeChat, newChatComponent }) => {
       <p className="menu-label">
         Private Chats
       </p>
-      <ul className="menu-list">
-        {newChatComponent}
+      {newChatComponent}
+      <ul className="menu-list">      
         {list}
       </ul>
     </aside>

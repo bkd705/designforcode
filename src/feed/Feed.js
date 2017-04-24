@@ -189,14 +189,15 @@ class Feed extends React.Component {
           </div>
         </nav>
         <div className="feed">
-          { this.state.filteredPosts.length !== 0 && this.state.pages > 0
-          && <Pagination pages={this.state.pages} currentPage={this.state.currentPage} changePage={this.changePage} /> }
           { this.state.showPostForm && <PostForm togglePostForm={this.togglePostForm} storePost={this.storePost} /> }
           { this.state.filteredPosts.map(post => {
             return <Post post={post} key={post.id} deletePost={this.deletePost} />
           }) }
 
           { this.state.filteredPosts.length > 0 || <p style={{textAlign: 'center'}}>It appears there are not posts</p> }
+
+          { this.state.filteredPosts.length !== 0 && this.state.pages > 0
+          && <Pagination pages={this.state.pages} currentPage={this.state.currentPage} changePage={this.changePage} /> }
         </div>
       </div>
     )
