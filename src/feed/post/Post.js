@@ -119,7 +119,7 @@ class Post extends React.Component {
         <button
           className="button is-primary is-small"
           style={{width: '30px', marginTop: '10px'}}
-          onClick={() => this.context.router.push(`/chat/${user.username}`)}>
+          onClick={() => this.context.router.push(`/chats/${user.username}`)}>
           <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
         </button>
         <button
