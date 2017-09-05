@@ -20,14 +20,14 @@ class Chat extends React.Component {
     }
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
     this.cleanupSockets()
-    this.setupSockets()
+    this.setupSockets(nextProps)
   }
 
   componentDidMount() {
     this.cleanupSockets()
-    this.setupSockets()
+    this.setupSockets(this.props)
     console.log("CHAT STARTED")
   }
 
@@ -40,13 +40,11 @@ class Chat extends React.Component {
     }
   }
 
-  setupSockets() {
+  setupSockets(currentProps) {
     const socket = io()
-    console.log(this.props)
-    fetch(`/api/v1/users/${this.props.chatWith.username}`)
+    fetch(`/api/v1/users/${currentProps.chatWith.username}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
         this.setState({
           receiver: data.data,
           socket: socket
